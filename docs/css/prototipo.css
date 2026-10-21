@@ -1,0 +1,124 @@
+/* Ajustes visuais dos protótipos, por cima do Bootstrap 5. */
+
+:root {
+    --app-fundo: #f4f6fb;
+    --app-barra: #1e293b;
+    --app-borda: #e2e8f0;
+}
+
+body {
+    background: var(--app-fundo);
+    min-height: 100vh;
+}
+
+.faixa-prototipo {
+    background: #fff7d6;
+    border-bottom: 1px solid #f1e3a4;
+    color: #6b5800;
+    font-size: .8125rem;
+    padding: .35rem 1rem;
+    text-align: center;
+}
+
+.faixa-prototipo a {
+    color: inherit;
+    font-weight: 600;
+}
+
+.barra-app {
+    background: var(--app-barra);
+}
+
+.barra-app .nav-link {
+    color: rgba(255, 255, 255, .75);
+}
+
+.barra-app .nav-link:hover,
+.barra-app .nav-link.active {
+    color: #fff;
+}
+
+.barra-app .nav-link.active {
+    box-shadow: inset 0 -2px 0 #60a5fa;
+}
+
+.barra-app .rotulo-admin {
+    border-left: 1px solid rgba(255, 255, 255, .2);
+    color: rgba(255, 255, 255, .45);
+    font-size: .6875rem;
+    letter-spacing: .06em;
+    margin-left: .5rem;
+    padding: .5rem .25rem .5rem .75rem;
+    text-transform: uppercase;
+}
+
+.card {
+    border-color: var(--app-borda);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+}
+
+.table > :not(caption) > * > * {
+    padding: .7rem .75rem;
+}
+
+.table thead th {
+    color: #64748b;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tarefa-concluida .titulo-tarefa {
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+
+.resumo .numero {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.amostra-cor {
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    display: inline-block;
+    height: 1rem;
+    vertical-align: -2px;
+    width: 1rem;
+}
+
+.cartao-acesso {
+    max-width: 420px;
+}
+
+.nota-prototipo {
+    background: #fffdf3;
+    border: 1px dashed #e0c96b;
+    border-radius: .5rem;
+    color: #5c4d00;
+    font-size: .8125rem;
+    margin-top: 2rem;
+    padding: .75rem 1rem;
+}
+
+.pagina-acesso .nota-prototipo {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 560px;
+}
+
+.nota-prototipo ul {
+    margin: .25rem 0 0;
+    padding-left: 1.1rem;
+}
+
+.nota-prototipo code {
+    color: #8a3b00;
+}
+
+.zona-perigo {
+    border-color: #f5c2c7;
+}

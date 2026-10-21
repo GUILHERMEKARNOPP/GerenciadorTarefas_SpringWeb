@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tarefas · Gerenciador de Tarefas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/prototipo.css">
+</head>
+<body>
+<div class="faixa-prototipo">Protótipo navegável · dados fictícios · <a href="index.html">ver todas as telas</a></div>
+<nav class="navbar navbar-expand barra-app" data-bs-theme="dark">
+    <div class="container flex-wrap">
+        <a class="navbar-brand fw-semibold" href="tarefas.html"><i class="bi bi-check2-square me-1"></i>Gerenciador de Tarefas</a>
+        <ul class="navbar-nav flex-wrap me-auto">
+            <li class="nav-item"><a class="nav-link active" href="tarefas.html"><i class="bi bi-list-check me-1"></i>Tarefas</a></li>
+            <li class="nav-item"><a class="nav-link" href="categorias.html"><i class="bi bi-tags me-1"></i>Categorias</a></li>
+            <li class="nav-item d-flex align-items-center"><span class="rotulo-admin">Admin</span></li>
+            <li class="nav-item"><a class="nav-link" href="usuarios.html"><i class="bi bi-people me-1"></i>Usuários</a></li>
+            <li class="nav-item"><a class="nav-link" href="status.html"><i class="bi bi-flag me-1"></i>Status</a></li>
+            <li class="nav-item"><a class="nav-link" href="prioridades.html"><i class="bi bi-bar-chart-steps me-1"></i>Prioridades</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+            <a class="nav-link" href="perfil.html"><i class="bi bi-person-circle me-1"></i>Ana Souza</a>
+            <a class="btn btn-sm btn-outline-light" href="login.html"><i class="bi bi-box-arrow-right me-1"></i>Sair</a>
+        </div>
+    </div>
+</nav>
+<main class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+        <div>
+            <h1 class="h3 mb-1">Minhas tarefas</h1>
+            <p class="text-body-secondary mb-0">Organize, filtre e acompanhe o que precisa ser feito.</p>
+        </div>
+        <a class="btn btn-primary" href="tarefa-form.html"><i class="bi bi-plus-lg me-1"></i>Nova tarefa</a>
+    </div>
+    <div class="row g-3 mb-4 resumo">
+        <div class="col-6 col-md-3">
+            <div class="card h-100"><div class="card-body">
+                <div class="small text-body-secondary">Pendentes</div>
+                <div class="numero ">8</div>
+            </div></div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card h-100"><div class="card-body">
+                <div class="small text-body-secondary">Em andamento</div>
+                <div class="numero text-primary">4</div>
+            </div></div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card h-100"><div class="card-body">
+                <div class="small text-body-secondary">Concluídas</div>
+                <div class="numero text-success">9</div>
+            </div></div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card h-100"><div class="card-body">
+                <div class="small text-body-secondary">Atrasadas</div>
+                <div class="numero text-danger">2</div>
+            </div></div>
+        </div>
+    </div>
+    <form class="card mb-3" action="tarefas.html">
+        <div class="card-body">
+            <div class="row g-2 align-items-end">
+                <div class="col-12 col-lg-4">
+                    <label class="form-label small" for="q">Pesquisar</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input class="form-control" id="q" name="q" placeholder="Título ou descrição">
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label small" for="status">Status</label>
+                    <select class="form-select" id="status" name="status"><option>Todos</option><option>Pendente</option><option>Em andamento</option><option>Concluída</option></select>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label small" for="prioridade">Prioridade</label>
+                    <select class="form-select" id="prioridade" name="prioridade"><option>Todas</option><option>Alta</option><option>Média</option><option>Baixa</option></select>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label small" for="categoria">Categoria</label>
+                    <select class="form-select" id="categoria" name="categoria"><option>Todas</option><option>Faculdade</option><option>Trabalho</option><option>Pessoal</option><option>Estudos</option><option>Sem categoria</option></select>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label small" for="ordem">Ordenar por</label>
+                    <select class="form-select" id="ordem" name="ordem"><option>Vencimento</option><option>Prioridade</option><option>Título</option><option>Mais recentes</option></select>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2 mt-3">
+                <a class="btn btn-sm btn-link" href="tarefas.html">Limpar filtros</a>
+                <button class="btn btn-sm btn-primary" type="submit"><i class="bi bi-funnel me-1"></i>Filtrar</button>
+            </div>
+        </div>
+    </form>
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light"><tr><th>Tarefa</th><th>Categoria</th><th>Prioridade</th><th>Status</th><th>Vencimento</th><th class="text-end">Ações</th></tr></thead>
+                <tbody>
+                    <tr>
+                    <td><div class="fw-semibold titulo-tarefa">Relatório mensal de vendas</div><div class="small text-body-secondary">Consolidar os números de setembro</div></td>
+                    <td>Trabalho</td>
+                    <td><span class="badge" style="background-color: #dc3545">Alta</span></td>
+                    <td><span class="badge bg-secondary-subtle text-secondary-emphasis">Pendente</span></td>
+                    <td><span class="text-danger fw-semibold">18/10/2026</span> <span class="badge bg-danger-subtle text-danger-emphasis">Atrasada</span></td>
+                    <td class="text-end text-nowrap"><button class="btn btn-sm btn-outline-success" type="button" title="Concluir"><i class="bi bi-check-lg"></i></button>
+                        <a class="btn btn-sm btn-outline-secondary" href="tarefa-form.html" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-danger" href="tarefa-excluir.html" title="Excluir"><i class="bi bi-trash"></i></a></td>
+                    </tr>
+                    <tr>
+                    <td><div class="fw-semibold titulo-tarefa">Apresentação do TCC</div><div class="small text-body-secondary">Versão preliminar dos slides para o orientador</div></td>
+                    <td>Faculdade</td>
+                    <td><span class="badge" style="background-color: #dc3545">Alta</span></td>
+                    <td><span class="badge bg-primary-subtle text-primary-emphasis">Em andamento</span></td>
+                    <td><span class="text-danger fw-semibold">19/10/2026</span> <span class="badge bg-danger-subtle text-danger-emphasis">Atrasada</span></td>
+                    <td class="text-end text-nowrap"><button class="btn btn-sm btn-outline-success" type="button" title="Concluir"><i class="bi bi-check-lg"></i></button>
+                        <a class="btn btn-sm btn-outline-secondary" href="tarefa-form.html" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-danger" href="tarefa-excluir.html" title="Excluir"><i class="bi bi-trash"></i></a></td>
+                    </tr>
+                    <tr class="tarefa-concluida">
+                    <td><div class="fw-semibold titulo-tarefa">Revisar diagrama MER</div><div class="small text-body-secondary">Conferir as cardinalidades com o grupo</div></td>
+                    <td>Faculdade</td>
+                    <td><span class="badge" style="background-color: #198754">Baixa</span></td>
+                    <td><span class="badge bg-success-subtle text-success-emphasis">Concluída</span></td>
+                    <td>20/10/2026</td>
+                    <td class="text-end text-nowrap"><button class="btn btn-sm btn-outline-success" type="button" title="Concluir" disabled><i class="bi bi-check-lg"></i></button>
+                        <a class="btn btn-sm btn-outline-secondary" href="tarefa-form.html" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-danger" href="tarefa-excluir.html" title="Excluir"><i class="bi bi-trash"></i></a></td>
+                    </tr>
+                    <tr class="tarefa-concluida">
+                    <td><div class="fw-semibold titulo-tarefa">Reunião de alinhamento do projeto</div><div class="small text-body-secondary">Pauta: cronograma da 2ª etapa</div></td>
+                    <td>Trabalho</td>
+                    <td><span class="badge" style="background-color: #fd7e14">Média</span></td>
+                    <td><span class="badge bg-success-subtle text-success-emphasis">Concluída</span></td>
+                    <td>21/10/2026</td>
+                    <td class="text-end text-nowrap"><button class="btn btn-sm btn-outline-success" type="button" title="Concluir" disabled><i class="bi bi-check-lg"></i></button>
+                        <a class="btn btn-sm btn-outline-secondary" href="tarefa-form.html" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-danger" href="tarefa-excluir.html" title="Excluir"><i class="bi bi-trash"></i></a></td>
+                    </tr>
+                    <tr>
+                    <td><div class="fw-semibold titulo-tarefa">Entregar protótipos do sistema web</div><div class="small text-body-secondary">1ª etapa: telas, diagrama de classes e MER</div></td>
+                    <td>Faculdade</td>
+                    <td><span class="badge" style="background-color: #dc3545">Alta</span></td>
+                    <td><span class="badge bg-primary-subtle text-primary-emphasis">Em andamento</span></td>
+                    <td>24/10/2026</td>
+                    <td class="text-end text-nowrap"><button class="btn btn-sm btn-outline-success" type="button" title="Concluir"><i class="bi bi-check-lg"></i></button>
+                        <a class="btn btn-sm btn-outline-secondary" href="tarefa-form.html" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-danger" href="tarefa-excluir.html" title="Excluir"><i class="bi bi-trash"></i></a></td>
+                    </tr>
+                    <tr>
+                    <td><div class="fw-semibold titulo-tarefa">Lista de exercícios de Estrutura de Dados</div><div class="small text-body-secondary">Árvores AVL, questões 1 a 8</div></td>
+                    <td>Faculdade</td>
+                    <td><span class="badge" style="background-color: #fd7e14">Média</span></td>
+                    <td><span class="badge bg-secondary-subtle text-secondary-emphasis">Pendente</span></td>
+                    <td>27/10/2026</td>
+                    <td class="text-end text-nowrap"><button class="btn btn-sm btn-outline-success" type="button" title="Concluir"><i class="bi bi-check-lg"></i></button>
+                        <a class="btn btn-sm btn-outline-secondary" href="tarefa-form.html" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-danger" href="tarefa-excluir.html" title="Excluir"><i class="bi bi-trash"></i></a></td>
+                    </tr>
+                    <tr>
+                    <td><div class="fw-semibold titulo-tarefa">Estudar Spring Data JPA</div><div class="small text-body-secondary">Repositórios, consultas derivadas e paginação</div></td>
+                    <td>Estudos</td>
+                    <td><span class="badge" style="background-color: #fd7e14">Média</span></td>
+                    <td><span class="badge bg-secondary-subtle text-secondary-emphasis">Pendente</span></td>
+                    <td>30/10/2026</td>
+                    <td class="text-end text-nowrap"><button class="btn btn-sm btn-outline-success" type="button" title="Concluir"><i class="bi bi-check-lg"></i></button>
+                        <a class="btn btn-sm btn-outline-secondary" href="tarefa-form.html" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-danger" href="tarefa-excluir.html" title="Excluir"><i class="bi bi-trash"></i></a></td>
+                    </tr>
+                    <tr>
+                    <td><div class="fw-semibold titulo-tarefa">Renovar CNH</div></td>
+                    <td>Pessoal</td>
+                    <td><span class="badge" style="background-color: #fd7e14">Média</span></td>
+                    <td><span class="badge bg-secondary-subtle text-secondary-emphasis">Pendente</span></td>
+                    <td>05/11/2026</td>
+                    <td class="text-end text-nowrap"><button class="btn btn-sm btn-outline-success" type="button" title="Concluir"><i class="bi bi-check-lg"></i></button>
+                        <a class="btn btn-sm btn-outline-secondary" href="tarefa-form.html" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-danger" href="tarefa-excluir.html" title="Excluir"><i class="bi bi-trash"></i></a></td>
+                    </tr>
+                    <tr>
+                    <td><div class="fw-semibold titulo-tarefa">Atualizar currículo</div></td>
+                    <td>Pessoal</td>
+                    <td><span class="badge" style="background-color: #198754">Baixa</span></td>
+                    <td><span class="badge bg-secondary-subtle text-secondary-emphasis">Pendente</span></td>
+                    <td>15/11/2026</td>
+                    <td class="text-end text-nowrap"><button class="btn btn-sm btn-outline-success" type="button" title="Concluir"><i class="bi bi-check-lg"></i></button>
+                        <a class="btn btn-sm btn-outline-secondary" href="tarefa-form.html" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-danger" href="tarefa-excluir.html" title="Excluir"><i class="bi bi-trash"></i></a></td>
+                    </tr>
+                    <tr>
+                    <td><div class="fw-semibold titulo-tarefa">Agendar dentista</div></td>
+                    <td><span class="text-body-tertiary">Sem categoria</span></td>
+                    <td><span class="badge" style="background-color: #198754">Baixa</span></td>
+                    <td><span class="badge bg-secondary-subtle text-secondary-emphasis">Pendente</span></td>
+                    <td><span class="text-body-tertiary">Sem prazo</span></td>
+                    <td class="text-end text-nowrap"><button class="btn btn-sm btn-outline-success" type="button" title="Concluir"><i class="bi bi-check-lg"></i></button>
+                        <a class="btn btn-sm btn-outline-secondary" href="tarefa-form.html" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-danger" href="tarefa-excluir.html" title="Excluir"><i class="bi bi-trash"></i></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <span class="small text-body-secondary">Mostrando 1–10 de 21 tarefas</span>
+            <nav aria-label="Paginação">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+                    <li class="page-item active" aria-current="page"><span class="page-link">1</span></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Próxima</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <aside class="nota-prototipo">
+        <strong><i class="bi bi-info-circle me-1"></i>Notas do protótipo</strong>
+        <ul>
+            <li>Rota: <code>GET /tarefas?q=&amp;status=&amp;prioridade=&amp;categoria=&amp;ordem=&amp;pagina=</code>, 10 tarefas por página.</li>
+            <li>Lista só as tarefas do usuário logado. Abrir o id de uma tarefa de outra pessoa responde 404.</li>
+            <li>O botão <i class="bi bi-check-lg"></i> envia <code>POST /tarefas/{id}/concluir</code> e muda a tarefa para o status marcado como “finaliza a tarefa”.</li>
+            <li>Atrasada: vencimento antes de hoje e status que não finaliza a tarefa.</li>
+        </ul>
+    </aside>
+</main>
+</body>
+</html>

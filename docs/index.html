@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Protótipos de tela · Gerenciador de Tarefas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/prototipo.css">
+</head>
+<body>
+<main class="container py-5" style="max-width: 980px">
+    <p class="text-primary fw-semibold mb-1"><i class="bi bi-check2-square me-1"></i>Gerenciador de Tarefas Web</p>
+    <h1 class="h2">Protótipos de tela</h1>
+    <p class="lead text-body-secondary">Spring MVC · Thymeleaf · Spring Data JPA · PostgreSQL</p>
+    <p>Telas navegáveis com dados fictícios: os botões e links levam às telas relacionadas. A usuária de exemplo
+        (Ana Souza) é administradora, por isso o menu também mostra a área <strong>Admin</strong>. Cada tela tem, no
+        rodapé, uma nota com a rota prevista no Spring MVC e as regras que ela segue.</p>
+    <div class="card mt-4">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead><tr><th>Tela</th><th>Rota (Spring MVC)</th><th>Acesso</th></tr></thead>
+                <tbody>
+                <tr class="table-light"><th colspan="3">Acesso</th></tr>
+                <tr><td><a href="login.html">Login</a></td><td><code>/login</code></td><td>Todos</td></tr>
+                <tr><td><a href="criar-conta.html">Criar conta</a></td><td><code>/cadastro</code></td><td>Visitante</td></tr>
+                <tr class="table-light"><th colspan="3">Tarefas</th></tr>
+                <tr><td><a href="tarefas.html">Listagem de tarefas (filtros e paginação)</a></td><td><code>/tarefas</code></td><td>Usuário</td></tr>
+                <tr><td><a href="tarefa-form.html">Cadastro / edição de tarefa</a></td><td><code>/tarefas/nova · /tarefas/{id}/editar</code></td><td>Usuário</td></tr>
+                <tr><td><a href="tarefa-excluir.html">Exclusão de tarefa</a></td><td><code>/tarefas/{id}/excluir</code></td><td>Usuário</td></tr>
+                <tr class="table-light"><th colspan="3">Categorias</th></tr>
+                <tr><td><a href="categorias.html">Listagem de categorias</a></td><td><code>/categorias</code></td><td>Usuário</td></tr>
+                <tr><td><a href="categoria-form.html">Cadastro / edição de categoria</a></td><td><code>/categorias/nova · /categorias/{id}/editar</code></td><td>Usuário</td></tr>
+                <tr><td><a href="categoria-excluir.html">Exclusão de categoria</a></td><td><code>/categorias/{id}/excluir</code></td><td>Usuário</td></tr>
+                <tr class="table-light"><th colspan="3">Administração</th></tr>
+                <tr><td><a href="usuarios.html">Listagem de usuários</a></td><td><code>/admin/usuarios</code></td><td>Admin</td></tr>
+                <tr><td><a href="usuario-form.html">Cadastro / edição de usuário</a></td><td><code>/admin/usuarios/novo · /admin/usuarios/{id}/editar</code></td><td>Admin</td></tr>
+                <tr><td><a href="usuario-excluir.html">Exclusão de usuário</a></td><td><code>/admin/usuarios/{id}/excluir</code></td><td>Admin</td></tr>
+                <tr><td><a href="status.html">Listagem de status</a></td><td><code>/admin/status</code></td><td>Admin</td></tr>
+                <tr><td><a href="status-form.html">Cadastro / edição de status</a></td><td><code>/admin/status/novo · /admin/status/{id}/editar</code></td><td>Admin</td></tr>
+                <tr><td><a href="status-excluir.html">Exclusão de status</a></td><td><code>/admin/status/{id}/excluir</code></td><td>Admin</td></tr>
+                <tr><td><a href="prioridades.html">Listagem de prioridades</a></td><td><code>/admin/prioridades</code></td><td>Admin</td></tr>
+                <tr><td><a href="prioridade-form.html">Cadastro / edição de prioridade</a></td><td><code>/admin/prioridades/nova · /admin/prioridades/{id}/editar</code></td><td>Admin</td></tr>
+                <tr><td><a href="prioridade-excluir.html">Exclusão de prioridade</a></td><td><code>/admin/prioridades/{id}/excluir</code></td><td>Admin</td></tr>
+                <tr class="table-light"><th colspan="3">Conta</th></tr>
+                <tr><td><a href="perfil.html">Meu perfil (editar dados, trocar senha, excluir conta)</a></td><td><code>/perfil</code></td><td>Usuário</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <p class="small text-body-secondary mt-4">Diagrama de classes, MER e descrição do sistema no
+        <a href="https://github.com/GUILHERMEKARNOPP/GerenciadorTarefas_SpringWeb">README do repositório</a>.</p>
+</main>
+</body>
+</html>

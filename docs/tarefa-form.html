@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Editar tarefa · Gerenciador de Tarefas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/prototipo.css">
+</head>
+<body>
+<div class="faixa-prototipo">Protótipo navegável · dados fictícios · <a href="index.html">ver todas as telas</a></div>
+<nav class="navbar navbar-expand barra-app" data-bs-theme="dark">
+    <div class="container flex-wrap">
+        <a class="navbar-brand fw-semibold" href="tarefas.html"><i class="bi bi-check2-square me-1"></i>Gerenciador de Tarefas</a>
+        <ul class="navbar-nav flex-wrap me-auto">
+            <li class="nav-item"><a class="nav-link active" href="tarefas.html"><i class="bi bi-list-check me-1"></i>Tarefas</a></li>
+            <li class="nav-item"><a class="nav-link" href="categorias.html"><i class="bi bi-tags me-1"></i>Categorias</a></li>
+            <li class="nav-item d-flex align-items-center"><span class="rotulo-admin">Admin</span></li>
+            <li class="nav-item"><a class="nav-link" href="usuarios.html"><i class="bi bi-people me-1"></i>Usuários</a></li>
+            <li class="nav-item"><a class="nav-link" href="status.html"><i class="bi bi-flag me-1"></i>Status</a></li>
+            <li class="nav-item"><a class="nav-link" href="prioridades.html"><i class="bi bi-bar-chart-steps me-1"></i>Prioridades</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+            <a class="nav-link" href="perfil.html"><i class="bi bi-person-circle me-1"></i>Ana Souza</a>
+            <a class="btn btn-sm btn-outline-light" href="login.html"><i class="bi bi-box-arrow-right me-1"></i>Sair</a>
+        </div>
+    </div>
+</nav>
+<main class="container py-4">
+    <nav aria-label="Trilha">
+        <ol class="breadcrumb small mb-2">
+            <li class="breadcrumb-item"><a href="tarefas.html">Tarefas</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Editar tarefa</li>
+        </ol>
+    </nav>
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+        <div>
+            <h1 class="h3 mb-1">Editar tarefa</h1>
+            <p class="text-body-secondary mb-0">Altere os dados e clique em Salvar. A mesma tela é usada para cadastrar uma tarefa nova.</p>
+        </div>
+
+    </div>
+    <form class="card" action="tarefas.html">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label" for="titulo">Título <span class="text-danger">*</span></label>
+                    <input class="form-control" id="titulo" name="titulo" type="text" value="Entregar protótipos do sistema web" maxlength="150">
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="descricao">Descrição</label>
+                    <textarea class="form-control" id="descricao" name="descricao" rows="4">1ª etapa: telas, diagrama de classes e MER</textarea>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label" for="categoria">Categoria</label>
+                    <select class="form-select" id="categoria" name="categoria"><option>Sem categoria</option><option selected>Faculdade</option><option>Trabalho</option><option>Pessoal</option><option>Estudos</option></select>
+                    <div class="form-text"><a href="categoria-form.html">Criar categoria</a></div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label" for="prioridade">Prioridade <span class="text-danger">*</span></label>
+                    <select class="form-select" id="prioridade" name="prioridade"><option selected>Alta</option><option>Média</option><option>Baixa</option></select>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label" for="status">Status <span class="text-danger">*</span></label>
+                    <select class="form-select" id="status" name="status"><option>Pendente</option><option selected>Em andamento</option><option>Concluída</option></select>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label" for="dataVencimento">Data de vencimento</label>
+                    <input class="form-control" id="dataVencimento" name="dataVencimento" type="date" value="2026-10-24">
+                    <div class="form-text">Opcional.</div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <span class="small text-body-secondary"><i class="bi bi-clock-history me-1"></i>Criada em 14/10/2026 às 09:12</span>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary" href="tarefas.html">Cancelar</a>
+                <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Salvar</button>
+            </div>
+        </div>
+    </form>
+    <aside class="nota-prototipo">
+        <strong><i class="bi bi-info-circle me-1"></i>Notas do protótipo</strong>
+        <ul>
+            <li>Rotas: <code>GET /tarefas/nova</code>, <code>GET /tarefas/{id}/editar</code> e <code>POST /tarefas</code> (salvar).</li>
+            <li>Título obrigatório (até 150 caracteres); prioridade e status obrigatórios; categoria e vencimento opcionais.</li>
+            <li>A lista de categorias mostra só as do usuário logado. O dono da tarefa vem da sessão, nunca do formulário.</li>
+        </ul>
+    </aside>
+</main>
+</body>
+</html>

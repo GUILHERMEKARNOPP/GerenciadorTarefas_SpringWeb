@@ -1,0 +1,16 @@
+# Maven / build
+target/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# Segredos e configuração local (senha do banco etc.)
+.env
+application-local.properties
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log
