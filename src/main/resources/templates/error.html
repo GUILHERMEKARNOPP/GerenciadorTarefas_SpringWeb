@@ -18,6 +18,14 @@
             <h1 class="h4 mt-2">Requisição inválida</h1>
             <p class="text-body-secondary">Algum dado enviado não está no formato esperado.</p>
         </th:block>
+        <th:block th:case="413">
+            <h1 class="h4 mt-2">Conteúdo grande demais</h1>
+            <p class="text-body-secondary">O formulário enviado passou do tamanho permitido. Encurte o texto e tente de novo.</p>
+        </th:block>
+        <th:block th:case="429">
+            <h1 class="h4 mt-2">Muitas tentativas seguidas</h1>
+            <p class="text-body-secondary">Por segurança, aguarde alguns minutos antes de tentar de novo.</p>
+        </th:block>
         <th:block th:case="*">
             <h1 class="h4 mt-2">Algo deu errado</h1>
             <p class="text-body-secondary">Não foi possível concluir a operação. Tente novamente em instantes.</p>

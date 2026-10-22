@@ -9,8 +9,11 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+
+import java.time.Clock;
 
 @Configuration
 public class SecurityConfig {
@@ -42,7 +45,8 @@ public class SecurityConfig {
                         .expiredUrl("/login?expirada")))
                 .headers(cabecalhos -> cabecalhos
                         .contentSecurityPolicy(csp -> csp.policyDirectives(CSP))
-                        .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN)));
+                        .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN)))
+                .addFilterBefore(new LimiteTentativasFilter(Clock.systemUTC()), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

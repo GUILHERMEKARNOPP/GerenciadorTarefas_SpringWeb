@@ -1,0 +1,12 @@
+target/
+docs/
+banco/
+.git/
+.idea/
+.vscode/
+.mvn/
+mvnw
+mvnw.cmd
+*.md
+*.ps1
+.env

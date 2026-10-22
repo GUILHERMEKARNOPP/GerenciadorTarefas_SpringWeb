@@ -51,7 +51,7 @@ public class AcessoController {
             try {
                 Usuario usuario = contaService.cadastrar(form);
                 redirect.addFlashAttribute("sucesso", usuario.isAdmin()
-                        ? "Conta criada! Por ser a primeira conta do sistema, ela é de administrador. Entre com seu usuário e senha."
+                        ? "Conta de administrador criada! Entre com seu usuário e senha."
                         : "Conta criada! Entre com seu usuário e senha.");
                 return "redirect:/login";
             } catch (RegraNegocioException e) {

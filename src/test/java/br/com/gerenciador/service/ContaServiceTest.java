@@ -41,8 +41,12 @@ class ContaServiceTest {
 
     @BeforeEach
     void criarServico() {
-        contaService = new ContaService(usuarioRepository, tarefaRepository, categoriaRepository,
-                new CadastroUsuarios(usuarioRepository), passwordEncoder);
+        contaService = servico("");
+    }
+
+    private ContaService servico(String loginAdministrador) {
+        return new ContaService(usuarioRepository, tarefaRepository, categoriaRepository,
+                new CadastroUsuarios(usuarioRepository), passwordEncoder, loginAdministrador);
     }
 
     @Test
@@ -62,6 +66,17 @@ class ContaServiceTest {
         when(usuarioRepository.saveAndFlush(any())).thenAnswer(chamada -> chamada.getArgument(0));
 
         assertThat(contaService.cadastrar(cadastro("bruno")).getPerfil()).isEqualTo(Perfil.USUARIO);
+    }
+
+    @Test
+    void comLoginAdministradorConfiguradoSoEleViraAdmin() {
+        ContaService producao = servico("Guilherme");
+        when(usuarioRepository.saveAndFlush(any())).thenAnswer(chamada -> chamada.getArgument(0));
+
+        // Quem chega primeiro não ganha o sistema: o perfil depende só do login configurado.
+        assertThat(producao.cadastrar(cadastro("intruso")).getPerfil()).isEqualTo(Perfil.USUARIO);
+        assertThat(producao.cadastrar(cadastro("guilherme")).getPerfil()).isEqualTo(Perfil.ADMIN);
+        verify(usuarioRepository, never()).count();
     }
 
     @Test

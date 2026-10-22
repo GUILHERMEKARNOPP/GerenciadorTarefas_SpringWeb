@@ -1,0 +1,20 @@
+# Publicação no Render (Blueprint): o Render lê este arquivo, monta o sistema pelo Dockerfile e publica de
+# novo a cada push na branch main. As variáveis com "sync: false" são preenchidas no painel do Render,
+# então senhas e endereços do banco nunca ficam no repositório.
+services:
+  - type: web
+    name: gerenciador-tarefas
+    runtime: docker
+    plan: free
+    # Região mais próxima do Brasil entre as do Render; crie o banco no Neon em AWS US East (N. Virginia).
+    region: virginia
+    healthCheckPath: /login
+    envVars:
+      - key: WEB_DB_URL
+        sync: false
+      - key: WEB_DB_USER
+        sync: false
+      - key: WEB_DB_PASSWORD
+        sync: false
+      - key: ADMIN_LOGIN
+        sync: false

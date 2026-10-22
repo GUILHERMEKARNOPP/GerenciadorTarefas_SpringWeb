@@ -8,6 +8,7 @@ import br.com.gerenciador.model.Usuario;
 import br.com.gerenciador.repository.CategoriaRepository;
 import br.com.gerenciador.repository.TarefaRepository;
 import br.com.gerenciador.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,15 +26,18 @@ public class ContaService {
     private final CategoriaRepository categoriaRepository;
     private final CadastroUsuarios cadastroUsuarios;
     private final PasswordEncoder passwordEncoder;
+    private final String loginAdministrador;
 
+    /** @param loginAdministrador login que vira ADMIN ao criar a conta (app.admin.login), ou vazio. */
     public ContaService(UsuarioRepository usuarioRepository, TarefaRepository tarefaRepository,
                         CategoriaRepository categoriaRepository, CadastroUsuarios cadastroUsuarios,
-                        PasswordEncoder passwordEncoder) {
+                        PasswordEncoder passwordEncoder, @Value("${app.admin.login:}") String loginAdministrador) {
         this.usuarioRepository = usuarioRepository;
         this.tarefaRepository = tarefaRepository;
         this.categoriaRepository = categoriaRepository;
         this.cadastroUsuarios = cadastroUsuarios;
         this.passwordEncoder = passwordEncoder;
+        this.loginAdministrador = loginAdministrador.strip();
     }
 
     public Usuario buscar(Long id) {
@@ -48,16 +52,27 @@ public class ContaService {
         return categoriaRepository.countByUsuarioId(id);
     }
 
-    /** A primeira conta criada no sistema vira administradora; as demais são usuários comuns. */
     @Transactional
     public Usuario cadastrar(CadastroForm form) {
         String login = form.getLogin().strip();
         String email = form.getEmail().strip();
         PoliticaSenha.validar(form.getSenha(), form.getConfirmacaoSenha(), login);
         cadastroUsuarios.verificarDisponivel(login, email, null);
-        Perfil perfil = usuarioRepository.count() == 0 ? Perfil.ADMIN : Perfil.USUARIO;
-        Usuario usuario = new Usuario(form.getNome().strip(), email, login, passwordEncoder.encode(form.getSenha()), perfil);
+        Usuario usuario = new Usuario(form.getNome().strip(), email, login, passwordEncoder.encode(form.getSenha()),
+                perfilDaNovaConta(login));
         return cadastroUsuarios.salvar(usuario);
+    }
+
+    /**
+     * Com app.admin.login configurado (obrigatório em produção), só esse login vira ADMIN: na internet, quem
+     * criasse a primeira conta antes do dono ganharia o sistema. Sem configuração (uso local), a primeira conta
+     * criada vira ADMIN.
+     */
+    private Perfil perfilDaNovaConta(String login) {
+        if (!loginAdministrador.isEmpty()) {
+            return login.equalsIgnoreCase(loginAdministrador) ? Perfil.ADMIN : Perfil.USUARIO;
+        }
+        return usuarioRepository.count() == 0 ? Perfil.ADMIN : Perfil.USUARIO;
     }
 
     @Transactional
