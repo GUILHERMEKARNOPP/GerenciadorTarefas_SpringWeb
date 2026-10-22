@@ -1,25 +1,38 @@
 package br.com.gerenciador;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 
 @SpringBootApplication
 public class GerenciadorTarefasWebApplication {
 
-    /** Variáveis sem as quais o sistema não roda em produção (preenchidas no painel do Render). */
-    private static final String[] VARIAVEIS_DE_PRODUCAO = {"WEB_DB_URL", "WEB_DB_USER", "WEB_DB_PASSWORD", "ADMIN_LOGIN"};
+    private static final Logger LOG = LoggerFactory.getLogger(GerenciadorTarefasWebApplication.class);
 
     public static void main(String[] args) {
         SpringApplication aplicacao = new SpringApplication(GerenciadorTarefasWebApplication.class);
-        // Em produção, falta de configuração para o sistema logo no início, com o nome de cada variável que falta.
         aplicacao.addInitializers(contexto -> {
             ConfigurableEnvironment ambiente = contexto.getEnvironment();
             if (ambiente.matchesProfiles("prod")) {
-                ambiente.setRequiredProperties(VARIAVEIS_DE_PRODUCAO);
-                ambiente.validateRequiredProperties();
+                configurarProducao(ambiente);
             }
         });
         aplicacao.run(args);
+    }
+
+    /**
+     * Lê as variáveis do painel do Render antes de qualquer coisa: se faltar ou estiver errada alguma, o sistema
+     * para logo no início explicando o problema, em vez de falhar mais adiante com um erro difícil de entender.
+     */
+    private static void configurarProducao(ConfigurableEnvironment ambiente) {
+        ambiente.setRequiredProperties("WEB_DB_URL", "ADMIN_LOGIN");
+        ambiente.validateRequiredProperties();
+        EnderecoBanco banco = EnderecoBanco.de(ambiente.getProperty("WEB_DB_URL"),
+                ambiente.getProperty("WEB_DB_USER"), ambiente.getProperty("WEB_DB_PASSWORD"));
+        ambiente.getPropertySources().addFirst(new MapPropertySource("enderecoBanco", banco.comoPropriedades()));
+        LOG.info("Banco de dados: {}", banco.paraLog());
     }
 }

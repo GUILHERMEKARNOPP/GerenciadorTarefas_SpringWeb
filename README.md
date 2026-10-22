@@ -343,24 +343,24 @@ O sistema roda no [Render](https://render.com) (servidor Java, a partir do `Dock
 arquivos fixos, como os protótipos, e não roda Java nem banco de dados.
 
 **1. Banco no Neon.** Entre com a conta do GitHub, crie um projeto na região **AWS US East 1 (N. Virginia)**, a mesma
-região do servidor no Render, e abra **Connect**. Desligue a opção *Connection pooling*: o sistema já tem o próprio
-pool de conexões e o Flyway precisa de conexão direta. A conexão aparece assim:
+região do servidor no Render, e abra **Connect**. Copie o endereço de conexão, que tem este formato:
 
 ```
 postgresql://USUARIO:SENHA@ep-exemplo-123.us-east-1.aws.neon.tech/neondb?sslmode=require
 ```
 
-Separe em três valores para o Render:
-
-| Variável          | Valor                                                                       |
-|-------------------|-----------------------------------------------------------------------------|
-| `WEB_DB_URL`      | `jdbc:postgresql://ep-exemplo-123.us-east-1.aws.neon.tech/neondb?sslmode=require` |
-| `WEB_DB_USER`     | o `USUARIO` da conexão                                                      |
-| `WEB_DB_PASSWORD` | a `SENHA` da conexão                                                        |
-
 **2. Sistema no Render.** Entre com a conta do GitHub e escolha **New → Blueprint**. Selecione este repositório: o
-Render lê o [`render.yaml`](render.yaml) e pede as variáveis. Preencha as três do banco e também `ADMIN_LOGIN`, com o
-usuário que vai ser o administrador (por exemplo `guilherme`). A primeira publicação leva alguns minutos.
+Render lê o [`render.yaml`](render.yaml) e pede as variáveis:
+
+| Variável                          | Valor                                                                          |
+|-----------------------------------|--------------------------------------------------------------------------------|
+| `WEB_DB_URL`                      | o endereço do Neon, colado do jeito que ele aparece                            |
+| `WEB_DB_USER` e `WEB_DB_PASSWORD` | o `USUARIO` e a `SENHA` do endereço (só são usados se o endereço vier sem eles) |
+| `ADMIN_LOGIN`                     | o usuário que vai ser o administrador, por exemplo `guilherme`                 |
+
+O sistema converte sozinho o endereço do Neon para o formato JDBC. Também usa a conexão direta mesmo que o endereço
+venha com `-pooler`: o sistema já tem o próprio pool de conexões e o Flyway precisa de conexão direta. Se algo estiver
+faltando ou errado, o log do Render diz o que corrigir. A primeira publicação leva alguns minutos.
 
 **3. Crie a conta de administrador.** Abra o endereço que o Render mostrar (algo como
 `https://gerenciador-tarefas.onrender.com`) e crie a conta usando o mesmo login de `ADMIN_LOGIN`. Só esse login vira
