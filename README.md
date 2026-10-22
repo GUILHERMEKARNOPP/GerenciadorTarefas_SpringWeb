@@ -388,10 +388,10 @@ src/main/resources/
 .\mvnw.cmd test
 ```
 
-São 41 testes:
+Os testes cobrem:
 
-- **Unitários:** regras de senha, tarefa atrasada e conclusão, status finalizador, cadastro de contas e regras do
-  administrador.
+- **Unitários:** regras de senha, validação de e-mail (inclusive contra entradas feitas para travar o servidor),
+  tarefa atrasada e conclusão, status finalizador, cadastro de contas e regras do administrador.
 - **Segurança da web:** login obrigatório, área admin só para ADMIN, token CSRF e dono vindo da sessão.
 - **Banco de dados:** rodam num PostgreSQL de verdade criado pelo Testcontainers, e conferem as migrações, os filtros
   de busca, as chaves estrangeiras e o bloqueio de login. Precisam do Docker aberto; sem ele, são pulados.
@@ -406,6 +406,8 @@ São 41 testes:
 - Trocar a senha encerra as outras sessões abertas da conta. Mudar o perfil ou excluir um usuário encerra as sessões
   dele.
 - Cabeçalhos de segurança (Content-Security-Policy, X-Frame-Options e outros) e páginas de erro sem detalhes técnicos.
+- Validações que não travam com entradas gigantes ou maliciosas: expressões regulares lineares e formulários limitados
+  a 64 KB.
 
 ---
 
