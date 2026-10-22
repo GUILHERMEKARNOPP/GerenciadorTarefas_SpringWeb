@@ -13,9 +13,11 @@ public class DadosPessoaisForm {
     @Pattern(regexp = "[^\\p{Cntrl}]*", message = "O nome contém caracteres inválidos.")
     private String nome;
 
+    // Cada pedaço entre pontos não contém ponto: só existe um jeito de casar o texto, então a validação é
+    // linear. A versão ambígua ([^@\s]+\.[^@\s]+) levava dezenas de segundos com "a@.....@" (ReDoS).
     @NotBlank(message = "Informe o e-mail.")
     @Size(max = 150, message = "O e-mail pode ter no máximo 150 caracteres.")
-    @Pattern(regexp = "^\\s*[^@\\s]+@[^@\\s]+\\.[^@\\s]+\\s*$", message = "Informe um e-mail válido.")
+    @Pattern(regexp = "^\\s*[^@\\s.]+(\\.[^@\\s.]+)*@[^@\\s.]+(\\.[^@\\s.]+)+\\s*$", message = "Informe um e-mail válido.")
     private String email;
 
     public static DadosPessoaisForm de(Usuario usuario) {
