@@ -4,14 +4,14 @@ Sistema web para organizar tarefas, feito com **Spring MVC**, **Thymeleaf** e **
 banco **PostgreSQL**. É a versão web do [Gerenciador de Tarefas desktop em Java Swing](https://github.com/MarcosJr62/GerenciadorTarefas_JavaSwing),
 desenvolvido antes pelo grupo, e reaproveita o modelo de dados e as regras de negócio daquele projeto.
 
-> 🚀 **[Abrir o sistema](https://gerenciador-tarefas-xwvz.onrender.com)**: crie sua conta e use. No plano gratuito,
+> **[Abrir o sistema](https://gerenciador-tarefas-xwvz.onrender.com)**: crie sua conta e use. No plano gratuito,
 > o primeiro acesso depois de um tempo parado pode levar cerca de 1 minuto.
 >
 > **1ª etapa:** tema, protótipos de tela, diagrama de classes e MER (este README).
 > **Sistema:** implementado e publicado. Veja as [telas do sistema](#telas-do-sistema), como
 > [publicar na internet](#publicar-na-internet-render--neon) e como [rodar no seu computador](#como-executar-no-seu-computador).
 >
-> 🔗 **[Abrir os protótipos de tela](https://guilhermekarnopp.github.io/GerenciadorTarefas_SpringWeb/)**
+> **[Abrir os protótipos de tela](https://guilhermekarnopp.github.io/GerenciadorTarefas_SpringWeb/)**
 
 ---
 
@@ -70,7 +70,7 @@ O sistema manipula **5 tabelas**, e todas têm telas de cadastro, edição, excl
 
 ## Protótipos de tela
 
-🔗 **[Abrir os protótipos navegáveis](https://guilhermekarnopp.github.io/GerenciadorTarefas_SpringWeb/)**
+**[Abrir os protótipos navegáveis](https://guilhermekarnopp.github.io/GerenciadorTarefas_SpringWeb/)**
 (código em [`docs/`](docs/))
 
 Os protótipos são páginas HTML com Bootstrap e dados fictícios, publicadas pelo GitHub Pages. Dá para navegar entre
