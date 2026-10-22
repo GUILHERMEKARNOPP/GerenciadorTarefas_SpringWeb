@@ -94,3 +94,45 @@ body {
 .cartao-confirmacao {
     max-width: 640px;
 }
+
+/* No celular, cada tarefa vira um cartão: nada fica escondido à direita da tabela. */
+@media (max-width: 767.98px) {
+    .tabela-tarefas thead {
+        display: none;
+    }
+
+    .tabela-tarefas tbody tr {
+        border-bottom: 1px solid var(--app-borda);
+        display: block;
+        padding: .75rem 0;
+    }
+
+    .tabela-tarefas tbody td {
+        border: 0;
+        display: block;
+        padding: .2rem .9rem;
+    }
+
+    .tabela-tarefas tbody td[data-rotulo],
+    .tabela-tarefas tbody td.acoes-tarefa {
+        align-items: center;
+        display: flex;
+        gap: .5rem;
+    }
+
+    .tabela-tarefas tbody td[data-rotulo]::before {
+        color: #64748b;
+        content: attr(data-rotulo);
+        flex: 0 0 6.5rem;
+        font-size: .8125rem;
+    }
+
+    .tabela-tarefas tbody td.acoes-tarefa {
+        padding-top: .6rem;
+    }
+
+    .tabela-tarefas .texto-curto {
+        max-width: none;
+        white-space: normal;
+    }
+}

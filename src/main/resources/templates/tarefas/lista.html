@@ -81,7 +81,7 @@
 
     <div class="card">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle mb-0 tabela-tarefas">
                 <thead class="table-light">
                 <tr>
                     <th>Tarefa</th>
@@ -103,16 +103,16 @@
                         <div class="fw-semibold titulo-tarefa" th:text="${t.titulo}">Título</div>
                         <div class="small text-body-secondary texto-curto" th:if="${t.descricao != null}" th:text="${t.descricao}">Descrição</div>
                     </td>
-                    <td>
+                    <td data-rotulo="Categoria">
                         <span th:if="${t.categoria != null}" th:text="${t.categoria.nome}">Categoria</span>
                         <span th:unless="${t.categoria != null}" class="text-body-tertiary">Sem categoria</span>
                     </td>
-                    <td><span class="badge" th:style="|background-color: ${t.prioridade.cor}|" th:text="${t.prioridade.nome}">Prioridade</span></td>
-                    <td>
+                    <td data-rotulo="Prioridade"><span class="badge" th:style="|background-color: ${t.prioridade.cor}|" th:text="${t.prioridade.nome}">Prioridade</span></td>
+                    <td data-rotulo="Status">
                         <span class="badge" th:text="${t.status.nome}"
                               th:classappend="${t.estaConcluida()} ? 'bg-success-subtle text-success-emphasis' : 'bg-secondary-subtle text-secondary-emphasis'">Status</span>
                     </td>
-                    <td class="text-nowrap">
+                    <td class="text-nowrap" data-rotulo="Vencimento">
                         <span th:if="${t.dataVencimento == null}" class="text-body-tertiary">Sem prazo</span>
                         <th:block th:if="${t.estaAtrasada(hoje)}">
                             <span class="text-danger fw-semibold" th:text="${@formato.data(t.dataVencimento)}">00/00/0000</span>
@@ -120,7 +120,7 @@
                         </th:block>
                         <span th:if="${t.dataVencimento != null and !t.estaAtrasada(hoje)}" th:text="${@formato.data(t.dataVencimento)}">00/00/0000</span>
                     </td>
-                    <td class="text-end text-nowrap">
+                    <td class="text-end text-nowrap acoes-tarefa">
                         <!-- Concluir é POST; os campos ocultos levam os filtros para voltar à mesma lista. -->
                         <form class="d-inline" th:action="@{/tarefas/{id}/concluir(id=${t.id})}" method="post">
                             <input type="hidden" th:each="parametro : ${filtro.comoParametros()}" th:name="${parametro.key}" th:value="${parametro.value}">
