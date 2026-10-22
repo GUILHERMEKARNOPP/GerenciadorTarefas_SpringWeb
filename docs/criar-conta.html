@@ -38,7 +38,7 @@
                     <label class="form-label" for="senha">Senha <span class="text-danger">*</span></label>
                     <input class="form-control is-invalid" id="senha" name="senha" type="password" value="senhafraca" autocomplete="new-password">
                     <div class="invalid-feedback">A senha deve ter pelo menos uma letra e um número.</div>
-                    <div class="form-text">8 a 128 caracteres, com letras e números.</div>
+                    <div class="form-text">8 a 64 caracteres, com letras e números.</div>
                 </div>
                 <div class="col-12">
                     <label class="form-label" for="confirmacaoSenha">Confirmar senha <span class="text-danger">*</span></label>
@@ -52,7 +52,7 @@
     <aside class="nota-prototipo">
         <strong><i class="bi bi-info-circle me-1"></i>Notas do protótipo</strong>
         <ul>
-            <li>Rota: <code>GET /cadastro</code> e <code>POST /cadastro</code>. Toda conta nova recebe o perfil USUARIO.</li>
+            <li>Rota: <code>GET /cadastro</code> e <code>POST /cadastro</code>. A primeira conta do sistema vira ADMIN; as demais recebem o perfil USUARIO.</li>
             <li>Exemplo de erro de validação: as mesmas regras são conferidas no servidor (Bean Validation), não só no navegador.</li>
             <li>Login e e-mail são únicos, sem diferenciar maiúsculas de minúsculas.</li>
         </ul>

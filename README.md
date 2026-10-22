@@ -4,7 +4,8 @@ Sistema web para organizar tarefas, feito com **Spring MVC**, **Thymeleaf** e **
 banco **PostgreSQL**. É a versão web do [Gerenciador de Tarefas desktop em Java Swing](https://github.com/MarcosJr62/GerenciadorTarefas_JavaSwing),
 desenvolvido antes pelo grupo, e reaproveita o modelo de dados e as regras de negócio daquele projeto.
 
-> **Etapa atual: 1ª etapa.** Tema, protótipos de tela, diagrama de classes e MER.
+> **1ª etapa:** tema, protótipos de tela, diagrama de classes e MER (este README).
+> **Sistema:** implementado e funcionando. Veja as [telas do sistema](#telas-do-sistema) e [como executar](#como-executar).
 >
 > 🔗 **[Abrir os protótipos de tela](https://guilhermekarnopp.github.io/GerenciadorTarefas_SpringWeb/)**
 
@@ -53,12 +54,13 @@ O sistema manipula **5 tabelas**, e todas têm telas de cadastro, edição, excl
 
 ## Tecnologias
 
-- Java 21 ou superior e Maven
-- Spring Boot com **Spring MVC**, **Thymeleaf** e **Spring Data JPA**
+- Java 21 ou superior e Maven (o projeto traz o Maven Wrapper, não precisa instalar)
+- Spring Boot 4 com **Spring MVC**, **Thymeleaf** e **Spring Data JPA**
 - Spring Security para login, perfis de acesso e proteção CSRF dos formulários
 - Bean Validation para validar os formulários no servidor
-- PostgreSQL
-- Bootstrap 5 e Bootstrap Icons nas telas
+- PostgreSQL, com as tabelas criadas pelo Flyway
+- Bootstrap 5 e Bootstrap Icons nas telas, servidos pelo próprio sistema (WebJars)
+- JUnit, Mockito e Testcontainers nos testes
 
 ---
 
@@ -174,9 +176,9 @@ classDiagram
         -int tentativasFalhas
         -OffsetDateTime bloqueadoAte
         -OffsetDateTime dataCriacao
-        +isBloqueado() boolean
-        +registrarFalhaLogin()
-        +registrarLoginComSucesso()
+        +estaBloqueado(OffsetDateTime agora) boolean
+        +desbloquear()
+        +isAdmin() boolean
     }
 
     class Perfil {
@@ -196,7 +198,8 @@ classDiagram
         -Status status
         -Prioridade prioridade
         +concluir(Status statusFinal)
-        +isAtrasada() boolean
+        +estaConcluida() boolean
+        +estaAtrasada(LocalDate hoje) boolean
     }
 
     class Categoria {
@@ -228,11 +231,12 @@ classDiagram
 ```
 
 - **Usuario** guarda apenas o hash da senha (BCrypt, pelo `PasswordEncoder` do Spring Security), nunca a senha.
-  `tentativasFalhas` e `bloqueadoAte` bloqueiam o login por 5 minutos depois de 5 senhas erradas seguidas.
+  `tentativasFalhas` e `bloqueadoAte` bloqueiam o login por 5 minutos depois de 5 senhas erradas seguidas
+  (a contagem é feita com um `UPDATE` atômico no `UsuarioRepository`).
 - **Tarefa** e **Categoria** são compostas pelo **Usuario**: pertencem a um único usuário e são apagadas junto com ele.
 - **Tarefa** aponta para **Categoria**, **Status** e **Prioridade** (`@ManyToOne`). A categoria é opcional.
 - `Tarefa.concluir(...)` troca o status pelo status que tem `finaliza = true`.
-  `Tarefa.isAtrasada()` é verdadeiro quando o vencimento já passou e o status ainda não finaliza a tarefa.
+  `Tarefa.estaAtrasada(hoje)` é verdadeiro quando o vencimento já passou e o status ainda não finaliza a tarefa.
 - **Prioridade.nivel** define a ordem de urgência (1 = mais urgente), e **Prioridade.cor** é a cor do selo na tela.
 
 ## Modelo Entidade-Relacionamento (MER)
@@ -274,7 +278,7 @@ erDiagram
         bigint id PK
         varchar(30) nome UK "NOT NULL"
         integer nivel UK "NOT NULL, 1 = mais urgente"
-        char(7) cor "NOT NULL, #RRGGBB"
+        varchar(7) cor "NOT NULL, #RRGGBB"
     }
 
     TAREFA {
@@ -296,7 +300,7 @@ erDiagram
 |------------------------|---------------|-------------------------------------------------------------|
 | USUARIO → TAREFA       | 1 : N         | As tarefas do usuário são apagadas (`ON DELETE CASCADE`)    |
 | USUARIO → CATEGORIA    | 1 : N         | As categorias do usuário são apagadas (`ON DELETE CASCADE`) |
-| CATEGORIA → TAREFA     | 0..1 : N      | As tarefas ficam sem categoria (`ON DELETE SET NULL`)       |
+| CATEGORIA → TAREFA     | 0..1 : N      | As tarefas ficam sem categoria (`ON DELETE SET NULL (categoria_id)`) |
 | STATUS → TAREFA        | 1 : N         | Não permite excluir status em uso (`ON DELETE RESTRICT`)    |
 | PRIORIDADE → TAREFA    | 1 : N         | Não permite excluir prioridade em uso (`ON DELETE RESTRICT`) |
 
@@ -304,9 +308,104 @@ erDiagram
 
 - `login` e `email` são únicos sem diferenciar maiúsculas de minúsculas (índice único em `lower(...)`).
 - O nome da categoria é único **por usuário**: índice único em `(usuario_id, lower(nome))`.
+- A categoria de uma tarefa é sempre do mesmo dono da tarefa: a chave estrangeira é composta,
+  `(categoria_id, usuario_id)` → `categoria (id, usuario_id)`.
 - Só um status pode ter `finaliza = true` (índice único parcial em `finaliza WHERE finaliza`).
 - `perfil` aceita apenas `ADMIN` ou `USUARIO`, e `cor` apenas o formato `#RRGGBB` (`CHECK`).
 - Título, nome e login não podem ser só espaços (`CHECK (btrim(...) <> '')`).
+
+---
+
+## Telas do sistema
+
+O sistema implementado segue os protótipos. Abaixo, telas reais com dados de exemplo.
+
+<a href="docs/img/sistema/tarefas.png"><img src="docs/img/sistema/tarefas.png" alt="Lista de tarefas do sistema"></a>
+
+**Minhas tarefas:** os cartões contam as tarefas por status, a tabela vem do banco com filtros, ordenação e
+paginação, e as tarefas atrasadas aparecem em destaque.
+
+<table>
+<tr>
+<td width="50%"><a href="docs/img/sistema/usuarios.png"><img src="docs/img/sistema/usuarios.png" alt="Lista de usuários"></a><br><b>Usuários</b> (só para administradores)</td>
+<td width="50%"><a href="docs/img/sistema/perfil.png"><img src="docs/img/sistema/perfil.png" alt="Meu perfil"></a><br><b>Meu perfil</b></td>
+</tr>
+<tr>
+<td width="50%"><a href="docs/img/sistema/acesso-negado.png"><img src="docs/img/sistema/acesso-negado.png" alt="Acesso negado"></a><br><b>Acesso negado:</b> usuário comum tentando abrir a área de administração</td>
+<td width="50%"></td>
+</tr>
+</table>
+
+## Como executar
+
+Precisa do **JDK 21 ou superior** e do **PostgreSQL 16 ou mais novo** instalados. O Maven não precisa ser instalado:
+o projeto usa o Maven Wrapper (`mvnw`).
+
+**1. Crie o banco (só na primeira vez).** Na raiz do repositório:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File banco\setup-banco.ps1
+```
+
+O script pede a senha do usuário `postgres` (definida na instalação do PostgreSQL) e uma senha nova para o sistema.
+Ele cria o banco `gerenciador_web` e guarda a senha na variável `WEB_DB_PASSWORD` do Windows. **As tabelas não são
+criadas pelo script:** o próprio sistema cria tudo (Flyway) na primeira vez que sobe.
+
+**2. Rode o sistema:**
+
+```powershell
+powershell -ExecutionPolicy Bypass -File executar.ps1
+```
+
+Depois abra **http://localhost:8080**. Pelo IntelliJ, também dá para rodar a classe `GerenciadorTarefasWebApplication`
+(reabra o IntelliJ depois do passo 1 para ele enxergar a variável `WEB_DB_PASSWORD`).
+
+**3. Crie a primeira conta** em "Criar conta". **A primeira conta do sistema vira administradora**; as seguintes são
+de usuários comuns, e o administrador pode promover outras contas na tela Usuários.
+
+> A senha do banco nunca fica no código: o `application.properties` lê `WEB_DB_PASSWORD`. Para usar outro banco,
+> defina também `WEB_DB_URL` e `WEB_DB_USER`.
+
+## Estrutura do código
+
+```
+src/main/java/br/com/gerenciador/
+├── model/        entidades JPA (Usuario, Tarefa, Categoria, Status, Prioridade) e o enum Perfil
+├── repository/   interfaces do Spring Data JPA (consultas sempre filtradas pelo dono)
+├── dto/          objetos dos formulários e filtros, com as validações do Bean Validation
+├── service/      regras de negócio (as mesmas da versão desktop, adaptadas para a web)
+├── security/     Spring Security: login, bloqueio por tentativas, perfis e sessões
+└── controller/   controllers do Spring MVC (admin/ para a área do administrador)
+src/main/resources/
+├── db/migration/ scripts do Flyway que criam as tabelas e os dados iniciais
+├── templates/    telas Thymeleaf (feitas a partir dos protótipos de docs/)
+└── static/css/   estilo das telas
+```
+
+## Testes
+
+```powershell
+.\mvnw.cmd test
+```
+
+São 41 testes:
+
+- **Unitários:** regras de senha, tarefa atrasada e conclusão, status finalizador, cadastro de contas e regras do
+  administrador.
+- **Segurança da web:** login obrigatório, área admin só para ADMIN, token CSRF e dono vindo da sessão.
+- **Banco de dados:** rodam num PostgreSQL de verdade criado pelo Testcontainers, e conferem as migrações, os filtros
+  de busca, as chaves estrangeiras e o bloqueio de login. Precisam do Docker aberto; sem ele, são pulados.
+
+## Segurança
+
+- Senhas guardadas só como hash BCrypt. Login inexistente e senha errada mostram a mesma mensagem, e 5 erros
+  seguidos bloqueiam o login por 5 minutos. A troca de senha e a exclusão de conta também contam as tentativas.
+- Toda tarefa e categoria é buscada pelo id **e** pelo dono logado. Abrir o registro de outra pessoa responde 404, e a
+  área `/admin/**` exige o perfil ADMIN, conferido no servidor.
+- Formulários com token CSRF, exclusões só por POST, consultas parametrizadas e telas que escapam o texto (Thymeleaf).
+- Trocar a senha encerra as outras sessões abertas da conta. Mudar o perfil ou excluir um usuário encerra as sessões
+  dele.
+- Cabeçalhos de segurança (Content-Security-Policy, X-Frame-Options e outros) e páginas de erro sem detalhes técnicos.
 
 ---
 
@@ -328,4 +427,4 @@ com os ajustes necessários para um sistema web com vários usuários ao mesmo t
 ## Etapas
 
 - [x] **1ª etapa:** tema, protótipos de tela, diagrama de classes e MER
-- [ ] Implementação com Spring MVC, Thymeleaf e Spring Data JPA
+- [x] Implementação com Spring MVC, Thymeleaf e Spring Data JPA
