@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${statusId == null} ? 'Novo status' : 'Editar status')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('status')}"></nav>
+<main class="container py-4">
+    <nav aria-label="Trilha">
+        <ol class="breadcrumb small mb-2">
+            <li class="breadcrumb-item"><a th:href="@{/admin/status}">Status</a></li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${statusId == null} ? 'Novo status' : 'Editar status'">Status</li>
+        </ol>
+    </nav>
+    <div class="mb-4">
+        <h1 class="h3 mb-1" th:text="${statusId == null} ? 'Novo status' : 'Editar status'">Status</h1>
+        <p class="text-body-secondary mb-0">Defina o nome e se este status encerra a tarefa.</p>
+    </div>
+
+    <form class="card" th:object="${statusForm}" method="post"
+          th:action="${statusId == null} ? @{/admin/status/novo} : @{/admin/status/{id}/editar(id=${statusId})}">
+        <div class="card-body">
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasGlobalErrors()}">
+                <div th:each="erro : ${#fields.globalErrors()}" th:text="${erro}">Erro</div>
+            </div>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label" for="nome">Nome <span class="text-danger">*</span></label>
+                    <input class="form-control" th:field="*{nome}" th:errorclass="is-invalid" maxlength="30" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro</div>
+                </div>
+                <div class="col-12">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" th:field="*{finaliza}" th:errorclass="is-invalid">
+                        <label class="form-check-label" th:for="${#ids.prev('finaliza')}">Este status finaliza a tarefa</label>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('finaliza')}" th:errors="*{finaliza}">Erro</div>
+                    </div>
+                    <div class="form-text">
+                        Usado pelo botão Concluir e para saber se uma tarefa está atrasada. Só um status tem esta opção:
+                        ao marcar aqui, ela é desmarcada no status que a tinha antes.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-white d-flex justify-content-end gap-2">
+            <a class="btn btn-outline-secondary" th:href="@{/admin/status}">Cancelar</a>
+            <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Salvar</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

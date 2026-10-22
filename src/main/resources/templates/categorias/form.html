@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${categoriaId == null} ? 'Nova categoria' : 'Editar categoria')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('categorias')}"></nav>
+<main class="container py-4">
+    <nav aria-label="Trilha">
+        <ol class="breadcrumb small mb-2">
+            <li class="breadcrumb-item"><a th:href="@{/categorias}">Categorias</a></li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${categoriaId == null} ? 'Nova categoria' : 'Editar categoria'">Categoria</li>
+        </ol>
+    </nav>
+    <div class="mb-4">
+        <h1 class="h3 mb-1" th:text="${categoriaId == null} ? 'Nova categoria' : 'Editar categoria'">Categoria</h1>
+        <p class="text-body-secondary mb-0">Dê um nome curto; a descrição é opcional.</p>
+    </div>
+
+    <form class="card" th:object="${categoria}" method="post"
+          th:action="${categoriaId == null} ? @{/categorias/nova} : @{/categorias/{id}/editar(id=${categoriaId})}">
+        <div class="card-body">
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasGlobalErrors()}">
+                <div th:each="erro : ${#fields.globalErrors()}" th:text="${erro}">Erro</div>
+            </div>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label" for="nome">Nome <span class="text-danger">*</span></label>
+                    <input class="form-control" th:field="*{nome}" th:errorclass="is-invalid" maxlength="50" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro</div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="descricao">Descrição</label>
+                    <textarea class="form-control" th:field="*{descricao}" th:errorclass="is-invalid" rows="3" maxlength="255" placeholder="Opcional"></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}">Erro</div>
+                    <div class="form-text">Até 255 caracteres.</div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-white d-flex justify-content-end gap-2">
+            <a class="btn btn-outline-secondary" th:href="@{/categorias}">Cancelar</a>
+            <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Salvar</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Prioridades')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('prioridades')}"></nav>
+<main class="container py-4">
+    <div th:replace="~{fragments/layout :: alertas}"></div>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+        <div>
+            <h1 class="h3 mb-1">Prioridades</h1>
+            <p class="text-body-secondary mb-0">Níveis de urgência das tarefas, iguais para todos os usuários.</p>
+        </div>
+        <a class="btn btn-primary" th:href="@{/admin/prioridades/nova}"><i class="bi bi-plus-lg me-1"></i>Nova prioridade</a>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Nível</th>
+                    <th>Nome</th>
+                    <th>Cor</th>
+                    <th>Tarefas</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="linha : ${linhas}" th:with="p=${linha.item()}">
+                    <td class="fw-semibold" th:text="${p.nivel}">1</td>
+                    <td><span class="badge" th:style="|background-color: ${p.cor}|" th:text="${p.nome}">Prioridade</span></td>
+                    <td>
+                        <span class="amostra-cor me-2" th:style="|background-color: ${p.cor}|"></span><code th:text="${p.cor}">#000000</code>
+                    </td>
+                    <td th:text="${linha.tarefas()}">0</td>
+                    <td class="text-end text-nowrap">
+                        <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/prioridades/{id}/editar(id=${p.id})}" title="Editar" aria-label="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-danger" th:href="@{/admin/prioridades/{id}/excluir(id=${p.id})}" title="Excluir" aria-label="Excluir"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-white">
+            <span class="small text-body-secondary" th:text="|${linhas.size()} prioridade(s)|">0 prioridades</span>
+        </div>
+    </div>
+</main>
+</body>
+</html>

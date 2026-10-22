@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Entrar')}"></head>
+<body>
+<main class="container py-5">
+    <div class="cartao-acesso mx-auto">
+        <div class="text-center mb-4">
+            <div class="display-5 text-primary"><i class="bi bi-check2-square"></i></div>
+            <h1 class="h4 mt-2 mb-1">Gerenciador de Tarefas</h1>
+            <p class="text-body-secondary">Entre para ver suas tarefas</p>
+        </div>
+
+        <div th:replace="~{fragments/layout :: alertas}"></div>
+        <!-- Mesma mensagem para usuário inexistente e senha errada: a tela não revela quais logins existem. -->
+        <div class="alert alert-danger" role="alert" th:if="${param.erro}">Usuário ou senha inválidos.</div>
+        <div class="alert alert-warning" role="alert" th:if="${param.bloqueado}">
+            Muitas tentativas incorretas. Por segurança, o login ficou bloqueado por alguns minutos.
+        </div>
+        <div class="alert alert-info" role="status" th:if="${param.saiu}">Você saiu do sistema.</div>
+        <div class="alert alert-info" role="status" th:if="${param.expirada}">Sua sessão foi encerrada. Entre novamente.</div>
+        <div class="alert alert-info" role="status" th:if="${param.contaExcluida}">Sua conta foi excluída.</div>
+
+        <form class="card card-body p-4" th:action="@{/login}" method="post">
+            <div class="mb-3">
+                <label class="form-label" for="username">Usuário</label>
+                <input class="form-control" id="username" name="username" autocomplete="username" maxlength="50" required autofocus>
+            </div>
+            <div class="mb-4">
+                <label class="form-label" for="password">Senha</label>
+                <input class="form-control" id="password" name="password" type="password" autocomplete="current-password" required>
+            </div>
+            <button class="btn btn-primary w-100" type="submit">Entrar</button>
+        </form>
+        <p class="text-center small mt-3">Ainda não tem conta? <a th:href="@{/cadastro}">Criar conta</a></p>
+    </div>
+</main>
+</body>
+</html>

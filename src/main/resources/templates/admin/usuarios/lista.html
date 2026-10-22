@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Usuários')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('usuarios')}"></nav>
+<main class="container py-4">
+    <div th:replace="~{fragments/layout :: alertas}"></div>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+        <div>
+            <h1 class="h3 mb-1">Usuários</h1>
+            <p class="text-body-secondary mb-0">Contas cadastradas no sistema.</p>
+        </div>
+        <a class="btn btn-primary" th:href="@{/admin/usuarios/novo}"><i class="bi bi-plus-lg me-1"></i>Novo usuário</a>
+    </div>
+
+    <form class="card mb-3" th:action="@{/admin/usuarios}" method="get">
+        <div class="card-body row g-2 align-items-end">
+            <div class="col-12 col-md-6">
+                <label class="form-label small" for="q">Pesquisar</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input class="form-control" id="q" name="q" th:value="${filtro.q}" maxlength="100" placeholder="Nome, usuário ou e-mail">
+                </div>
+            </div>
+            <div class="col-8 col-md-4">
+                <label class="form-label small" for="perfil">Perfil</label>
+                <select class="form-select" id="perfil" name="perfil">
+                    <option value="">Todos</option>
+                    <option th:each="p : ${perfis}" th:value="${p}" th:text="${p.descricao}" th:selected="${p == filtro.perfil}">Perfil</option>
+                </select>
+            </div>
+            <div class="col-4 col-md-2 d-grid">
+                <button class="btn btn-primary" type="submit"><i class="bi bi-funnel me-1"></i>Filtrar</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Nome / e-mail</th>
+                    <th>Usuário</th>
+                    <th>Perfil</th>
+                    <th>Situação</th>
+                    <th>Tarefas</th>
+                    <th>Cadastro</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${pagina.empty}">
+                    <td colspan="7" class="text-center text-body-secondary py-5">Nenhum usuário encontrado.</td>
+                </tr>
+                <tr th:each="linha : ${pagina.content}" th:with="u=${linha.item()}">
+                    <td>
+                        <div class="fw-semibold" th:text="${u.nome}">Nome</div>
+                        <div class="small text-body-secondary" th:text="${u.email}">email</div>
+                    </td>
+                    <td th:text="${u.login}">login</td>
+                    <td>
+                        <span th:if="${u.admin}" class="badge text-bg-dark">ADMIN</span>
+                        <span th:unless="${u.admin}" class="badge bg-secondary-subtle text-secondary-emphasis">USUÁRIO</span>
+                    </td>
+                    <td>
+                        <span th:if="${u.estaBloqueado(agora)}" class="badge bg-warning-subtle text-warning-emphasis">
+                            <i class="bi bi-lock me-1"></i><span th:text="|Bloqueado até ${@formato.dataHora(u.bloqueadoAte)}|">Bloqueado</span>
+                        </span>
+                        <span th:unless="${u.estaBloqueado(agora)}" class="badge bg-success-subtle text-success-emphasis">Ativo</span>
+                    </td>
+                    <td th:text="${linha.tarefas()}">0</td>
+                    <td th:text="${@formato.dia(u.dataCriacao)}">00/00/0000</td>
+                    <td class="text-end text-nowrap">
+                        <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/usuarios/{id}/editar(id=${u.id})}" title="Editar" aria-label="Editar"><i class="bi bi-pencil"></i></a>
+                        <button th:if="${u.id == idLogado}" class="btn btn-sm btn-outline-danger" type="button" disabled
+                                title="Você não pode excluir a própria conta por aqui"><i class="bi bi-trash"></i></button>
+                        <a th:unless="${u.id == idLogado}" class="btn btn-sm btn-outline-danger" th:href="@{/admin/usuarios/{id}/excluir(id=${u.id})}" title="Excluir" aria-label="Excluir"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <th:block th:if="${pagina.totalElements > 0}">
+            <div th:replace="~{fragments/layout :: paginacao(${pagina}, ${filtro}, 'usuários')}"></div>
+        </th:block>
+    </div>
+</main>
+</body>
+</html>

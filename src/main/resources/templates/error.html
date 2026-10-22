@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<!-- Página de erro genérica: nunca mostra detalhes técnicos (stack trace, SQL...), que ficam só no log. -->
+<head th:replace="~{fragments/layout :: head('Erro')}"></head>
+<body>
+<main class="container py-5">
+    <div class="cartao-acesso mx-auto text-center" th:switch="${status}">
+        <div class="display-5 text-secondary"><i class="bi bi-exclamation-octagon"></i></div>
+        <th:block th:case="404">
+            <h1 class="h4 mt-2">Página não encontrada</h1>
+            <p class="text-body-secondary">O endereço não existe ou o registro não está disponível para você.</p>
+        </th:block>
+        <th:block th:case="403">
+            <h1 class="h4 mt-2">Acesso negado</h1>
+            <p class="text-body-secondary">Você não tem permissão para abrir esta página.</p>
+        </th:block>
+        <th:block th:case="400">
+            <h1 class="h4 mt-2">Requisição inválida</h1>
+            <p class="text-body-secondary">Algum dado enviado não está no formato esperado.</p>
+        </th:block>
+        <th:block th:case="*">
+            <h1 class="h4 mt-2">Algo deu errado</h1>
+            <p class="text-body-secondary">Não foi possível concluir a operação. Tente novamente em instantes.</p>
+        </th:block>
+        <a class="btn btn-primary" th:href="@{/tarefas}">Voltar para as tarefas</a>
+    </div>
+</main>
+</body>
+</html>

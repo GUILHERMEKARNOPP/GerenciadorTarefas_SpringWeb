@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${tarefaId == null} ? 'Nova tarefa' : 'Editar tarefa')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('tarefas')}"></nav>
+<main class="container py-4">
+    <nav aria-label="Trilha">
+        <ol class="breadcrumb small mb-2">
+            <li class="breadcrumb-item"><a th:href="@{/tarefas}">Tarefas</a></li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${tarefaId == null} ? 'Nova tarefa' : 'Editar tarefa'">Tarefa</li>
+        </ol>
+    </nav>
+    <div class="mb-4">
+        <h1 class="h3 mb-1" th:text="${tarefaId == null} ? 'Nova tarefa' : 'Editar tarefa'">Tarefa</h1>
+        <p class="text-body-secondary mb-0">Preencha os dados e clique em Salvar.</p>
+    </div>
+
+    <form class="card" th:object="${tarefa}" method="post"
+          th:action="${tarefaId == null} ? @{/tarefas/nova} : @{/tarefas/{id}/editar(id=${tarefaId})}">
+        <div class="card-body">
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasGlobalErrors()}">
+                <div th:each="erro : ${#fields.globalErrors()}" th:text="${erro}">Erro</div>
+            </div>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label" for="titulo">Título <span class="text-danger">*</span></label>
+                    <input class="form-control" th:field="*{titulo}" th:errorclass="is-invalid" maxlength="150" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}">Erro</div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="descricao">Descrição</label>
+                    <textarea class="form-control" th:field="*{descricao}" th:errorclass="is-invalid" rows="4" maxlength="2000"></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}">Erro</div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label" for="categoriaId">Categoria</label>
+                    <select class="form-select" th:field="*{categoriaId}" th:errorclass="is-invalid">
+                        <option value="">Sem categoria</option>
+                        <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nome}">Categoria</option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('categoriaId')}" th:errors="*{categoriaId}">Erro</div>
+                    <div class="form-text"><a th:href="@{/categorias/nova}">Criar categoria</a></div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label" for="prioridadeId">Prioridade <span class="text-danger">*</span></label>
+                    <select class="form-select" th:field="*{prioridadeId}" th:errorclass="is-invalid" required>
+                        <option value="">Escolha...</option>
+                        <option th:each="p : ${prioridades}" th:value="${p.id}" th:text="${p.nome}">Prioridade</option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('prioridadeId')}" th:errors="*{prioridadeId}">Erro</div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label" for="statusId">Status <span class="text-danger">*</span></label>
+                    <select class="form-select" th:field="*{statusId}" th:errorclass="is-invalid" required>
+                        <option value="">Escolha...</option>
+                        <option th:each="s : ${statusOpcoes}" th:value="${s.id}" th:text="${s.nome}">Status</option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('statusId')}" th:errors="*{statusId}">Erro</div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label" for="dataVencimento">Data de vencimento</label>
+                    <input class="form-control" type="date" th:field="*{dataVencimento}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('dataVencimento')}">Informe uma data válida.</div>
+                    <div class="form-text">Opcional.</div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <span class="small text-body-secondary">
+                <th:block th:if="${criadaEm != null}"><i class="bi bi-clock-history me-1"></i><span th:text="|Criada em ${@formato.dataHora(criadaEm)}|">Criada em</span></th:block>
+            </span>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary" th:href="@{/tarefas}">Cancelar</a>
+                <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Salvar</button>
+            </div>
+        </div>
+    </form>
+</main>
+</body>
+</html>

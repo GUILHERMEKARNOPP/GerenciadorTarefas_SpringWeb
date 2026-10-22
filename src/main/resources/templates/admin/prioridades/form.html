@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${prioridadeId == null} ? 'Nova prioridade' : 'Editar prioridade')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('prioridades')}"></nav>
+<main class="container py-4">
+    <nav aria-label="Trilha">
+        <ol class="breadcrumb small mb-2">
+            <li class="breadcrumb-item"><a th:href="@{/admin/prioridades}">Prioridades</a></li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${prioridadeId == null} ? 'Nova prioridade' : 'Editar prioridade'">Prioridade</li>
+        </ol>
+    </nav>
+    <div class="mb-4">
+        <h1 class="h3 mb-1" th:text="${prioridadeId == null} ? 'Nova prioridade' : 'Editar prioridade'">Prioridade</h1>
+        <p class="text-body-secondary mb-0">Defina o nome, a ordem de urgência e a cor do selo.</p>
+    </div>
+
+    <form class="card" th:object="${prioridadeForm}" method="post"
+          th:action="${prioridadeId == null} ? @{/admin/prioridades/nova} : @{/admin/prioridades/{id}/editar(id=${prioridadeId})}">
+        <div class="card-body">
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasGlobalErrors()}">
+                <div th:each="erro : ${#fields.globalErrors()}" th:text="${erro}">Erro</div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" for="nome">Nome <span class="text-danger">*</span></label>
+                    <input class="form-control" th:field="*{nome}" th:errorclass="is-invalid" maxlength="30" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="nivel">Nível <span class="text-danger">*</span></label>
+                    <input class="form-control" type="number" min="1" max="99" th:field="*{nivel}" th:errorclass="is-invalid" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nivel')}" th:errors="*{nivel}">Erro</div>
+                    <div class="form-text">1 é o mais urgente. Cada prioridade tem um nível diferente.</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="cor">Cor <span class="text-danger">*</span></label>
+                    <input class="form-control form-control-color" type="color" th:field="*{cor}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('cor')}" th:errors="*{cor}">Erro</div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-white d-flex justify-content-end gap-2">
+            <a class="btn btn-outline-secondary" th:href="@{/admin/prioridades}">Cancelar</a>
+            <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Salvar</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

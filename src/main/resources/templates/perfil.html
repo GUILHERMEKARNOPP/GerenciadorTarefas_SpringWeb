@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Meu perfil')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('perfil')}"></nav>
+<main class="container py-4">
+    <div th:replace="~{fragments/layout :: alertas}"></div>
+
+    <div class="mb-4">
+        <h1 class="h3 mb-1">Meu perfil</h1>
+        <p class="text-body-secondary mb-0">Seus dados de acesso.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7 d-flex flex-column gap-4">
+            <form class="card" th:action="@{/perfil}" th:object="${dados}" method="post">
+                <div class="card-header bg-white fw-semibold">Dados pessoais</div>
+                <div class="card-body row g-3">
+                    <div class="col-12 alert alert-danger mb-0" role="alert" th:if="${#fields.hasGlobalErrors()}">
+                        <div th:each="erro : ${#fields.globalErrors()}" th:text="${erro}">Erro</div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="nome">Nome <span class="text-danger">*</span></label>
+                        <input class="form-control" th:field="*{nome}" th:errorclass="is-invalid" maxlength="100" autocomplete="name" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro</div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="email">E-mail <span class="text-danger">*</span></label>
+                        <input class="form-control" type="email" th:field="*{email}" th:errorclass="is-invalid" maxlength="150" autocomplete="email" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Erro</div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="loginAtual">Usuário</label>
+                        <input class="form-control" id="loginAtual" th:value="${conta.login}" disabled>
+                        <div class="form-text">O usuário de acesso só pode ser alterado por um administrador.</div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white text-end">
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Salvar dados</button>
+                </div>
+            </form>
+
+            <form class="card" th:action="@{/perfil/senha}" th:object="${senhaForm}" method="post">
+                <div class="card-header bg-white fw-semibold">Alterar senha</div>
+                <!-- Campos de senha sem th:field: a senha digitada nunca volta preenchida na página. -->
+                <div class="card-body row g-3">
+                    <div class="col-12">
+                        <label class="form-label" for="senhaAtual">Senha atual <span class="text-danger">*</span></label>
+                        <input class="form-control" id="senhaAtual" name="senhaAtual" type="password" autocomplete="current-password" required
+                               th:classappend="${#fields.hasErrors('senhaAtual')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('senhaAtual')}" th:errors="*{senhaAtual}">Erro</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="novaSenha">Nova senha <span class="text-danger">*</span></label>
+                        <input class="form-control" id="novaSenha" name="senha" type="password" autocomplete="new-password" maxlength="64" required
+                               th:classappend="${#fields.hasErrors('senha')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}">Erro</div>
+                        <div class="form-text">8 a 64 caracteres, com letras e números.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="confirmacaoNovaSenha">Confirmar nova senha <span class="text-danger">*</span></label>
+                        <input class="form-control" id="confirmacaoNovaSenha" name="confirmacaoSenha" type="password" autocomplete="new-password" maxlength="64" required
+                               th:classappend="${#fields.hasErrors('confirmacaoSenha')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmacaoSenha')}" th:errors="*{confirmacaoSenha}">Erro</div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white text-end">
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-key me-1"></i>Alterar senha</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-lg-5 d-flex flex-column gap-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="display-6 text-secondary"><i class="bi bi-person-circle"></i></div>
+                        <div>
+                            <div class="fw-semibold" th:text="${conta.nome}">Nome</div>
+                            <span th:if="${conta.admin}" class="badge text-bg-dark">ADMIN</span>
+                            <span th:unless="${conta.admin}" class="badge bg-secondary-subtle text-secondary-emphasis">USUÁRIO</span>
+                        </div>
+                    </div>
+                    <dl class="row small mb-0 mt-3">
+                        <dt class="col-6 text-body-secondary fw-normal">Membro desde</dt>
+                        <dd class="col-6" th:text="${@formato.dia(conta.dataCriacao)}">00/00/0000</dd>
+                        <dt class="col-6 text-body-secondary fw-normal">Tarefas</dt>
+                        <dd class="col-6" th:text="${totalTarefas}">0</dd>
+                        <dt class="col-6 text-body-secondary fw-normal">Categorias</dt>
+                        <dd class="col-6 mb-0" th:text="${totalCategorias}">0</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <form class="card zona-perigo" th:action="@{/perfil/excluir}" th:object="${exclusao}" method="post">
+                <div class="card-header bg-danger-subtle text-danger-emphasis fw-semibold">Excluir minha conta</div>
+                <div class="card-body">
+                    <div class="alert alert-danger small" role="alert" th:if="${#fields.hasGlobalErrors()}">
+                        <div th:each="erro : ${#fields.globalErrors()}" th:text="${erro}">Erro</div>
+                    </div>
+                    <p class="small mb-3"
+                       th:text="|Apaga sua conta, suas ${totalTarefas} tarefa(s) e suas ${totalCategorias} categoria(s). Não dá para desfazer.|">Aviso</p>
+                    <label class="form-label" for="senhaExclusao">Digite sua senha para confirmar</label>
+                    <input class="form-control" id="senhaExclusao" name="senha" type="password" autocomplete="current-password" required
+                           th:classappend="${#fields.hasErrors('senha')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}">Erro</div>
+                </div>
+                <div class="card-footer bg-white text-end">
+                    <button class="btn btn-danger" type="submit"><i class="bi bi-trash me-1"></i>Excluir minha conta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>

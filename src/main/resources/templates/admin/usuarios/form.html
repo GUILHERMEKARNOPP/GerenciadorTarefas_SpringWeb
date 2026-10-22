@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${usuarioId == null} ? 'Novo usuário' : 'Editar usuário')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('usuarios')}"></nav>
+<main class="container py-4">
+    <nav aria-label="Trilha">
+        <ol class="breadcrumb small mb-2">
+            <li class="breadcrumb-item"><a th:href="@{/admin/usuarios}">Usuários</a></li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${usuarioId == null} ? 'Novo usuário' : 'Editar usuário'">Usuário</li>
+        </ol>
+    </nav>
+    <div class="mb-4">
+        <h1 class="h3 mb-1" th:text="${usuarioId == null} ? 'Novo usuário' : 'Editar usuário'">Usuário</h1>
+        <p class="text-body-secondary mb-0" th:if="${editado != null}"
+           th:text="|${editado.nome} · cadastrado em ${@formato.dia(editado.dataCriacao)}|">Nome · cadastrado em</p>
+        <p class="text-body-secondary mb-0" th:if="${editado == null}">Preencha os dados de acesso da nova conta.</p>
+    </div>
+
+    <div class="alert alert-warning d-flex gap-2 align-items-start" role="status"
+         th:if="${editado != null and editado.estaBloqueado(agora)}">
+        <i class="bi bi-lock"></i>
+        <div th:text="|Login bloqueado até ${@formato.dataHora(editado.bloqueadoAte)} depois de várias tentativas com a senha errada.|">Bloqueado</div>
+    </div>
+
+    <form class="card" th:object="${usuarioForm}" method="post"
+          th:action="${usuarioId == null} ? @{/admin/usuarios/novo} : @{/admin/usuarios/{id}/editar(id=${usuarioId})}">
+        <div class="card-body">
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasGlobalErrors()}">
+                <div th:each="erro : ${#fields.globalErrors()}" th:text="${erro}">Erro</div>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" for="nome">Nome <span class="text-danger">*</span></label>
+                    <input class="form-control" th:field="*{nome}" th:errorclass="is-invalid" maxlength="100" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="email">E-mail <span class="text-danger">*</span></label>
+                    <input class="form-control" type="email" th:field="*{email}" th:errorclass="is-invalid" maxlength="150" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Erro</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="login">Usuário <span class="text-danger">*</span></label>
+                    <input class="form-control" th:field="*{login}" th:errorclass="is-invalid" maxlength="50" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('login')}" th:errors="*{login}">Erro</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="perfil">Perfil <span class="text-danger">*</span></label>
+                    <select class="form-select" th:field="*{perfil}" th:errorclass="is-invalid">
+                        <option th:each="p : ${perfis}" th:value="${p}" th:text="${p.descricao}">Perfil</option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('perfil')}" th:errors="*{perfil}">Erro</div>
+                </div>
+                <!-- Campos de senha sem th:field: a senha digitada nunca volta preenchida na página. -->
+                <div class="col-md-6">
+                    <label class="form-label" for="senha">
+                        <span th:text="${usuarioId == null} ? 'Senha' : 'Nova senha'">Senha</span>
+                        <span class="text-danger" th:if="${usuarioId == null}">*</span>
+                    </label>
+                    <input class="form-control" id="senha" name="senha" type="password" autocomplete="new-password" maxlength="64"
+                           th:classappend="${#fields.hasErrors('senha')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}">Erro</div>
+                    <div class="form-text" th:text="${usuarioId == null} ? '8 a 64 caracteres, com letras e números.' : 'Deixe em branco para manter a senha atual.'">Ajuda</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="confirmacaoSenha">Confirmar senha</label>
+                    <input class="form-control" id="confirmacaoSenha" name="confirmacaoSenha" type="password" autocomplete="new-password" maxlength="64"
+                           th:classappend="${#fields.hasErrors('confirmacaoSenha')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmacaoSenha')}" th:errors="*{confirmacaoSenha}">Erro</div>
+                </div>
+                <div class="col-12" th:if="${editado != null and editado.estaBloqueado(agora)}">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" th:field="*{desbloquear}">
+                        <label class="form-check-label" th:for="${#ids.prev('desbloquear')}">Desbloquear o login agora (zera as tentativas erradas)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-white d-flex justify-content-end gap-2">
+            <a class="btn btn-outline-secondary" th:href="@{/admin/usuarios}">Cancelar</a>
+            <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Salvar</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

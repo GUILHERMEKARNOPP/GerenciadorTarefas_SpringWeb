@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Criar conta')}"></head>
+<body>
+<main class="container py-5">
+    <div class="cartao-acesso mx-auto">
+        <div class="text-center mb-4">
+            <div class="display-5 text-primary"><i class="bi bi-person-plus"></i></div>
+            <h1 class="h4 mt-2 mb-1">Criar conta</h1>
+            <p class="text-body-secondary">Preencha seus dados para começar</p>
+        </div>
+
+        <form class="card card-body p-4" th:action="@{/cadastro}" th:object="${cadastro}" method="post">
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasGlobalErrors()}">
+                <div th:each="erro : ${#fields.globalErrors()}" th:text="${erro}">Erro</div>
+            </div>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label" for="nome">Nome <span class="text-danger">*</span></label>
+                    <input class="form-control" th:field="*{nome}" th:errorclass="is-invalid" maxlength="100" autocomplete="name" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro</div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="email">E-mail <span class="text-danger">*</span></label>
+                    <input class="form-control" type="email" th:field="*{email}" th:errorclass="is-invalid" maxlength="150" autocomplete="email" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Erro</div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="login">Usuário <span class="text-danger">*</span></label>
+                    <input class="form-control" th:field="*{login}" th:errorclass="is-invalid" maxlength="50" autocomplete="username" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('login')}" th:errors="*{login}">Erro</div>
+                    <div class="form-text">3 a 50 caracteres: letras, números, ponto, hífen ou sublinhado.</div>
+                </div>
+                <!-- Campos de senha sem th:field: a senha digitada nunca volta preenchida na página. -->
+                <div class="col-12">
+                    <label class="form-label" for="senha">Senha <span class="text-danger">*</span></label>
+                    <input class="form-control" id="senha" name="senha" type="password" autocomplete="new-password"
+                           th:classappend="${#fields.hasErrors('senha')} ? 'is-invalid'" maxlength="64" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}">Erro</div>
+                    <div class="form-text">8 a 64 caracteres, com letras e números.</div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="confirmacaoSenha">Confirmar senha <span class="text-danger">*</span></label>
+                    <input class="form-control" id="confirmacaoSenha" name="confirmacaoSenha" type="password" autocomplete="new-password"
+                           th:classappend="${#fields.hasErrors('confirmacaoSenha')} ? 'is-invalid'" maxlength="64" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmacaoSenha')}" th:errors="*{confirmacaoSenha}">Erro</div>
+                </div>
+            </div>
+            <button class="btn btn-primary w-100 mt-4" type="submit">Criar conta</button>
+        </form>
+        <p class="text-center small mt-3">Já tem conta? <a th:href="@{/login}">Entrar</a></p>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Status')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('status')}"></nav>
+<main class="container py-4">
+    <div th:replace="~{fragments/layout :: alertas}"></div>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+        <div>
+            <h1 class="h3 mb-1">Status</h1>
+            <p class="text-body-secondary mb-0">Situações possíveis de uma tarefa, iguais para todos os usuários.</p>
+        </div>
+        <a class="btn btn-primary" th:href="@{/admin/status/novo}"><i class="bi bi-plus-lg me-1"></i>Novo status</a>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Nome</th>
+                    <th>Finaliza a tarefa</th>
+                    <th>Tarefas</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="linha : ${linhas}" th:with="s=${linha.item()}">
+                    <td>
+                        <span class="badge" th:text="${s.nome}"
+                              th:classappend="${s.finaliza} ? 'bg-success-subtle text-success-emphasis' : 'bg-secondary-subtle text-secondary-emphasis'">Status</span>
+                    </td>
+                    <td>
+                        <span th:if="${s.finaliza}"><i class="bi bi-check-circle-fill text-success me-1"></i>Sim</span>
+                        <span th:unless="${s.finaliza}" class="text-body-tertiary">Não</span>
+                    </td>
+                    <td th:text="${linha.tarefas()}">0</td>
+                    <td class="text-end text-nowrap">
+                        <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/status/{id}/editar(id=${s.id})}" title="Editar" aria-label="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-danger" th:href="@{/admin/status/{id}/excluir(id=${s.id})}" title="Excluir" aria-label="Excluir"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-white">
+            <span class="small text-body-secondary" th:text="|${linhas.size()} status|">0 status</span>
+        </div>
+    </div>
+</main>
+</body>
+</html>

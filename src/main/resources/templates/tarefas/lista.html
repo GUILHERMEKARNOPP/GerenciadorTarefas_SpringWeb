@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Minhas tarefas')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('tarefas')}"></nav>
+<main class="container py-4">
+    <div th:replace="~{fragments/layout :: alertas}"></div>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+        <div>
+            <h1 class="h3 mb-1">Minhas tarefas</h1>
+            <p class="text-body-secondary mb-0">Organize, filtre e acompanhe o que precisa ser feito.</p>
+        </div>
+        <a class="btn btn-primary" th:href="@{/tarefas/nova}"><i class="bi bi-plus-lg me-1"></i>Nova tarefa</a>
+    </div>
+
+    <div class="row g-3 mb-4 resumo">
+        <div class="col-6 col-md" th:each="cartao : ${resumo.porStatus()}">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="small text-body-secondary" th:text="${cartao.item().nome}">Status</div>
+                    <div class="numero" th:classappend="${cartao.item().finaliza} ? 'text-success'" th:text="${cartao.tarefas()}">0</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="small text-body-secondary">Atrasadas</div>
+                    <div class="numero" th:classappend="${resumo.atrasadas() > 0} ? 'text-danger'" th:text="${resumo.atrasadas()}">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form class="card mb-3" th:action="@{/tarefas}" method="get">
+        <div class="card-body">
+            <div class="row g-2 align-items-end">
+                <div class="col-12 col-lg-4">
+                    <label class="form-label small" for="q">Pesquisar</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input class="form-control" id="q" name="q" th:value="${filtro.q}" maxlength="100" placeholder="Título ou descrição">
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label small" for="status">Status</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="">Todos</option>
+                        <option th:each="s : ${statusOpcoes}" th:value="${s.id}" th:text="${s.nome}" th:selected="${s.id == filtro.status}">Status</option>
+                    </select>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label small" for="prioridade">Prioridade</label>
+                    <select class="form-select" id="prioridade" name="prioridade">
+                        <option value="">Todas</option>
+                        <option th:each="p : ${prioridades}" th:value="${p.id}" th:text="${p.nome}" th:selected="${p.id == filtro.prioridade}">Prioridade</option>
+                    </select>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label small" for="categoria">Categoria</label>
+                    <select class="form-select" id="categoria" name="categoria">
+                        <option value="">Todas</option>
+                        <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nome}" th:selected="${c.id == filtro.categoria}">Categoria</option>
+                        <option value="0" th:selected="${filtro.categoria == 0}">Sem categoria</option>
+                    </select>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <label class="form-label small" for="ordem">Ordenar por</label>
+                    <select class="form-select" id="ordem" name="ordem">
+                        <option th:each="o : ${ordens}" th:value="${o}" th:text="${o.descricao}" th:selected="${o == filtro.ordem}">Ordem</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2 mt-3">
+                <a class="btn btn-sm btn-link" th:href="@{/tarefas}">Limpar filtros</a>
+                <button class="btn btn-sm btn-primary" type="submit"><i class="bi bi-funnel me-1"></i>Filtrar</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Tarefa</th>
+                    <th>Categoria</th>
+                    <th>Prioridade</th>
+                    <th>Status</th>
+                    <th>Vencimento</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${pagina.empty}">
+                    <td colspan="6" class="text-center text-body-secondary py-5">
+                        Nenhuma tarefa encontrada. <a th:href="@{/tarefas/nova}">Criar uma tarefa</a>
+                    </td>
+                </tr>
+                <tr th:each="t : ${pagina.content}" th:classappend="${t.estaConcluida()} ? 'tarefa-concluida'">
+                    <td>
+                        <div class="fw-semibold titulo-tarefa" th:text="${t.titulo}">Título</div>
+                        <div class="small text-body-secondary texto-curto" th:if="${t.descricao != null}" th:text="${t.descricao}">Descrição</div>
+                    </td>
+                    <td>
+                        <span th:if="${t.categoria != null}" th:text="${t.categoria.nome}">Categoria</span>
+                        <span th:unless="${t.categoria != null}" class="text-body-tertiary">Sem categoria</span>
+                    </td>
+                    <td><span class="badge" th:style="|background-color: ${t.prioridade.cor}|" th:text="${t.prioridade.nome}">Prioridade</span></td>
+                    <td>
+                        <span class="badge" th:text="${t.status.nome}"
+                              th:classappend="${t.estaConcluida()} ? 'bg-success-subtle text-success-emphasis' : 'bg-secondary-subtle text-secondary-emphasis'">Status</span>
+                    </td>
+                    <td class="text-nowrap">
+                        <span th:if="${t.dataVencimento == null}" class="text-body-tertiary">Sem prazo</span>
+                        <th:block th:if="${t.estaAtrasada(hoje)}">
+                            <span class="text-danger fw-semibold" th:text="${@formato.data(t.dataVencimento)}">00/00/0000</span>
+                            <span class="badge bg-danger-subtle text-danger-emphasis">Atrasada</span>
+                        </th:block>
+                        <span th:if="${t.dataVencimento != null and !t.estaAtrasada(hoje)}" th:text="${@formato.data(t.dataVencimento)}">00/00/0000</span>
+                    </td>
+                    <td class="text-end text-nowrap">
+                        <!-- Concluir é POST; os campos ocultos levam os filtros para voltar à mesma lista. -->
+                        <form class="d-inline" th:action="@{/tarefas/{id}/concluir(id=${t.id})}" method="post">
+                            <input type="hidden" th:each="parametro : ${filtro.comoParametros()}" th:name="${parametro.key}" th:value="${parametro.value}">
+                            <button class="btn btn-sm btn-outline-success" type="submit" title="Concluir" aria-label="Concluir"
+                                    th:disabled="${t.estaConcluida()}"><i class="bi bi-check-lg"></i></button>
+                        </form>
+                        <a class="btn btn-sm btn-outline-secondary" th:href="@{/tarefas/{id}/editar(id=${t.id})}" title="Editar" aria-label="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-outline-danger" th:href="@{/tarefas/{id}/excluir(id=${t.id})}" title="Excluir" aria-label="Excluir"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <th:block th:if="${pagina.totalElements > 0}">
+            <div th:replace="~{fragments/layout :: paginacao(${pagina}, ${filtro}, 'tarefas')}"></div>
+        </th:block>
+    </div>
+</main>
+</body>
+</html>

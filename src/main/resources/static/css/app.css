@@ -1,0 +1,96 @@
+/* Ajustes visuais por cima do Bootstrap 5 (os mesmos dos protótipos em docs/). */
+
+:root {
+    --app-fundo: #f4f6fb;
+    --app-barra: #1e293b;
+    --app-borda: #e2e8f0;
+}
+
+body {
+    background: var(--app-fundo);
+    min-height: 100vh;
+}
+
+.barra-app {
+    background: var(--app-barra);
+}
+
+.barra-app .nav-link {
+    color: rgba(255, 255, 255, .75);
+}
+
+.barra-app .nav-link:hover,
+.barra-app .nav-link.active {
+    color: #fff;
+}
+
+.barra-app .nav-link.active {
+    box-shadow: inset 0 -2px 0 #60a5fa;
+}
+
+.barra-app .rotulo-admin {
+    border-left: 1px solid rgba(255, 255, 255, .2);
+    color: rgba(255, 255, 255, .45);
+    font-size: .6875rem;
+    letter-spacing: .06em;
+    margin-left: .5rem;
+    padding: .5rem .25rem .5rem .75rem;
+    text-transform: uppercase;
+}
+
+.card {
+    border-color: var(--app-borda);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+}
+
+.table > :not(caption) > * > * {
+    padding: .7rem .75rem;
+}
+
+.table thead th {
+    color: #64748b;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tarefa-concluida .titulo-tarefa {
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+
+.texto-curto {
+    max-width: 26rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.resumo .numero {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.amostra-cor {
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    display: inline-block;
+    height: 1rem;
+    vertical-align: -2px;
+    width: 1rem;
+}
+
+.cartao-acesso {
+    max-width: 420px;
+}
+
+.zona-perigo {
+    border-color: #f5c2c7;
+}
+
+.cartao-confirmacao {
+    max-width: 640px;
+}
