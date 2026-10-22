@@ -52,7 +52,7 @@
     <aside class="nota-prototipo">
         <strong><i class="bi bi-info-circle me-1"></i>Notas do protótipo</strong>
         <ul>
-            <li>Rota: <code>GET /cadastro</code> e <code>POST /cadastro</code>. A primeira conta do sistema vira ADMIN; as demais recebem o perfil USUARIO.</li>
+            <li>Rota: <code>GET /cadastro</code> e <code>POST /cadastro</code>. Vira ADMIN só a conta do login definido em <code>ADMIN_LOGIN</code> (no computador local, sem essa configuração, a primeira conta criada); as demais recebem o perfil USUARIO.</li>
             <li>Exemplo de erro de validação: as mesmas regras são conferidas no servidor (Bean Validation), não só no navegador.</li>
             <li>Login e e-mail são únicos, sem diferenciar maiúsculas de minúsculas.</li>
         </ul>

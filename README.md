@@ -336,7 +336,48 @@ paginação, e as tarefas atrasadas aparecem em destaque.
 </tr>
 </table>
 
-## Como executar
+## Publicar na internet (Render + Neon)
+
+O sistema roda no [Render](https://render.com) (servidor Java, a partir do `Dockerfile`) e guarda os dados no
+[Neon](https://neon.tech) (PostgreSQL). Os dois têm plano gratuito. O GitHub Pages não serve aqui: ele só hospeda
+arquivos fixos, como os protótipos, e não roda Java nem banco de dados.
+
+**1. Banco no Neon.** Entre com a conta do GitHub, crie um projeto na região **AWS US East 1 (N. Virginia)**, a mesma
+região do servidor no Render, e abra **Connect**. Desligue a opção *Connection pooling*: o sistema já tem o próprio
+pool de conexões e o Flyway precisa de conexão direta. A conexão aparece assim:
+
+```
+postgresql://USUARIO:SENHA@ep-exemplo-123.us-east-1.aws.neon.tech/neondb?sslmode=require
+```
+
+Separe em três valores para o Render:
+
+| Variável          | Valor                                                                       |
+|-------------------|-----------------------------------------------------------------------------|
+| `WEB_DB_URL`      | `jdbc:postgresql://ep-exemplo-123.us-east-1.aws.neon.tech/neondb?sslmode=require` |
+| `WEB_DB_USER`     | o `USUARIO` da conexão                                                      |
+| `WEB_DB_PASSWORD` | a `SENHA` da conexão                                                        |
+
+**2. Sistema no Render.** Entre com a conta do GitHub e escolha **New → Blueprint**. Selecione este repositório: o
+Render lê o [`render.yaml`](render.yaml) e pede as variáveis. Preencha as três do banco e também `ADMIN_LOGIN`, com o
+usuário que vai ser o administrador (por exemplo `guilherme`). A primeira publicação leva alguns minutos.
+
+**3. Crie a conta de administrador.** Abra o endereço que o Render mostrar (algo como
+`https://gerenciador-tarefas.onrender.com`) e crie a conta usando o mesmo login de `ADMIN_LOGIN`. Só esse login vira
+administrador; quem mais se cadastrar vira usuário comum.
+
+Depois disso, cada push na branch `main` publica a versão nova sozinho. As tabelas são criadas e atualizadas pelo
+Flyway quando o sistema sobe.
+
+> **Plano gratuito:** o Render desliga o sistema depois de 15 minutos sem acesso, e a primeira visita depois disso
+> demora cerca de 1 minuto. Quem estava logado precisa entrar de novo. O plano pago do Render tira essa espera.
+
+O que muda em produção (perfil `prod`, ligado pelo `Dockerfile`, ver
+[`application-prod.properties`](src/main/resources/application-prod.properties)): cookie de sessão só por HTTPS,
+endereço real dos usuários vindo do proxy do Render (usado no limite de tentativas), datas no horário de Brasília e
+nenhuma configuração com valor padrão. Se faltar alguma variável, o sistema nem sobe.
+
+## Como executar no seu computador
 
 Precisa do **JDK 21 ou superior** e do **PostgreSQL 16 ou mais novo** instalados. O Maven não precisa ser instalado:
 o projeto usa o Maven Wrapper (`mvnw`).
@@ -360,8 +401,9 @@ powershell -ExecutionPolicy Bypass -File executar.ps1
 Depois abra **http://localhost:8080**. Pelo IntelliJ, também dá para rodar a classe `GerenciadorTarefasWebApplication`
 (reabra o IntelliJ depois do passo 1 para ele enxergar a variável `WEB_DB_PASSWORD`).
 
-**3. Crie a primeira conta** em "Criar conta". **A primeira conta do sistema vira administradora**; as seguintes são
-de usuários comuns, e o administrador pode promover outras contas na tela Usuários.
+**3. Crie a primeira conta** em "Criar conta". **No seu computador, a primeira conta do sistema vira
+administradora** (a não ser que `ADMIN_LOGIN` esteja definida); as seguintes são de usuários comuns, e o administrador
+pode promover outras contas na tela Usuários.
 
 > A senha do banco nunca fica no código: o `application.properties` lê `WEB_DB_PASSWORD`. Para usar outro banco,
 > defina também `WEB_DB_URL` e `WEB_DB_USER`.
@@ -400,6 +442,8 @@ Os testes cobrem:
 
 - Senhas guardadas só como hash BCrypt. Login inexistente e senha errada mostram a mesma mensagem, e 5 erros
   seguidos bloqueiam o login por 5 minutos. A troca de senha e a exclusão de conta também contam as tentativas.
+- Limite por endereço IP contra robôs: até 30 tentativas de login a cada 5 minutos e 20 contas novas a cada 10
+  minutos. Em produção, só o login definido em `ADMIN_LOGIN` vira administrador.
 - Toda tarefa e categoria é buscada pelo id **e** pelo dono logado. Abrir o registro de outra pessoa responde 404, e a
   área `/admin/**` exige o perfil ADMIN, conferido no servidor.
 - Formulários com token CSRF, exclusões só por POST, consultas parametrizadas e telas que escapam o texto (Thymeleaf).
