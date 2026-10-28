@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<!--
+  Cenário de cada tema na tela "Escolha o tema". O nome do fragmento é o slug do Tema.
+  Só <span> aqui dentro: o cenário fica dentro de um <button>, que não aceita <div>/<ul>.
+-->
+<body>
+
+<!-- Padrão: o próprio sistema em miniatura, com as tarefas sendo marcadas uma a uma. -->
+<th:block th:fragment="padrao">
+    <span class="padrao-janela">
+        <span class="padrao-barra"><span></span><span class="ativo"></span><span></span></span>
+        <span class="padrao-tarefa"><span class="caixa"></span><span class="linha"></span></span>
+        <span class="padrao-tarefa"><span class="caixa"></span><span class="linha curta"></span></span>
+        <span class="padrao-tarefa"><span class="caixa"></span><span class="linha media"></span></span>
+    </span>
+    <span class="padrao-selo"><i class="bi bi-check2"></i></span>
+</th:block>
+
+</body>
+</html>

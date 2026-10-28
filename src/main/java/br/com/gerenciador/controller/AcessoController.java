@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,9 +31,14 @@ public class AcessoController {
         return "redirect:/tarefas";
     }
 
+    /** Na primeira visita (sem tema no cookie), a pessoa escolhe o tema antes de ver o login. */
     @GetMapping("/login")
-    public String login(@AuthenticationPrincipal UsuarioAutenticado usuario) {
-        return usuario != null ? "redirect:/tarefas" : "login";
+    public String login(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                        @CookieValue(name = CookieTema.NOME, required = false) String tema) {
+        if (usuario != null) {
+            return "redirect:/tarefas";
+        }
+        return CookieTema.ler(tema).isPresent() ? "login" : "redirect:/tema";
     }
 
     @GetMapping("/cadastro")

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Escolha o tema')}"></head>
+<body>
+<th:block sec:authorize="isAuthenticated()">
+    <nav th:replace="~{fragments/layout :: menu('tema')}"></nav>
+</th:block>
+
+<main class="container py-5">
+    <header class="text-center mb-5">
+        <h1 class="h3 mb-2">Escolha o tema do seu gerenciador de tarefas</h1>
+        <p class="text-body-secondary mb-0">Cada mundo muda o sistema inteiro. Dá para trocar depois pelo menu <strong>Tema</strong>.</p>
+    </header>
+
+    <!-- Cada mundo é um botão de envio: o valor escolhido é conferido no servidor contra a lista de temas. -->
+    <form class="grade-temas" th:action="@{/tema}" method="post">
+        <button th:each="opcao : ${temas}" class="mundo" th:classappend="|mundo-${opcao.slug}|"
+                type="submit" name="tema" th:value="${opcao.slug}" th:attr="aria-current=${opcao == temaEscolhido} ? 'true'">
+            <span class="mundo-cena" aria-hidden="true" th:insert="~{fragments/mundos :: __${opcao.slug}__}"></span>
+            <span class="mundo-nome" th:text="${opcao.nome}">Padrão</span>
+            <span class="mundo-atual" th:if="${opcao == temaEscolhido}">Tema atual</span>
+        </button>
+    </form>
+</main>
+</body>
+</html>

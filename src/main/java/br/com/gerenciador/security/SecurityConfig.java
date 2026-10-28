@@ -29,7 +29,7 @@ public class SecurityConfig {
         http
                 // A autorização é sempre conferida aqui no servidor, mesmo que a tela esconda o link.
                 .authorizeHttpRequests(acesso -> acesso
-                        .requestMatchers("/login", "/cadastro", "/css/**", "/webjars/**", "/error").permitAll()
+                        .requestMatchers("/login", "/cadastro", "/tema", "/css/**", "/temas/**", "/webjars/**", "/error").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(login -> login

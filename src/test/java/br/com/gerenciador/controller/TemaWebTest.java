@@ -1,0 +1,109 @@
+package br.com.gerenciador.controller;
+
+import br.com.gerenciador.model.Perfil;
+import br.com.gerenciador.model.Usuario;
+import br.com.gerenciador.security.SecurityConfig;
+import br.com.gerenciador.security.UsuarioAutenticado;
+import br.com.gerenciador.service.ContaService;
+import jakarta.servlet.http.Cookie;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.OffsetDateTime;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+/** Escolha do tema: só na primeira visita antes do login, guardada em cookie e restrita à lista de temas. */
+@WebMvcTest(controllers = {TemaController.class, AcessoController.class})
+@Import(SecurityConfig.class)
+class TemaWebTest {
+
+    @Autowired
+    private MockMvc mvc;
+    @MockitoBean
+    private ContaService contaService;
+
+    @Test
+    void primeiraVisitaEscolheOTemaAntesDoLogin() throws Exception {
+        mvc.perform(get("/login"))
+                .andExpect(redirectedUrl("/tema"));
+    }
+
+    @Test
+    void quemJaEscolheuVaiDiretoParaOLogin() throws Exception {
+        mvc.perform(get("/login").cookie(new Cookie("tema", "padrao")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"));
+    }
+
+    @Test
+    void cookieComTemaDesconhecidoContaComoPrimeiraVisita() throws Exception {
+        mvc.perform(get("/login").cookie(new Cookie("tema", "inexistente")))
+                .andExpect(redirectedUrl("/tema"));
+    }
+
+    @Test
+    void primeiraVisitaNaoMarcaNenhumTemaComoAtual() throws Exception {
+        mvc.perform(get("/tema"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("tema"))
+                .andExpect(content().string(not(containsString("Tema atual"))));
+    }
+
+    @Test
+    void temaJaEscolhidoApareceComoAtual() throws Exception {
+        mvc.perform(get("/tema").cookie(new Cookie("tema", "padrao")))
+                .andExpect(content().string(containsString("Tema atual")));
+    }
+
+    @Test
+    void escolherGuardaOTemaEmCookieEVaiParaOLogin() throws Exception {
+        mvc.perform(post("/tema").param("tema", "padrao").with(csrf()))
+                .andExpect(redirectedUrl("/login"))
+                .andExpect(cookie().value("tema", "padrao"))
+                .andExpect(cookie().httpOnly("tema", true))
+                .andExpect(cookie().sameSite("tema", "Lax"));
+    }
+
+    @Test
+    void usuarioLogadoTrocaOTemaEVoltaParaAsTarefas() throws Exception {
+        mvc.perform(post("/tema").param("tema", "padrao").with(user(logado())).with(csrf()))
+                .andExpect(redirectedUrl("/tarefas"))
+                .andExpect(cookie().value("tema", "padrao"));
+    }
+
+    @Test
+    void temaForaDaListaEhRecusado() throws Exception {
+        mvc.perform(post("/tema").param("tema", "<script>").with(csrf()))
+                .andExpect(status().isBadRequest())
+                .andExpect(cookie().doesNotExist("tema"));
+    }
+
+    @Test
+    void escolherSemTokenCsrfEhRecusado() throws Exception {
+        mvc.perform(post("/tema").param("tema", "padrao"))
+                .andExpect(status().isForbidden())
+                .andExpect(cookie().doesNotExist("tema"));
+    }
+
+    private static UsuarioAutenticado logado() {
+        Usuario usuario = new Usuario("Nome", "nome@example.com", "nome", "{noop}x", Perfil.USUARIO);
+        ReflectionTestUtils.setField(usuario, "id", 42L);
+        return new UsuarioAutenticado(usuario, OffsetDateTime.now());
+    }
+}

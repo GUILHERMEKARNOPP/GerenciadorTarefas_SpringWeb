@@ -136,3 +136,211 @@ body {
         white-space: normal;
     }
 }
+
+/* Tela "Escolha o tema": cada tema é um mini mundo clicável, não um botão comum. */
+.grade-temas {
+    display: grid;
+    gap: 3rem 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 300px));
+    justify-content: center;
+}
+
+.mundo {
+    background: none;
+    border: 0;
+    border-radius: .75rem;
+    color: inherit;
+    cursor: pointer;
+    display: block;
+    padding: 0;
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+
+.mundo:focus-visible {
+    outline: 3px solid #60a5fa;
+    outline-offset: 8px;
+}
+
+.mundo-cena {
+    aspect-ratio: 2 / 1;
+    display: block;
+    position: relative;
+    transition: transform .25s ease;
+}
+
+.mundo:hover .mundo-cena,
+.mundo:focus-visible .mundo-cena {
+    transform: translateY(-6px);
+}
+
+/* O nome é a "plataforma" onde o cenário se apoia; cada tema desenha a sua. */
+.mundo-nome {
+    display: block;
+}
+
+.mundo-atual {
+    background: #fff;
+    border: 1px solid var(--app-borda);
+    border-radius: 999px;
+    color: #475569;
+    font-size: .6875rem;
+    left: 0;
+    padding: .1rem .55rem;
+    position: absolute;
+    top: 0;
+}
+
+/* Mundo Padrão */
+.padrao-janela {
+    background: #fff;
+    border-radius: .5rem .5rem 0 0;
+    bottom: 0;
+    box-shadow: 0 -2px 18px rgba(15, 23, 42, .10);
+    display: flex;
+    flex-direction: column;
+    gap: 9%;
+    height: 82%;
+    left: 17%;
+    overflow: hidden;
+    position: absolute;
+    width: 66%;
+}
+
+.padrao-barra {
+    align-items: center;
+    background: var(--app-barra);
+    display: flex;
+    flex: 0 0 18%;
+    gap: 6%;
+    padding: 0 8%;
+}
+
+.padrao-barra span {
+    background: rgba(255, 255, 255, .45);
+    border-radius: 2px;
+    height: 3px;
+    width: 14%;
+}
+
+.padrao-barra .ativo {
+    background: #fff;
+    box-shadow: 0 4px 0 #60a5fa;
+}
+
+.padrao-tarefa {
+    align-items: center;
+    display: flex;
+    gap: 6%;
+    padding: 0 9%;
+}
+
+.padrao-tarefa .caixa {
+    animation: padrao-marca 6s ease-in-out infinite;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 80% no-repeat;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 3px;
+    flex: 0 0 auto;
+    height: 12px;
+    width: 12px;
+}
+
+.padrao-tarefa .linha {
+    animation: padrao-risca 6s ease-in-out infinite;
+    background: #94a3b8;
+    border-radius: 2px;
+    height: 4px;
+    width: 70%;
+}
+
+.padrao-tarefa .linha.curta {
+    width: 45%;
+}
+
+.padrao-tarefa .linha.media {
+    width: 58%;
+}
+
+.padrao-tarefa:nth-child(3) > span {
+    animation-delay: .9s;
+}
+
+.padrao-tarefa:nth-child(4) > span {
+    animation-delay: 1.8s;
+}
+
+.padrao-selo {
+    align-items: center;
+    animation: padrao-flutua 3s ease-in-out infinite;
+    background: #0d6efd;
+    border-radius: 50%;
+    box-shadow: 0 6px 14px rgba(13, 110, 253, .35);
+    color: #fff;
+    display: flex;
+    font-size: 1rem;
+    height: 30px;
+    justify-content: center;
+    position: absolute;
+    right: 6%;
+    top: 10%;
+    width: 30px;
+}
+
+.mundo-padrao .mundo-nome {
+    background: linear-gradient(#334155, var(--app-barra));
+    border-radius: .5rem;
+    box-shadow: 0 6px 0 #0f172a, 0 14px 22px rgba(15, 23, 42, .22);
+    color: #fff;
+    font-size: .8125rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    padding: .6rem;
+    position: relative;
+    text-transform: uppercase;
+}
+
+@keyframes padrao-marca {
+    0%, 12% {
+        background-color: #fff;
+        border-color: #cbd5e1;
+    }
+
+    18%, 82% {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    88%, 100% {
+        background-color: #fff;
+        border-color: #cbd5e1;
+    }
+}
+
+@keyframes padrao-risca {
+    0%, 12% {
+        background-color: #94a3b8;
+    }
+
+    18%, 82% {
+        background-color: #e2e8f0;
+    }
+
+    88%, 100% {
+        background-color: #94a3b8;
+    }
+}
+
+@keyframes padrao-flutua {
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mundo-cena,
+    .mundo-cena * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
