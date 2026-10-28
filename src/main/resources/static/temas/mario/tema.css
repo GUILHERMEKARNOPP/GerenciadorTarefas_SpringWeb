@@ -1,0 +1,931 @@
+/*
+  Tema Mario Bros: o sistema inteiro vira uma fase 8-bit (céu, nuvens, morros e chão de tijolos).
+  Toda a pixel art em img/ é própria, inspirada no estilo NES. Fonte Press Start 2P (licença OFL, fontes/OFL.txt).
+*/
+
+@font-face {
+    font-display: swap;
+    font-family: "Press Start 2P";
+    src: url("fontes/press-start-2p-latin-400.woff2") format("woff2");
+}
+
+:root {
+    --m-ceu: #5c94fc;
+    --m-preto: #000;
+    --m-tijolo: #c84c0c;
+    --m-ouro: #fc9838;
+    --m-ouro-claro: #ffd38a;
+    --m-ouro-escuro: #c06000;
+    --m-marrom: #881400;
+    --m-verde: #00a800;
+    --m-verde-claro: #80d010;
+    --m-vermelho: #d82800;
+    --m-pessego: #fcbcb0;
+    --m-placa: #e45c10;
+    --m-pixel: "Press Start 2P", ui-monospace, monospace;
+    --m-sombra: 4px 4px 0 var(--m-preto);
+    --m-contorno-texto: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+
+    --app-fundo: var(--m-ceu);
+    --app-barra: var(--m-tijolo);
+    --app-borda: var(--m-preto);
+    /* O céu é pintado só no body; campos, tabelas e cartões continuam com fundo branco. */
+    --bs-body-bg: #fff;
+    --bs-body-color: #000;
+    --bs-secondary-color: #10204a;
+    --bs-tertiary-color: #3a4a70;
+    --bs-border-color: var(--m-preto);
+    --bs-border-radius: 0;
+    --bs-border-radius-sm: 0;
+    --bs-border-radius-lg: 0;
+    --bs-border-radius-pill: 0;
+    --bs-link-color: #a01800;
+    --bs-link-color-rgb: 160, 24, 0;
+    --bs-link-hover-color: var(--m-vermelho);
+    --bs-link-hover-color-rgb: 216, 40, 0;
+    --bs-success-rgb: 0, 128, 0;
+    --bs-danger-rgb: 216, 40, 0;
+}
+
+/* ---------- Cenário ---------- */
+
+body {
+    background-color: var(--m-ceu);
+    background-image:
+        url("img/chao.svg"),
+        url("img/chao.svg"),
+        url("img/arbusto.svg"),
+        url("img/morro.svg"),
+        url("img/arbusto.svg"),
+        url("img/morro.svg");
+    background-position:
+        left bottom,
+        left bottom 48px,
+        left 30% bottom 96px,
+        left 3% bottom 96px,
+        right 6% bottom 96px,
+        right 30% bottom 96px;
+    background-repeat: repeat-x, repeat-x, no-repeat, no-repeat, no-repeat, no-repeat;
+    background-size: 48px 48px, 48px 48px, 96px 36px, 120px 60px, 96px 36px, 120px 60px;
+    image-rendering: pixelated;
+    /* Personagens entram e saem pelas laterais sem criar rolagem horizontal. */
+    overflow-x: clip;
+    padding-bottom: 170px;
+    position: relative;
+}
+
+/* Nuvens passando ao fundo, atrás de todo o conteúdo. */
+body::before {
+    animation: mario-nuvens 90s linear infinite;
+    background-image: url("img/nuvem-ceu.svg"), url("img/nuvem-ceu.svg");
+    background-position: 0 70px, 200px 160px;
+    background-repeat: repeat-x;
+    background-size: 480px 54px, 360px 40px;
+    content: "";
+    inset: 0;
+    pointer-events: none;
+    position: fixed;
+    z-index: -1;
+}
+
+/* Cada camada anda um número inteiro de "ladrilhos", então o fim emenda com o começo. */
+@keyframes mario-nuvens {
+    to {
+        background-position: -480px 70px, -520px 160px;
+    }
+}
+
+/* ---------- Tipografia ---------- */
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5,
+.navbar-brand, .form-label, .btn, .badge, .page-link, .table thead th, .card-header, .resumo .numero {
+    font-family: var(--m-pixel);
+    letter-spacing: 0;
+}
+
+h1, .h1, h2, .h2, h3, .h3 {
+    color: #fff;
+    font-size: clamp(.95rem, 2.4vw, 1.25rem);
+    line-height: 1.5;
+    text-shadow: var(--m-contorno-texto);
+}
+
+h4, .h4, h5, .h5 {
+    font-size: .85rem;
+    line-height: 1.5;
+}
+
+/* Dentro de cartões brancos o título volta a ser preto, sem contorno. */
+.card h1, .card .h1, .card h2, .card .h2, .card h3, .card .h3, .card h4, .card .h4, .card h5, .card .h5 {
+    color: #000;
+    text-shadow: none;
+}
+
+main > .d-flex > div > p.text-body-secondary,
+main > header > p,
+main > p {
+    color: #fff !important;
+    font-weight: 600;
+    text-shadow: 1px 1px 0 #000, 2px 2px 0 #000;
+}
+
+main > header strong,
+main > p a,
+.cartao-acesso > p.small {
+    color: #fff;
+}
+
+/* ---------- Barra de navegação de tijolos ---------- */
+
+.barra-app {
+    background: url("img/tijolo.svg") 0 0 / 32px 32px repeat;
+    border-bottom: 4px solid #000;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, .25);
+}
+
+.barra-app .navbar-brand {
+    color: #fff;
+    font-size: .68rem;
+    text-shadow: var(--m-contorno-texto);
+}
+
+/* A fonte pixel é larga: sem os ícones, o menu cabe numa linha só. */
+.barra-app .nav-link .bi {
+    display: none;
+}
+
+.barra-app .navbar-brand .bi {
+    color: var(--m-ouro);
+}
+
+.barra-app .nav-link {
+    color: #fff;
+    font-family: var(--m-pixel);
+    font-size: .55rem;
+    padding-inline: .5rem;
+    text-shadow: 2px 2px 0 #000, -1px -1px 0 #000;
+}
+
+.barra-app .nav-link:hover,
+.barra-app .nav-link.active {
+    color: var(--m-ouro);
+}
+
+.barra-app .nav-link.active {
+    box-shadow: none;
+}
+
+.barra-app .nav-link.active::after {
+    background: url("img/moeda.svg") center / 100% 100% no-repeat;
+    content: "";
+    display: inline-block;
+    height: 13px;
+    margin-left: .35rem;
+    vertical-align: -1px;
+    width: 10px;
+}
+
+.barra-app .rotulo-admin {
+    border-left-color: rgba(0, 0, 0, .6);
+    color: var(--m-pessego);
+    font-family: var(--m-pixel);
+    font-size: .55rem;
+    text-shadow: 2px 2px 0 #000;
+}
+
+/* ---------- Cartões: caixas de diálogo 8-bit ---------- */
+
+.card {
+    background: #fff;
+    border: 4px solid #000;
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, .45);
+}
+
+.card-header,
+.card-footer,
+.card-footer.bg-white {
+    background: #fde7b5 !important;
+    border-color: #000;
+    border-width: 3px;
+}
+
+.card-header {
+    font-size: .7rem;
+}
+
+.zona-perigo {
+    border-color: var(--m-vermelho);
+}
+
+/* Resumo da lista de tarefas: cada contador é um bloco "?". */
+.resumo .card {
+    background: var(--m-ouro);
+    box-shadow: inset -4px -4px 0 var(--m-ouro-escuro), inset 4px 4px 0 var(--m-ouro-claro), 6px 6px 0 rgba(0, 0, 0, .45);
+    transition: transform .12s ease-out;
+}
+
+.resumo .card:hover {
+    transform: translateY(-4px);
+}
+
+.resumo .card .small {
+    color: var(--m-marrom) !important;
+    font-family: var(--m-pixel);
+    font-size: .55rem;
+    text-transform: uppercase;
+}
+
+.resumo .numero {
+    color: #fff;
+    font-size: 1.35rem;
+    margin-top: .5rem;
+    text-shadow: var(--m-contorno-texto);
+}
+
+.resumo .numero.text-success {
+    color: var(--m-verde-claro) !important;
+}
+
+.resumo .numero.text-danger {
+    color: #ff6b4a !important;
+}
+
+/* ---------- Botões: blocos de jogo ---------- */
+
+.btn {
+    --bs-btn-border-width: 3px;
+    --bs-btn-font-size: .7rem;
+    --bs-btn-padding-y: .6rem;
+    --bs-btn-padding-x: .9rem;
+    --bs-btn-border-radius: 0;
+    border-color: #000;
+    box-shadow: var(--m-sombra);
+    line-height: 1.4;
+    transition: transform .08s ease-out, box-shadow .08s ease-out, background-color .1s;
+}
+
+.btn-sm {
+    --bs-btn-font-size: .58rem;
+    --bs-btn-padding-y: .45rem;
+    --bs-btn-padding-x: .6rem;
+    box-shadow: 3px 3px 0 #000;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn:active,
+.btn.active {
+    box-shadow: none;
+    transform: translate(3px, 3px);
+}
+
+.btn:disabled,
+.btn.disabled {
+    box-shadow: none;
+    filter: grayscale(1);
+    opacity: .55;
+}
+
+/* Bloco "?": o botão principal. */
+.btn-primary {
+    --bs-btn-color: #3a1200;
+    --bs-btn-bg: var(--m-ouro);
+    --bs-btn-border-color: #000;
+    --bs-btn-hover-color: #3a1200;
+    --bs-btn-hover-bg: #ffab4f;
+    --bs-btn-hover-border-color: #000;
+    --bs-btn-active-color: #3a1200;
+    --bs-btn-active-bg: var(--m-ouro-escuro);
+    --bs-btn-active-border-color: #000;
+    --bs-btn-disabled-color: #3a1200;
+    --bs-btn-disabled-bg: var(--m-ouro);
+    --bs-btn-disabled-border-color: #000;
+    box-shadow: inset -3px -3px 0 var(--m-ouro-escuro), inset 3px 3px 0 var(--m-ouro-claro), var(--m-sombra);
+}
+
+.btn-primary.btn-sm {
+    box-shadow: inset -2px -2px 0 var(--m-ouro-escuro), inset 2px 2px 0 var(--m-ouro-claro), 3px 3px 0 #000;
+}
+
+/* Cogumelo vermelho: ações destrutivas. */
+.btn-danger {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--m-vermelho);
+    --bs-btn-border-color: #000;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #f03810;
+    --bs-btn-hover-border-color: #000;
+    --bs-btn-active-bg: #a01800;
+    --bs-btn-active-border-color: #000;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.btn-outline-secondary,
+.btn-outline-danger,
+.btn-outline-success {
+    --bs-btn-bg: #fff;
+    --bs-btn-border-color: #000;
+    --bs-btn-hover-border-color: #000;
+    --bs-btn-active-border-color: #000;
+    --bs-btn-disabled-bg: #fff;
+    --bs-btn-disabled-border-color: #000;
+}
+
+.btn-outline-secondary {
+    --bs-btn-color: #000;
+    --bs-btn-hover-color: #000;
+    --bs-btn-hover-bg: #fde7b5;
+    --bs-btn-active-color: #000;
+    --bs-btn-active-bg: #fcd88a;
+}
+
+/* Cano verde: concluir tarefa. */
+.btn-outline-success {
+    --bs-btn-color: #006400;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--m-verde);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #005800;
+    --bs-btn-disabled-color: #006400;
+}
+
+.btn-outline-danger {
+    --bs-btn-color: var(--m-vermelho);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--m-vermelho);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #a01800;
+}
+
+/* "Sair" na barra de tijolos. */
+.btn-outline-light {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--m-vermelho);
+    --bs-btn-border-color: #000;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #f03810;
+    --bs-btn-hover-border-color: #000;
+    --bs-btn-active-bg: #a01800;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.btn-link {
+    --bs-btn-color: var(--bs-link-color);
+    --bs-btn-hover-color: var(--bs-link-hover-color);
+    background: none;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.btn-link:active {
+    transform: none;
+}
+
+/* ---------- Formulários ---------- */
+
+.form-label {
+    font-size: .6rem;
+    line-height: 1.6;
+    text-transform: uppercase;
+}
+
+.form-control,
+.form-select,
+.input-group-text {
+    border: 3px solid #000;
+    border-radius: 0;
+}
+
+.form-control,
+.form-select {
+    background-color: #fff;
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+    border-color: #000;
+    box-shadow: 0 0 0 4px var(--m-ouro);
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: var(--m-vermelho);
+}
+
+.input-group-text {
+    background: var(--m-ouro);
+    color: #3a1200;
+}
+
+.form-check-input {
+    border: 3px solid #000;
+}
+
+.form-check-input:checked {
+    background-color: var(--m-verde);
+    border-color: #000;
+}
+
+.form-switch .form-check-input {
+    border-radius: 0;
+}
+
+.form-control-color {
+    padding: .2rem;
+}
+
+/* ---------- Tabelas ---------- */
+
+.table {
+    --bs-table-hover-bg: #fff3d1;
+    --bs-table-border-color: #e0c9a0;
+}
+
+.table thead.table-light {
+    --bs-table-bg: #000;
+    --bs-table-color: #fff;
+}
+
+.table thead th {
+    color: #fff;
+    font-size: .55rem;
+    letter-spacing: 0;
+}
+
+.tarefa-concluida .titulo-tarefa {
+    color: #6b7a99;
+}
+
+.tarefa-concluida .titulo-tarefa::before {
+    background: url("img/moeda.svg") center / 100% 100% no-repeat;
+    content: "";
+    display: inline-block;
+    height: 13px;
+    margin-right: .4rem;
+    vertical-align: -1px;
+    width: 10px;
+}
+
+@media (max-width: 767.98px) {
+    .tabela-tarefas tbody tr {
+        border-bottom: 3px dashed #e0c9a0;
+    }
+}
+
+/* ---------- Selos ---------- */
+
+.badge {
+    border: 2px solid #000;
+    font-size: .5rem;
+    line-height: 1.3;
+    padding: .45em .55em;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, .55);
+}
+
+.badge.bg-success-subtle,
+.badge.bg-secondary-subtle,
+.badge.bg-danger-subtle,
+.badge.bg-warning-subtle {
+    text-shadow: none;
+}
+
+.badge.bg-success-subtle {
+    background: var(--m-verde-claro) !important;
+    color: #003800 !important;
+}
+
+.badge.bg-danger-subtle {
+    background: #ffb4a0 !important;
+    color: #7a0d00 !important;
+}
+
+.amostra-cor {
+    border: 2px solid #000;
+    border-radius: 0;
+}
+
+/* ---------- Alertas ---------- */
+
+.alert {
+    border: 3px solid #000;
+    box-shadow: var(--m-sombra);
+    font-weight: 600;
+}
+
+.alert-success {
+    --bs-alert-bg: var(--m-verde-claro);
+    --bs-alert-color: #002800;
+}
+
+.alert-danger {
+    --bs-alert-bg: var(--m-vermelho);
+    --bs-alert-color: #fff;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.alert-warning {
+    --bs-alert-bg: var(--m-ouro);
+    --bs-alert-color: #3a1200;
+}
+
+.alert-info {
+    --bs-alert-bg: #fff;
+    --bs-alert-color: #10204a;
+}
+
+/* ---------- Paginação: fileira de blocos ---------- */
+
+.pagination {
+    gap: .35rem;
+}
+
+.page-link {
+    background: url("img/tijolo.svg") 0 0 / 32px 32px;
+    border: 3px solid #000 !important;
+    color: #fff;
+    font-size: .55rem;
+    margin: 0 !important;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.page-link:hover {
+    color: var(--m-ouro);
+}
+
+.page-item.active .page-link {
+    background: var(--m-ouro);
+    box-shadow: inset -2px -2px 0 var(--m-ouro-escuro), inset 2px 2px 0 var(--m-ouro-claro);
+    color: #3a1200;
+    text-shadow: none;
+}
+
+.page-item.disabled .page-link {
+    background: #7c3c00;
+    color: #c8a070;
+}
+
+/* ---------- Login, cadastro e erro: a tela de título ---------- */
+
+.cartao-acesso {
+    max-width: 460px;
+}
+
+/* Cabeçalho vira a placa laranja do título do jogo. */
+.cartao-acesso > .text-center.mb-4 {
+    background: var(--m-placa);
+    border: 4px solid #000;
+    box-shadow: inset 0 0 0 3px var(--m-pessego), 6px 6px 0 rgba(0, 0, 0, .45);
+    padding: 1.5rem 1rem 1.25rem;
+    position: relative;
+}
+
+/* Rebites nos quatro cantos da placa. */
+.cartao-acesso > .text-center.mb-4::before,
+.cartao-acesso > .text-center.mb-4::after {
+    background:
+        linear-gradient(var(--m-pessego), var(--m-pessego)) left top / 6px 6px no-repeat,
+        linear-gradient(var(--m-pessego), var(--m-pessego)) right top / 6px 6px no-repeat;
+    content: "";
+    height: 6px;
+    left: 10px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.cartao-acesso > .text-center.mb-4::after {
+    bottom: 10px;
+    top: auto;
+}
+
+.cartao-acesso > .text-center.mb-4 h1 {
+    color: var(--m-pessego);
+    font-size: 1.05rem;
+    text-shadow: 3px 3px 0 #000;
+    text-transform: uppercase;
+}
+
+.cartao-acesso > .text-center.mb-4 p {
+    color: #fff !important;
+    font-family: var(--m-pixel);
+    font-size: .55rem;
+    margin-bottom: 0;
+    text-shadow: 2px 2px 0 #000;
+}
+
+/* O ícone do topo vira um cogumelo (ou um inimigo, na página de erro). */
+.cartao-acesso .display-5 .bi {
+    display: none;
+}
+
+.cartao-acesso .display-5::before {
+    background: url("img/cogumelo.svg") center / 100% 100% no-repeat;
+    content: "";
+    display: inline-block;
+    height: 48px;
+    width: 48px;
+}
+
+.cartao-acesso .display-5.text-secondary::before {
+    background: url("img/inimigo.svg") 0 0 / 96px 48px no-repeat;
+}
+
+/* Página de erro: caixa de mensagem. */
+.cartao-acesso.text-center {
+    background: #000;
+    border: 4px solid #fff;
+    box-shadow: 0 0 0 4px #000, 8px 8px 0 4px rgba(0, 0, 0, .4);
+    color: #fff;
+    padding: 2rem 1.5rem;
+}
+
+.cartao-acesso.text-center h1 {
+    font-size: .95rem;
+}
+
+.cartao-acesso.text-center p {
+    color: #fff !important;
+}
+
+.cartao-acesso > p.small {
+    font-family: var(--m-pixel);
+    font-size: .55rem;
+    line-height: 1.8;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.cartao-acesso > p.small a {
+    color: var(--m-ouro);
+}
+
+/* Login errado: o formulário treme como quem leva um susto. */
+.cartao-acesso:has(.alert-danger) form.card {
+    animation: mario-tremer .45s steps(2) 1;
+}
+
+@keyframes mario-tremer {
+    25% {
+        transform: translateX(-6px);
+    }
+
+    50% {
+        transform: translateX(6px);
+    }
+
+    75% {
+        transform: translateX(-4px);
+    }
+}
+
+/* ---------- Tela "Escolha o tema" com o tema Mario ativo ---------- */
+
+.mundo-atual {
+    border: 2px solid #000;
+    border-radius: 0;
+    font-family: var(--m-pixel);
+    font-size: .45rem;
+    padding: .35rem .45rem;
+}
+
+.mundo:focus-visible {
+    outline: 4px solid #fff;
+}
+
+/* ---------- Elementos criados pelo tema.js ---------- */
+
+/* HUD no topo das telas de acesso. */
+.mario-hud {
+    color: #fff;
+    display: grid;
+    font-family: var(--m-pixel);
+    font-size: .6rem;
+    gap: .5rem;
+    grid-template-columns: repeat(4, 1fr);
+    line-height: 1.8;
+    margin: 0 auto;
+    max-width: 960px;
+    padding: 1rem 1rem 0;
+    text-align: center;
+    text-shadow: 2px 2px 0 #000;
+    text-transform: uppercase;
+}
+
+.mario-hud span {
+    display: block;
+}
+
+.mario-hud .pressa {
+    animation: mario-piscar .5s steps(1) infinite;
+    color: #ffd0c0;
+}
+
+@keyframes mario-piscar {
+    50% {
+        opacity: .2;
+    }
+}
+
+/* Fileira de blocos clicáveis nas telas de acesso. */
+.mario-fileira {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 2.25rem;
+}
+
+.mario-fileira > * {
+    background: url("img/tijolo.svg") center / 100% 100% no-repeat;
+    border: 0;
+    display: block;
+    height: 40px;
+    padding: 0;
+    width: 40px;
+}
+
+.mario-bloco-surpresa {
+    background-image: url("img/bloco.svg") !important;
+    cursor: pointer;
+    position: relative;
+}
+
+.mario-bloco-surpresa:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+}
+
+.mario-bloco-surpresa.batendo {
+    animation: mario-batida .25s ease-out;
+}
+
+@keyframes mario-batida {
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Contador de moedas na barra de navegação. */
+.mario-contador {
+    align-items: center;
+    color: #fff;
+    display: inline-flex;
+    font-family: var(--m-pixel);
+    font-size: .6rem;
+    gap: .35rem;
+    text-shadow: 2px 2px 0 #000;
+    white-space: nowrap;
+}
+
+.mario-contador::before {
+    background: url("img/moeda.svg") center / 100% 100% no-repeat;
+    content: "";
+    height: 16px;
+    width: 12px;
+}
+
+/* Moeda que salta de um botão ou bloco. */
+.mario-moeda-pulando {
+    animation: mario-moeda .7s ease-out forwards;
+    background: url("img/moeda.svg") center / 100% 100% no-repeat;
+    height: 26px;
+    margin-left: -10px;
+    pointer-events: none;
+    position: absolute;
+    width: 20px;
+    z-index: 1080;
+}
+
+@keyframes mario-moeda {
+    0% {
+        transform: translateY(0) scaleX(1);
+    }
+
+    25% {
+        transform: translateY(-36px) scaleX(.3);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(-58px) scaleX(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-30px) scaleX(.3);
+    }
+}
+
+/* Personagens andando sobre o chão, no fim da página. */
+.mario-personagem {
+    background-repeat: no-repeat;
+    background-size: 96px 48px;
+    bottom: 96px;
+    height: 48px;
+    pointer-events: none;
+    position: absolute;
+    width: 48px;
+}
+
+.mario-personagem.encanador {
+    animation: mario-atravessar 26s linear infinite, mario-passos .3s steps(1) infinite;
+    background-image: url("img/encanador.svg");
+    left: -60px;
+}
+
+.mario-personagem.inimigo {
+    animation: mario-patrulha 9s ease-in-out infinite alternate, mario-passos .5s steps(1) infinite;
+    background-image: url("img/inimigo.svg");
+    left: 55%;
+}
+
+.mario-cano-decorativo {
+    background: url("img/cano.svg") center / 100% 100% no-repeat;
+    bottom: 96px;
+    height: 90px;
+    pointer-events: none;
+    position: absolute;
+    right: 12%;
+    width: 90px;
+}
+
+@keyframes mario-atravessar {
+    to {
+        transform: translateX(calc(100vw + 120px));
+    }
+}
+
+@keyframes mario-patrulha {
+    to {
+        transform: translateX(-160px);
+    }
+}
+
+@keyframes mario-passos {
+    50% {
+        background-position: -48px 0;
+    }
+}
+
+/* Botão de som, fixo no canto. */
+.mario-som {
+    align-items: center;
+    background: #000;
+    border: 3px solid #fff;
+    bottom: 1rem;
+    box-shadow: 0 0 0 3px #000;
+    color: #fff;
+    display: inline-flex;
+    font-family: var(--m-pixel);
+    font-size: .5rem;
+    gap: .4rem;
+    padding: .55rem .65rem;
+    position: fixed;
+    right: 1rem;
+    z-index: 1070;
+}
+
+.mario-som .bi {
+    font-size: .9rem;
+}
+
+.mario-som:focus-visible {
+    outline: 3px solid var(--m-ouro);
+    outline-offset: 3px;
+}
+
+@media (max-width: 575.98px) {
+    .mario-hud {
+        font-size: .48rem;
+    }
+
+    .mario-som {
+        bottom: .6rem;
+        padding: .4rem .5rem;
+        right: .6rem;
+    }
+
+    .mario-som span {
+        display: none;
+    }
+
+    .mario-cano-decorativo {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body::before,
+    .mario-personagem,
+    .mario-moeda-pulando,
+    .resumo .card,
+    .btn,
+    .cartao-acesso form.card {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .mario-personagem.encanador {
+        left: 8%;
+    }
+}

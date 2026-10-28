@@ -88,6 +88,36 @@ class TemaWebTest {
     }
 
     @Test
+    void temaMarioCarregaOVisualEOsSonsEmTodasAsTelas() throws Exception {
+        mvc.perform(get("/login").cookie(new Cookie("tema", "mario")))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("/temas/mario/tema.css")))
+                .andExpect(content().string(containsString("/temas/mario/tema.js")));
+    }
+
+    @Test
+    void temaPadraoNaoCarregaArquivosDeOutroTema() throws Exception {
+        mvc.perform(get("/login").cookie(new Cookie("tema", "padrao")))
+                .andExpect(content().string(not(containsString("tema.css"))))
+                .andExpect(content().string(not(containsString("tema.js"))));
+    }
+
+    @Test
+    void telaDeEscolhaMostraOMundoDeCadaTema() throws Exception {
+        mvc.perform(get("/tema"))
+                .andExpect(content().string(containsString("value=\"mario\"")))
+                .andExpect(content().string(containsString("/temas/mario/mundo.css")))
+                .andExpect(content().string(containsString("mario-encanador")));
+    }
+
+    @Test
+    void escolherMarioGuardaOTemaNoCookie() throws Exception {
+        mvc.perform(post("/tema").param("tema", "mario").with(csrf()))
+                .andExpect(redirectedUrl("/login"))
+                .andExpect(cookie().value("tema", "mario"));
+    }
+
+    @Test
     void temaForaDaListaEhRecusado() throws Exception {
         mvc.perform(post("/tema").param("tema", "<script>").with(csrf()))
                 .andExpect(status().isBadRequest())

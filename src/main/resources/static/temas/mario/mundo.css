@@ -1,0 +1,222 @@
+/* Cartão do tema Mario na tela "Escolha o tema": uma fase em miniatura, com pixel art própria (img/). */
+
+@font-face {
+    font-display: swap;
+    font-family: "Press Start 2P";
+    src: url("fontes/press-start-2p-latin-400.woff2") format("woff2");
+}
+
+.mundo-mario .mundo-cena {
+    background: #5c94fc;
+    border: 3px solid #000;
+    border-bottom: 0;
+    image-rendering: pixelated;
+}
+
+/* A fase não "levanta" inteira: quem se mexe é o encanador. */
+.mundo-mario:hover .mundo-cena,
+.mundo-mario:focus-visible .mundo-cena {
+    transform: none;
+}
+
+.mundo-mario .mundo-cena > span {
+    background-repeat: no-repeat;
+    position: absolute;
+}
+
+.mundo-mario .mario-morro,
+.mundo-mario .mario-arbusto,
+.mundo-mario .mario-cano,
+.mundo-mario .mario-moeda {
+    background-size: 100% 100%;
+}
+
+.mundo-mario .mario-nuvens {
+    inset: 0;
+    overflow: hidden;
+}
+
+.mario-nuvem {
+    animation: mario-mundo-nuvem 22s linear infinite;
+    background: url("img/nuvem.svg") center / 100% 100% no-repeat;
+    height: 36px;
+    left: 100%;
+    position: absolute;
+    top: 8%;
+    width: 64px;
+}
+
+.mario-nuvem.pequena {
+    animation-delay: -11s;
+    height: 27px;
+    top: 26%;
+    width: 48px;
+}
+
+.mundo-mario .mario-morro {
+    background-image: url("img/morro.svg");
+    bottom: 0;
+    height: 40px;
+    left: 3%;
+    width: 80px;
+}
+
+.mundo-mario .mario-arbusto {
+    background-image: url("img/arbusto.svg");
+    bottom: 0;
+    height: 24px;
+    left: 50%;
+    width: 64px;
+}
+
+.mundo-mario .mario-cano {
+    background-image: url("img/cano.svg");
+    bottom: 0;
+    height: 60px;
+    right: 5%;
+    width: 60px;
+}
+
+.mundo-mario .mario-blocos {
+    bottom: 72px;
+    display: flex;
+    left: 24%;
+}
+
+.mario-blocos > span {
+    background: url("img/tijolo.svg") center / 100% 100% no-repeat;
+    display: block;
+    height: 32px;
+    width: 32px;
+}
+
+.mario-blocos > .bloco {
+    background-image: url("img/bloco.svg");
+}
+
+.mundo-mario .mario-moeda {
+    background-image: url("img/moeda.svg");
+    bottom: 106px;
+    height: 26px;
+    left: calc(24% + 38px);
+    opacity: 0;
+    width: 20px;
+}
+
+.mundo-mario .mario-encanador {
+    background: url("img/encanador.svg") 0 0 / 64px 32px no-repeat;
+    bottom: 0;
+    height: 32px;
+    left: calc(24% + 32px);
+    width: 32px;
+}
+
+.mundo-mario .mario-inimigo {
+    animation: mario-mundo-patrulha 7s ease-in-out infinite alternate, mario-mundo-passos .5s steps(1) infinite;
+    background: url("img/inimigo.svg") 0 0 / 64px 32px no-repeat;
+    bottom: 0;
+    height: 32px;
+    left: 52%;
+    width: 32px;
+}
+
+/* A plataforma com o nome é o próprio chão da fase. */
+.mundo-mario .mundo-nome {
+    background: url("img/chao.svg") 0 0 / 32px 32px repeat;
+    border: 3px solid #000;
+    border-top: 0;
+    color: #fff;
+    font-family: "Press Start 2P", monospace;
+    font-size: .8rem;
+    image-rendering: pixelated;
+    padding: 1.15rem .5rem;
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+    text-transform: uppercase;
+}
+
+.mundo-mario:hover .mario-encanador,
+.mundo-mario:focus-visible .mario-encanador {
+    animation: mario-mundo-pulo .55s ease-out;
+    background-position: -32px 0;
+}
+
+.mundo-mario:hover .mario-blocos > .bloco,
+.mundo-mario:focus-visible .mario-blocos > .bloco {
+    animation: mario-mundo-batida .55s ease-out forwards;
+}
+
+.mundo-mario:hover .mario-moeda,
+.mundo-mario:focus-visible .mario-moeda {
+    animation: mario-mundo-moeda .8s ease-out .2s;
+}
+
+@keyframes mario-mundo-nuvem {
+    to {
+        transform: translateX(calc(-100% - 360px));
+    }
+}
+
+@keyframes mario-mundo-patrulha {
+    to {
+        transform: translateX(48px);
+    }
+}
+
+@keyframes mario-mundo-passos {
+    50% {
+        background-position: -32px 0;
+    }
+}
+
+@keyframes mario-mundo-pulo {
+    45% {
+        transform: translateY(-40px);
+    }
+}
+
+@keyframes mario-mundo-batida {
+    0%, 35% {
+        transform: none;
+    }
+
+    45% {
+        transform: translateY(-8px);
+    }
+
+    60%, 100% {
+        background-image: url("img/bloco-usado.svg");
+        transform: none;
+    }
+}
+
+@keyframes mario-mundo-moeda {
+    0% {
+        opacity: 1;
+        transform: none;
+    }
+
+    60% {
+        opacity: 1;
+        transform: translateY(-34px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mundo-mario .mundo-cena *,
+    .mario-nuvem {
+        animation: none !important;
+    }
+
+    .mario-nuvem {
+        left: 12%;
+    }
+
+    .mario-nuvem.pequena {
+        left: 64%;
+    }
+}

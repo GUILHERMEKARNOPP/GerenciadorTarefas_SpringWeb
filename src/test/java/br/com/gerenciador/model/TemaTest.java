@@ -9,6 +9,7 @@ class TemaTest {
     @Test
     void encontraTemaPeloSlug() {
         assertThat(Tema.doSlug("padrao")).contains(Tema.PADRAO);
+        assertThat(Tema.doSlug("mario")).contains(Tema.MARIO);
     }
 
     @Test

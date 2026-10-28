@@ -9,7 +9,7 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css}">
     <link rel="stylesheet" th:href="@{/css/app.css}">
-    <!-- Temas além do Padrão trazem seu visual (tema.css) e suas animações/sons (tema.js) em static/temas/{slug}. -->
+    <!--/* Temas além do Padrão trazem seu visual (tema.css) e suas animações/sons (tema.js) em static/temas/{slug}. */-->
     <th:block th:if="${tema != null and !tema.padrao}">
         <link rel="stylesheet" th:href="@{/temas/{slug}/tema.css(slug=${tema.slug})}">
         <script defer th:src="@{/temas/{slug}/tema.js(slug=${tema.slug})}"></script>

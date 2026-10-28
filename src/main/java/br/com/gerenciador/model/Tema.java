@@ -5,11 +5,13 @@ import java.util.Optional;
 
 /**
  * Temas visuais do sistema. O slug é o valor guardado no cookie e o nome da pasta static/temas/{slug},
- * onde ficam o tema.css e o tema.js de cada tema (o Padrão usa só o app.css).
+ * onde ficam o tema.css e o tema.js de cada tema e o mundo.css do seu cartão na tela de escolha
+ * (o Padrão usa só o app.css).
  */
 public enum Tema {
 
-    PADRAO("padrao", "Padrão");
+    PADRAO("padrao", "Padrão"),
+    MARIO("mario", "Mario Bros");
 
     private final String slug;
     private final String nome;

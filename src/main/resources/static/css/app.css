@@ -192,7 +192,7 @@ body {
     top: 0;
 }
 
-/* Mundo Padrão */
+/* Mundo Padrão (cores fixas: o cartão aparece igual mesmo com outro tema ativo) */
 .padrao-janela {
     background: #fff;
     border-radius: .5rem .5rem 0 0;
@@ -210,7 +210,7 @@ body {
 
 .padrao-barra {
     align-items: center;
-    background: var(--app-barra);
+    background: #1e293b;
     display: flex;
     flex: 0 0 18%;
     gap: 6%;
@@ -288,7 +288,7 @@ body {
 }
 
 .mundo-padrao .mundo-nome {
-    background: linear-gradient(#334155, var(--app-barra));
+    background: linear-gradient(#334155, #1e293b);
     border-radius: .5rem;
     box-shadow: 0 6px 0 #0f172a, 0 14px 22px rgba(15, 23, 42, .22);
     color: #fff;
