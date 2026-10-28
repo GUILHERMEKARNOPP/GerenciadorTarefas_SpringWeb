@@ -110,7 +110,10 @@ class TemaWebTest {
                 .andExpect(content().string(containsString("mario-encanador")))
                 .andExpect(content().string(containsString("value=\"minecraft\"")))
                 .andExpect(content().string(containsString("/temas/minecraft/mundo.css")))
-                .andExpect(content().string(containsString("mc-minerador")));
+                .andExpect(content().string(containsString("mc-minerador")))
+                .andExpect(content().string(containsString("value=\"stardew\"")))
+                .andExpect(content().string(containsString("/temas/stardew/mundo.css")))
+                .andExpect(content().string(containsString("sv-fazendeiro")));
     }
 
     @Test
@@ -134,6 +137,22 @@ class TemaWebTest {
         mvc.perform(post("/tema").param("tema", "minecraft").with(csrf()))
                 .andExpect(redirectedUrl("/login"))
                 .andExpect(cookie().value("tema", "minecraft"));
+    }
+
+    @Test
+    void temaStardewCarregaSoOsArquivosDele() throws Exception {
+        mvc.perform(get("/login").cookie(new Cookie("tema", "stardew")))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("/temas/stardew/tema.css")))
+                .andExpect(content().string(containsString("/temas/stardew/tema.js")))
+                .andExpect(content().string(not(containsString("/temas/minecraft/"))));
+    }
+
+    @Test
+    void escolherStardewGuardaOTemaNoCookie() throws Exception {
+        mvc.perform(post("/tema").param("tema", "stardew").with(csrf()))
+                .andExpect(redirectedUrl("/login"))
+                .andExpect(cookie().value("tema", "stardew"));
     }
 
     @Test

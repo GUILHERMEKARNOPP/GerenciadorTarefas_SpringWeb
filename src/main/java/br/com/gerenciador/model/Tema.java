@@ -12,7 +12,8 @@ public enum Tema {
 
     PADRAO("padrao", "Padrão"),
     MARIO("mario", "Mario Bros"),
-    MINECRAFT("minecraft", "Minecraft");
+    MINECRAFT("minecraft", "Minecraft"),
+    STARDEW("stardew", "Stardew Valley");
 
     private final String slug;
     private final String nome;

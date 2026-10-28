@@ -1,0 +1,1187 @@
+/*
+  Tema Stardew Valley: o sistema inteiro vira uma fazenda (céu que vai da noite estrelada ao dia, montanhas,
+  cerca, grama e terra arada), com os menus de pergaminho e moldura de madeira do jogo.
+  Toda a pixel art em img/ é própria, só inspirada no estilo do jogo. Fonte Pixelify Sans (licença OFL, fontes/OFL.txt).
+*/
+
+@font-face {
+    font-display: swap;
+    font-family: "Pixelify Sans";
+    font-weight: 400 700;
+    src: url("fontes/pixelify-sans-latin-wght.woff2") format("woff2");
+}
+
+:root {
+    --sv-contorno: #2b1a0e;
+    --sv-madeira-escura: #5b2b0d;
+    --sv-madeira: #8e4a1b;
+    --sv-moldura: #b8682a;
+    --sv-moldura-clara: #dd8f45;
+    --sv-pergaminho: #f7d8a0;
+    --sv-pergaminho-claro: #fff3d6;
+    --sv-pergaminho-escuro: #e8bf7a;
+    --sv-verde: #4f9a2c;
+    --sv-verde-claro: #8fd14f;
+    --sv-vermelho: #c0392b;
+    --sv-dourado: #f2b544;
+    --sv-dourado-claro: #ffd86b;
+    --sv-texto: #4b2a12;
+    --sv-sombra-texto: 2px 2px 0 var(--sv-madeira-escura);
+    --sv-contorno-texto: 2px 2px 0 #10183a, -1px -1px 0 #10183a, 1px -1px 0 #10183a, -1px 1px 0 #10183a, 1px 1px 0 #10183a;
+    --sv-pixel: "Pixelify Sans", ui-monospace, monospace;
+    /* Moldura dos menus do jogo: madeira em relevo com uma linha escura por fora. */
+    --sv-moldura-relevo: var(--sv-moldura-clara) var(--sv-madeira) var(--sv-madeira) var(--sv-moldura-clara);
+    --sv-relevo: inset 2px 2px 0 rgba(255, 255, 255, .3), inset -2px -3px 0 rgba(0, 0, 0, .3);
+    --sv-afundado: inset 2px 3px 0 rgba(0, 0, 0, .3), inset -2px -2px 0 rgba(255, 255, 255, .15);
+
+    --app-fundo: #2a78dd;
+    --app-barra: var(--sv-madeira);
+    --app-borda: var(--sv-contorno);
+    /* O céu é pintado só no body; o resto do Bootstrap usa o pergaminho dos menus. */
+    --bs-body-bg: var(--sv-pergaminho);
+    --bs-body-color: var(--sv-texto);
+    --bs-secondary-color: #7a4a22;
+    --bs-tertiary-color: #8e5a2c;
+    --bs-border-color: var(--sv-moldura);
+    --bs-border-radius: 0;
+    --bs-border-radius-sm: 0;
+    --bs-border-radius-lg: 0;
+    --bs-border-radius-pill: 0;
+    --bs-link-color: #1f5a9c;
+    --bs-link-color-rgb: 31, 90, 156;
+    --bs-link-hover-color: #2f7a2a;
+    --bs-link-hover-color-rgb: 47, 122, 42;
+    --bs-success-rgb: 47, 122, 42;
+    --bs-danger-rgb: 176, 48, 42;
+}
+
+/* ---------- Cenário ---------- */
+
+body {
+    background-color: #2a78dd;
+    background-image:
+        url("img/arvore-outono.png"),
+        url("img/arvore.png"),
+        url("img/cerca.png"),
+        url("img/grama.png"),
+        url("img/montanhas.png"),
+        url("img/terra.png"),
+        url("img/terra.png"),
+        linear-gradient(#0b1a4a, #13398a 22%, #2a78dd 48%, #63c6f0 78%, #b9f1f4);
+    background-position:
+        left 2% bottom 126px,
+        right 3% bottom 126px,
+        left bottom 126px,
+        left bottom 96px,
+        left bottom 132px,
+        left bottom 48px,
+        left bottom,
+        0 0;
+    background-repeat: no-repeat, no-repeat, repeat-x, repeat-x, repeat-x, repeat-x, repeat-x, no-repeat;
+    background-size: 96px 144px, 96px 144px, 48px 48px, 48px 48px, 384px 144px, 48px 48px, 48px 48px, 100% 100%;
+    image-rendering: pixelated;
+    /* Personagens entram e saem pelas laterais sem criar rolagem horizontal. */
+    overflow-x: clip;
+    padding-bottom: 290px;
+    position: relative;
+}
+
+/* Estrelas no alto do céu e nuvens passando ao fundo, atrás de todo o conteúdo. */
+body::before {
+    animation: sv-nuvens 160s linear infinite;
+    background-image: url("img/nuvens.png"), url("img/estrelas.png"), url("img/estrelas.png");
+    background-position: 0 38vh, 0 0, 96px 150px;
+    background-repeat: repeat-x, repeat-x, repeat-x;
+    background-size: 640px 80px, 192px 192px, 192px 192px;
+    content: "";
+    inset: 0;
+    pointer-events: none;
+    position: fixed;
+    z-index: -1;
+}
+
+/* A nuvem anda exatamente uma largura do ladrilho, então o fim emenda com o começo. */
+@keyframes sv-nuvens {
+    to {
+        background-position: -640px 38vh, 0 0, 96px 150px;
+    }
+}
+
+/* ---------- Tipografia ---------- */
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5,
+.navbar-brand, .form-label, .btn, .badge, .page-link, .table thead th, .card-header, .resumo .numero, .alert {
+    font-family: var(--sv-pixel);
+    letter-spacing: 0;
+}
+
+h1, .h1, h2, .h2, h3, .h3 {
+    color: #fff;
+    font-size: clamp(1.25rem, 3vw, 1.6rem);
+    font-weight: 700;
+    text-shadow: var(--sv-contorno-texto);
+}
+
+h4, .h4, h5, .h5 {
+    font-weight: 600;
+}
+
+/* Dentro do pergaminho o título volta a ser marrom, como nos menus do jogo. */
+.card h1, .card .h1, .card h2, .card .h2, .card h3, .card .h3, .card h4, .card .h4, .card h5, .card .h5 {
+    color: var(--sv-madeira-escura);
+    text-shadow: none;
+}
+
+main > .d-flex > div > p.text-body-secondary,
+main > header > p.text-body-secondary,
+main > p {
+    color: #fff !important;
+    font-family: var(--sv-pixel);
+    font-size: 1.05rem;
+    text-shadow: var(--sv-contorno-texto);
+}
+
+main > header strong,
+main > p a,
+.cartao-acesso > p.small {
+    color: #fff;
+}
+
+/* ---------- Barra de navegação: uma fileira de tábuas ---------- */
+
+.barra-app {
+    background: url("img/madeira.png") 0 0 / 48px 48px repeat;
+    border-bottom: 3px solid var(--sv-contorno);
+    box-shadow: 0 4px 0 rgba(0, 0, 0, .25);
+}
+
+.barra-app .navbar-brand {
+    align-items: center;
+    color: var(--sv-pergaminho-claro);
+    display: inline-flex;
+    font-size: 1.2rem;
+    font-weight: 700;
+    gap: .45rem;
+    text-shadow: 2px 2px 0 var(--sv-contorno);
+}
+
+.barra-app .navbar-brand .bi {
+    display: none;
+}
+
+.barra-app .navbar-brand::before {
+    background: url("img/pastinaca.png") center / 100% 100% no-repeat;
+    content: "";
+    height: 32px;
+    width: 32px;
+}
+
+/* A fonte pixel é larga: sem os ícones, o menu cabe numa linha só. */
+.barra-app .nav-link .bi {
+    display: none;
+}
+
+.barra-app .nav-link {
+    color: var(--sv-pergaminho-claro);
+    font-family: var(--sv-pixel);
+    font-size: 1rem;
+    font-weight: 600;
+    padding-inline: .55rem;
+    text-shadow: 2px 2px 0 var(--sv-contorno);
+}
+
+.barra-app .nav-link:hover {
+    color: var(--sv-dourado-claro);
+}
+
+/* Item ativo: a aba selecionada dos menus, em pergaminho. */
+.barra-app .nav-link.active {
+    background: var(--sv-pergaminho);
+    box-shadow: inset 0 0 0 2px var(--sv-moldura), 0 0 0 2px var(--sv-contorno);
+    color: var(--sv-madeira-escura);
+    text-shadow: none;
+}
+
+.barra-app .rotulo-admin {
+    border-left-color: rgba(0, 0, 0, .5);
+    color: var(--sv-dourado-claro);
+    font-family: var(--sv-pixel);
+    font-weight: 600;
+    text-shadow: 2px 2px 0 var(--sv-contorno);
+}
+
+/* ---------- Cartões: os menus de pergaminho com moldura de madeira ---------- */
+
+.card {
+    background: var(--sv-pergaminho);
+    border: 5px solid;
+    border-color: var(--sv-moldura-relevo);
+    box-shadow: 0 0 0 3px var(--sv-contorno), 6px 6px 0 3px rgba(0, 0, 0, .3);
+    color: var(--sv-texto);
+}
+
+.card-header,
+.card-footer,
+.card-footer.bg-white {
+    background: var(--sv-pergaminho-escuro) !important;
+    border-color: var(--sv-moldura);
+    border-width: 3px;
+}
+
+.card-header {
+    color: var(--sv-madeira-escura);
+    font-weight: 600;
+}
+
+.zona-perigo {
+    border-color: #e06a50 #8a2318 #8a2318 #e06a50;
+}
+
+/* Resumo da lista de tarefas: cada contador é uma plaquinha de madeira, como o contador de ouro. */
+.resumo .card {
+    /* Madeira escurecida, para o número em destaque não brigar com os veios. */
+    background: linear-gradient(rgba(43, 26, 14, .45), rgba(43, 26, 14, .45)), url("img/madeira.png") 0 0 / 48px 48px;
+    transition: transform .12s steps(2);
+}
+
+.resumo .card:hover {
+    transform: translateY(-4px);
+}
+
+.resumo .card .small {
+    color: var(--sv-pergaminho-claro) !important;
+    font-family: var(--sv-pixel);
+    font-size: .85rem;
+    text-shadow: 2px 2px 0 var(--sv-contorno);
+    text-transform: uppercase;
+}
+
+.resumo .numero {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: .25rem;
+    text-shadow: 3px 3px 0 var(--sv-contorno);
+}
+
+.resumo .numero.text-primary {
+    color: #8fc8f5 !important;
+}
+
+.resumo .numero.text-success {
+    color: #b6f27a !important;
+}
+
+.resumo .numero.text-danger {
+    color: #ff9a85 !important;
+}
+
+/* ---------- Botões: tábuas de madeira ---------- */
+
+.btn {
+    --bs-btn-border-width: 2px;
+    --bs-btn-font-size: 1rem;
+    --bs-btn-font-weight: 600;
+    --bs-btn-padding-y: .5rem;
+    --bs-btn-padding-x: 1rem;
+    --bs-btn-border-radius: 0;
+    --bs-btn-color: var(--sv-pergaminho-claro);
+    --bs-btn-bg: var(--sv-moldura);
+    --bs-btn-border-color: var(--sv-contorno);
+    --bs-btn-hover-color: var(--sv-dourado-claro);
+    --bs-btn-hover-bg: #c97a37;
+    --bs-btn-hover-border-color: var(--sv-contorno);
+    --bs-btn-active-color: var(--sv-dourado-claro);
+    --bs-btn-active-bg: var(--sv-madeira);
+    --bs-btn-active-border-color: var(--sv-contorno);
+    --bs-btn-disabled-color: #c9a77f;
+    --bs-btn-disabled-bg: #6e4a2c;
+    --bs-btn-disabled-border-color: var(--sv-contorno);
+    background-image: url("img/madeira.png");
+    background-size: 32px 32px;
+    box-shadow: var(--sv-relevo);
+    line-height: 1.3;
+    text-shadow: 2px 2px 0 var(--sv-contorno);
+    transition: filter .08s, color .08s;
+}
+
+.btn-sm {
+    --bs-btn-font-size: .9rem;
+    --bs-btn-padding-y: .3rem;
+    --bs-btn-padding-x: .6rem;
+}
+
+/* Ao passar o mouse a tábua clareia e ganha a borda dourada de item selecionado. */
+.btn:hover,
+.btn:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--sv-dourado-claro), var(--sv-relevo);
+    filter: brightness(1.1);
+}
+
+.btn:active,
+.btn.active {
+    box-shadow: var(--sv-afundado);
+    filter: brightness(.92);
+}
+
+.btn:disabled,
+.btn.disabled {
+    background-image: none;
+    box-shadow: none;
+    filter: none;
+    opacity: 1;
+    text-shadow: none;
+}
+
+/* Verde do botão de confirmar dos menus: a ação principal. */
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--sv-verde);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #5cad35;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #3d7a22;
+    --bs-btn-disabled-color: #d6e8c4;
+    --bs-btn-disabled-bg: #46682f;
+    background-image: none;
+    text-shadow: 2px 2px 0 #1f4a12;
+}
+
+/* Vermelho do "X" de fechar/descartar: ações destrutivas. */
+.btn-danger,
+.btn-outline-danger {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--sv-vermelho);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #d4473a;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #8a2318;
+    background-image: none;
+    text-shadow: 2px 2px 0 #4a1210;
+}
+
+/* Concluir tarefa: tábua de madeira com o ícone verde da colheita. */
+.btn-outline-success {
+    --bs-btn-color: #b6f27a;
+    --bs-btn-hover-color: #d8ffae;
+    --bs-btn-active-color: #d8ffae;
+    --bs-btn-disabled-color: #9cb08a;
+}
+
+/* "Sair" na barra de madeira: um botão de pergaminho. */
+.btn-outline-light {
+    --bs-btn-color: var(--sv-madeira-escura);
+    --bs-btn-bg: var(--sv-pergaminho);
+    --bs-btn-hover-color: var(--sv-madeira-escura);
+    --bs-btn-hover-bg: var(--sv-pergaminho-claro);
+    --bs-btn-active-color: var(--sv-madeira-escura);
+    --bs-btn-active-bg: var(--sv-pergaminho-escuro);
+    background-image: none;
+    text-shadow: none;
+}
+
+.btn-link {
+    --bs-btn-color: var(--bs-link-color);
+    --bs-btn-hover-color: var(--bs-link-hover-color);
+    background: none;
+    border-color: transparent;
+    box-shadow: none;
+    filter: none;
+    text-shadow: none;
+}
+
+.btn-link:hover,
+.btn-link:active {
+    box-shadow: none;
+    filter: none;
+}
+
+/* ---------- Formulários: campos de pergaminho claro com borda de madeira ---------- */
+
+.form-label {
+    color: var(--sv-madeira-escura);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.form-control,
+.form-select {
+    background-color: var(--sv-pergaminho-claro);
+    border: 3px solid var(--sv-moldura);
+    border-radius: 0;
+    color: var(--sv-texto);
+    font-family: var(--sv-pixel);
+    font-size: 1.05rem;
+}
+
+.form-select {
+    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%235b2b0d' stroke-linecap='square' stroke-width='2.5' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.form-control::placeholder {
+    color: #b08a62;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #fff;
+    border-color: var(--sv-madeira-escura);
+    box-shadow: 0 0 0 3px rgba(242, 181, 68, .7);
+    color: var(--sv-texto);
+}
+
+.form-control:disabled,
+.form-select:disabled,
+.form-control[readonly] {
+    background-color: var(--sv-pergaminho-escuro);
+    color: #8e6a44;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: var(--sv-vermelho);
+}
+
+.invalid-feedback {
+    color: #a3261b;
+    font-weight: 600;
+}
+
+.form-text {
+    color: #7a4a22;
+}
+
+.input-group-text {
+    background: var(--sv-pergaminho-escuro);
+    border: 3px solid var(--sv-moldura);
+    border-radius: 0;
+    color: var(--sv-texto);
+}
+
+.form-check-input {
+    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3crect x='-3' y='-3' width='6' height='6' fill='%23b8682a'/%3e%3c/svg%3e");
+    background-color: var(--sv-pergaminho-claro);
+    border: 2px solid var(--sv-moldura);
+    border-radius: 0;
+}
+
+.form-check-input:checked {
+    background-color: var(--sv-verde);
+    border-color: var(--sv-contorno);
+}
+
+.form-check-input:focus {
+    border-color: var(--sv-madeira-escura);
+    box-shadow: 0 0 0 3px rgba(242, 181, 68, .7);
+}
+
+.form-switch .form-check-input,
+.form-switch .form-check-input:checked {
+    border-radius: 0;
+}
+
+.form-control-color {
+    padding: .2rem;
+}
+
+/* ---------- Tabelas ---------- */
+
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--sv-texto);
+    --bs-table-hover-bg: rgba(255, 255, 255, .35);
+    --bs-table-hover-color: var(--sv-texto);
+    --bs-table-border-color: #d9a866;
+}
+
+.table thead.table-light {
+    --bs-table-bg: var(--sv-moldura);
+    --bs-table-color: var(--sv-pergaminho-claro);
+}
+
+.table thead th {
+    color: var(--sv-pergaminho-claro);
+    font-weight: 600;
+    text-shadow: 2px 2px 0 var(--sv-madeira-escura);
+}
+
+.tarefa-concluida .titulo-tarefa {
+    color: #9a7550;
+}
+
+/* Tarefa concluída ganha a estrela dourada de qualidade dos itens. */
+.tarefa-concluida .titulo-tarefa::before {
+    background: url("img/estrela.png") center / 100% 100% no-repeat;
+    content: "";
+    display: inline-block;
+    height: 14px;
+    margin-right: .4rem;
+    vertical-align: -1px;
+    width: 14px;
+}
+
+@media (max-width: 767.98px) {
+    .tabela-tarefas tbody tr {
+        border-bottom: 3px solid #d9a866;
+    }
+}
+
+/* ---------- Selos ---------- */
+
+.badge {
+    border: 2px solid var(--sv-madeira-escura);
+    font-size: .8rem;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: .35em .5em;
+}
+
+.badge.bg-success-subtle {
+    background: var(--sv-verde-claro) !important;
+    color: #1e4a12 !important;
+}
+
+.badge.bg-danger-subtle {
+    background: #ff9a85 !important;
+    color: #5a120a !important;
+}
+
+.badge.bg-warning-subtle {
+    background: var(--sv-dourado-claro) !important;
+    color: #5a3a00 !important;
+}
+
+.badge.bg-secondary-subtle {
+    background: var(--sv-pergaminho-claro) !important;
+    color: var(--sv-texto) !important;
+}
+
+.amostra-cor {
+    border: 2px solid var(--sv-madeira-escura);
+    border-radius: 0;
+}
+
+/* ---------- Alertas: a caixa de diálogo dos moradores ---------- */
+
+.alert {
+    background: var(--sv-pergaminho-claro);
+    border: 4px solid;
+    border-color: var(--sv-moldura-relevo);
+    box-shadow: 0 0 0 3px var(--sv-contorno), 5px 5px 0 3px rgba(0, 0, 0, .3);
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.alert-success {
+    --bs-alert-color: #2f7a2a;
+}
+
+.alert-danger {
+    --bs-alert-color: #b0302a;
+}
+
+.alert-warning {
+    --bs-alert-color: #8a5a00;
+}
+
+.alert-info {
+    --bs-alert-color: #1f5a9c;
+}
+
+.alert .alert-link,
+.alert a {
+    color: inherit;
+}
+
+/* ---------- Paginação: tábuas ---------- */
+
+.pagination {
+    gap: .35rem;
+}
+
+.page-link {
+    background: url("img/madeira.png") 0 0 / 32px 32px;
+    border: 2px solid var(--sv-contorno) !important;
+    box-shadow: var(--sv-relevo);
+    color: var(--sv-pergaminho-claro);
+    margin: 0 !important;
+    text-shadow: 2px 2px 0 var(--sv-contorno);
+}
+
+.page-link:hover {
+    box-shadow: inset 0 0 0 2px var(--sv-dourado-claro), var(--sv-relevo);
+    color: var(--sv-dourado-claro);
+    filter: brightness(1.1);
+}
+
+.page-item.active .page-link {
+    background: var(--sv-verde);
+    color: #fff;
+}
+
+.page-item.disabled .page-link {
+    background: #6e4a2c;
+    box-shadow: none;
+    color: #c9a77f;
+}
+
+/* ---------- Login, cadastro e erro: a tela de título ---------- */
+
+.cartao-acesso {
+    max-width: 460px;
+}
+
+.cartao-acesso > .text-center.mb-4 {
+    position: relative;
+}
+
+/* O ícone do topo vira uma galinha pulando no lugar. */
+.cartao-acesso .display-5 .bi {
+    display: none;
+}
+
+.cartao-acesso .display-5::before {
+    animation: sv-pulinho 1.6s steps(1) infinite;
+    background: url("img/galinha.png") 0 0 / 128px 64px no-repeat;
+    content: "";
+    display: inline-block;
+    height: 64px;
+    width: 64px;
+}
+
+/* Página de erro: a lua da madrugada, quando o fazendeiro desmaia de cansaço. */
+.cartao-acesso .display-5.text-secondary::before {
+    animation: none;
+    background: url("img/lua.png") center / 100% 100% no-repeat;
+}
+
+@keyframes sv-pulinho {
+    25% {
+        background-position: -64px 0;
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+
+    75% {
+        background-position: -64px 0;
+        transform: none;
+    }
+}
+
+/* Título com textura de tábuas douradas e folhas nos cantos, como o letreiro do jogo. */
+.cartao-acesso > .text-center.mb-4 h1 {
+    color: var(--sv-dourado);
+    display: inline-block;
+    font-size: clamp(1.6rem, 6vw, 2.3rem);
+    font-weight: 700;
+    line-height: 1.15;
+    position: relative;
+    text-transform: uppercase;
+}
+
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+    .cartao-acesso > .text-center.mb-4 h1 {
+        /* O atalho "background" zera o background-clip, então ele vem antes. */
+        background: url("img/tabua-dourada.png") 0 0 / 24px 24px;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        filter: drop-shadow(0 3px 0 var(--sv-madeira-escura)) drop-shadow(2px 0 0 var(--sv-contorno)) drop-shadow(-2px 0 0 var(--sv-contorno)) drop-shadow(0 -2px 0 var(--sv-contorno)) drop-shadow(0 2px 0 var(--sv-contorno));
+        text-shadow: none;
+    }
+}
+
+.cartao-acesso > .text-center.mb-4 h1::before,
+.cartao-acesso > .text-center.mb-4 h1::after {
+    background: url("img/folha.png") center / 100% 100% no-repeat;
+    content: "";
+    height: 24px;
+    position: absolute;
+    width: 24px;
+}
+
+.cartao-acesso > .text-center.mb-4 h1::before {
+    left: -18px;
+    top: -12px;
+    transform: scaleX(-1);
+}
+
+.cartao-acesso > .text-center.mb-4 h1::after {
+    bottom: -8px;
+    right: -18px;
+    transform: rotate(90deg);
+}
+
+.cartao-acesso > .text-center.mb-4 p {
+    color: #fff !important;
+    font-family: var(--sv-pixel);
+    font-size: 1.05rem;
+    margin-bottom: 0;
+    text-shadow: var(--sv-contorno-texto);
+}
+
+/* Placa de madeira com uma dica do dia (criada pelo tema.js). */
+.sv-placa {
+    animation: sv-balancar 3s ease-in-out infinite;
+    background: url("img/madeira.png") 0 0 / 32px 32px;
+    border: 2px solid var(--sv-contorno);
+    box-shadow: var(--sv-relevo), 3px 3px 0 rgba(0, 0, 0, .3);
+    color: var(--sv-pergaminho-claro);
+    display: inline-block;
+    font-family: var(--sv-pixel);
+    font-size: .95rem;
+    font-weight: 600;
+    margin-top: .75rem;
+    padding: .3rem .7rem;
+    pointer-events: none;
+    text-shadow: 2px 2px 0 var(--sv-contorno);
+    transform-origin: top center;
+}
+
+@keyframes sv-balancar {
+    0%, 100% {
+        transform: rotate(-2deg);
+    }
+
+    50% {
+        transform: rotate(2deg);
+    }
+}
+
+.cartao-acesso > p.small {
+    font-family: var(--sv-pixel);
+    font-size: 1rem;
+    text-shadow: var(--sv-contorno-texto);
+}
+
+.cartao-acesso > p.small a {
+    color: var(--sv-dourado-claro);
+}
+
+/* Login errado: o formulário leva "dano" (pisca vermelho e treme). */
+.cartao-acesso:has(.alert-danger) form.card {
+    animation: sv-dano .5s steps(2) 1;
+}
+
+@keyframes sv-dano {
+    25% {
+        background-color: #f0a090;
+        transform: translateX(-6px);
+    }
+
+    50% {
+        transform: translateX(6px);
+    }
+
+    75% {
+        background-color: #f0a090;
+        transform: translateX(-4px);
+    }
+}
+
+/* Página de erro: a fazenda escurece, como quando o fazendeiro fica acordado até as 2h. */
+body:has(.cartao-acesso.text-center)::after {
+    background: linear-gradient(rgba(8, 12, 48, .6), rgba(4, 4, 24, .82));
+    content: "";
+    inset: 0;
+    pointer-events: none;
+    position: fixed;
+    z-index: -1;
+}
+
+.cartao-acesso.text-center h1 {
+    color: #fff;
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+    text-shadow: 3px 3px 0 #10183a;
+}
+
+.cartao-acesso.text-center p {
+    color: #fff !important;
+    font-family: var(--sv-pixel);
+    font-size: 1.05rem;
+    text-shadow: 2px 2px 0 #10183a;
+}
+
+.sv-desmaio span {
+    color: var(--sv-dourado-claro);
+}
+
+/* ---------- Tela "Escolha o tema" com o tema Stardew ativo ---------- */
+
+.mundo-atual {
+    background: var(--sv-pergaminho);
+    border: 2px solid var(--sv-contorno);
+    border-radius: 0;
+    color: var(--sv-madeira-escura);
+    font-family: var(--sv-pixel);
+    font-size: .8rem;
+    font-weight: 600;
+    padding: .2rem .45rem;
+}
+
+.mundo:focus-visible {
+    outline: 3px solid var(--sv-dourado-claro);
+}
+
+/* ---------- Elementos criados pelo tema.js ---------- */
+
+/* Caixa de data, hora e ouro, no canto como a do jogo. */
+/* Junto com a classe "container" do Bootstrap, a caixa alinha com a borda direita do conteúdo. */
+.sv-hud {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: -1.5rem;
+    margin-top: 1rem;
+}
+
+.sv-hud.flutuante {
+    margin: 0;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+}
+
+.sv-caixa-hud {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--sv-pixel);
+    gap: 4px;
+    min-width: 150px;
+}
+
+.sv-relogio,
+.sv-ouro {
+    background: var(--sv-pergaminho);
+    border: 4px solid;
+    border-color: var(--sv-moldura-relevo);
+    box-shadow: 0 0 0 2px var(--sv-contorno), 3px 3px 0 2px rgba(0, 0, 0, .3);
+    color: var(--sv-texto);
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.sv-relogio {
+    display: grid;
+    padding: .2rem .5rem;
+}
+
+.sv-data {
+    border-bottom: 2px solid var(--sv-pergaminho-escuro);
+    font-size: 1rem;
+}
+
+.sv-estacao {
+    font-size: .85rem;
+}
+
+.sv-estacao[data-estacao="primavera"] {
+    color: #2f7a2a;
+}
+
+.sv-estacao[data-estacao="verao"] {
+    color: #b8680a;
+}
+
+.sv-estacao[data-estacao="outono"] {
+    color: #a8401c;
+}
+
+.sv-estacao[data-estacao="inverno"] {
+    color: #1f5a9c;
+}
+
+.sv-hora {
+    font-size: 1.1rem;
+}
+
+.sv-ouro {
+    align-items: center;
+    display: flex;
+    font-size: 1.15rem;
+    gap: .35rem;
+    justify-content: flex-end;
+    padding: .15rem .5rem;
+}
+
+.sv-ouro::before {
+    background: url("img/moeda.png") center / 100% 100% no-repeat;
+    content: "";
+    height: 16px;
+    margin-right: auto;
+    width: 16px;
+}
+
+.sv-ouro.ganhou {
+    animation: sv-brilho .5s steps(2);
+}
+
+@keyframes sv-brilho {
+    50% {
+        background: var(--sv-dourado-claro);
+    }
+}
+
+/* Canteiro no chão das telas de acesso: cada clique rega e a pastinaca cresce até a colheita. */
+.sv-canteiro {
+    background: url("img/plantio.png") calc(var(--estagio, 0) * -48px) 0 / 240px 48px no-repeat;
+    border: 0;
+    bottom: 104px;
+    cursor: pointer;
+    height: 48px;
+    left: 20%;
+    padding: 0;
+    position: absolute;
+    width: 48px;
+}
+
+.sv-canteiro:focus-visible {
+    outline: 3px solid var(--sv-dourado-claro);
+    outline-offset: 2px;
+}
+
+.sv-canteiro.regando {
+    animation: sv-tremida .14s steps(2);
+}
+
+.sv-canteiro.colhido {
+    visibility: hidden;
+}
+
+@keyframes sv-tremida {
+    50% {
+        transform: translateY(2px);
+    }
+}
+
+/* Gotas de água, moedas e a pastinaca colhida que saltam. */
+.sv-gota {
+    animation: sv-gota .5s ease-in forwards;
+    background: #8fc8f5;
+    box-shadow: 0 0 0 1px #3a6fc9;
+    height: 6px;
+    pointer-events: none;
+    position: absolute;
+    width: 4px;
+    z-index: 1080;
+}
+
+@keyframes sv-gota {
+    to {
+        opacity: 0;
+        transform: translate(var(--dx), 36px);
+    }
+}
+
+.sv-moeda-voando {
+    animation: sv-moeda .9s ease-out forwards;
+    background: url("img/moeda.png") center / 100% 100% no-repeat;
+    height: 16px;
+    margin-left: -8px;
+    pointer-events: none;
+    position: absolute;
+    width: 16px;
+    z-index: 1080;
+}
+
+@keyframes sv-moeda {
+    0% {
+        transform: translate(0, 0) scale(.6);
+    }
+
+    40% {
+        opacity: 1;
+        transform: translate(calc(var(--dx) * .6), -48px) scale(1.1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(var(--dx), -20px) scale(.8);
+    }
+}
+
+.sv-colheita {
+    animation: sv-colheita 1s ease-out forwards;
+    background: url("img/pastinaca.png") center / 100% 100% no-repeat;
+    height: 48px;
+    pointer-events: none;
+    position: absolute;
+    width: 48px;
+    z-index: 1080;
+}
+
+@keyframes sv-colheita {
+    40% {
+        transform: translateY(-56px);
+    }
+
+    80% {
+        opacity: 1;
+        transform: translateY(-56px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-72px);
+    }
+}
+
+/* "+50g" subindo de onde o ouro foi ganho. */
+.sv-ganho {
+    animation: sv-ganho 1.1s ease-out forwards;
+    color: var(--sv-dourado-claro);
+    font-family: var(--sv-pixel);
+    font-size: 1.1rem;
+    font-weight: 700;
+    pointer-events: none;
+    position: absolute;
+    text-shadow: 2px 0 0 var(--sv-contorno), -2px 0 0 var(--sv-contorno), 0 2px 0 var(--sv-contorno), 0 -2px 0 var(--sv-contorno);
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 1080;
+}
+
+@keyframes sv-ganho {
+    to {
+        opacity: 0;
+        transform: translate(-50%, -48px);
+    }
+}
+
+/* Personagens andando na grama, em frente à cerca, no fim da página. */
+.sv-personagem {
+    background-repeat: no-repeat;
+    pointer-events: none;
+    position: absolute;
+}
+
+.sv-personagem.fazendeiro {
+    animation: sv-atravessar 34s linear infinite, sv-passos .4s steps(1) infinite;
+    background-image: url("img/fazendeiro.png");
+    background-size: 96px 72px;
+    bottom: 100px;
+    height: 72px;
+    left: -60px;
+    width: 48px;
+}
+
+.sv-personagem.galinha {
+    animation: sv-ciscar 9s ease-in-out infinite alternate, sv-passos-galinha .5s steps(1) infinite;
+    background-image: url("img/galinha.png");
+    background-size: 96px 48px;
+    bottom: 104px;
+    height: 48px;
+    left: 64%;
+    width: 48px;
+}
+
+@keyframes sv-atravessar {
+    to {
+        transform: translateX(calc(100vw + 120px));
+    }
+}
+
+@keyframes sv-ciscar {
+    to {
+        transform: translateX(160px);
+    }
+}
+
+@keyframes sv-passos {
+    50% {
+        background-position: -48px 0;
+    }
+}
+
+@keyframes sv-passos-galinha {
+    50% {
+        background-position: -48px 0;
+    }
+}
+
+/* Botão de som, fixo no canto. */
+.sv-som {
+    align-items: center;
+    background: url("img/madeira.png") 0 0 / 32px 32px;
+    border: 2px solid var(--sv-contorno);
+    bottom: 1rem;
+    box-shadow: var(--sv-relevo), 3px 3px 0 rgba(0, 0, 0, .35);
+    color: var(--sv-pergaminho-claro);
+    display: inline-flex;
+    font-family: var(--sv-pixel);
+    font-size: .95rem;
+    font-weight: 600;
+    gap: .4rem;
+    padding: .4rem .7rem;
+    position: fixed;
+    right: 1rem;
+    text-shadow: 2px 2px 0 var(--sv-contorno);
+    z-index: 1070;
+}
+
+.sv-som:hover {
+    box-shadow: inset 0 0 0 2px var(--sv-dourado-claro), var(--sv-relevo);
+    color: var(--sv-dourado-claro);
+}
+
+.sv-som:focus-visible {
+    outline: 3px solid var(--sv-dourado-claro);
+    outline-offset: 3px;
+}
+
+@media (max-width: 767.98px) {
+    .sv-hud {
+        justify-content: center;
+        margin-bottom: -1rem;
+    }
+
+    .sv-hud.flutuante {
+        display: none;
+    }
+}
+
+@media (max-width: 575.98px) {
+    /* Árvores menores, para as duas copas não se juntarem atrás do conteúdo. */
+    body {
+        background-size: 64px 96px, 64px 96px, 48px 48px, 48px 48px, 384px 144px, 48px 48px, 48px 48px, 100% 100%;
+    }
+
+    .sv-som {
+        bottom: .6rem;
+        padding: .4rem .5rem;
+        right: .6rem;
+    }
+
+    .sv-som span {
+        display: none;
+    }
+
+    .sv-canteiro {
+        left: 8%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body::before,
+    .sv-personagem,
+    .sv-moeda-voando,
+    .sv-colheita,
+    .sv-ganho,
+    .sv-gota,
+    .sv-placa,
+    .sv-ouro,
+    .cartao-acesso .display-5::before,
+    .resumo .card,
+    .sv-canteiro,
+    .cartao-acesso form.card {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .sv-personagem.fazendeiro {
+        left: 8%;
+    }
+}
