@@ -11,7 +11,8 @@ import java.util.Optional;
 public enum Tema {
 
     PADRAO("padrao", "Padrão"),
-    MARIO("mario", "Mario Bros");
+    MARIO("mario", "Mario Bros"),
+    MINECRAFT("minecraft", "Minecraft");
 
     private final String slug;
     private final String nome;

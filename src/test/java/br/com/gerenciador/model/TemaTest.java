@@ -10,6 +10,7 @@ class TemaTest {
     void encontraTemaPeloSlug() {
         assertThat(Tema.doSlug("padrao")).contains(Tema.PADRAO);
         assertThat(Tema.doSlug("mario")).contains(Tema.MARIO);
+        assertThat(Tema.doSlug("minecraft")).contains(Tema.MINECRAFT);
     }
 
     @Test

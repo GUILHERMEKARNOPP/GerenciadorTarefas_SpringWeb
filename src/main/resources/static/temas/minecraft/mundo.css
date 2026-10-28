@@ -1,0 +1,199 @@
+/* Cartão do tema Minecraft na tela "Escolha o tema": um pedaço de mundo de blocos, com pixel art própria (img/). */
+
+@font-face {
+    font-display: swap;
+    font-family: "Pixelify Sans";
+    font-weight: 400 700;
+    src: url("fontes/pixelify-sans-latin-wght.woff2") format("woff2");
+}
+
+.mundo-minecraft .mundo-cena {
+    background: linear-gradient(#6fa8ff, #b9dcff);
+    border: 3px solid #000;
+    border-bottom: 0;
+    image-rendering: pixelated;
+    overflow: hidden;
+}
+
+/* O mundo não "levanta" inteiro: quem se mexe é o minerador. */
+.mundo-minecraft:hover .mundo-cena,
+.mundo-minecraft:focus-visible .mundo-cena {
+    transform: none;
+}
+
+.mundo-minecraft .mundo-cena > span {
+    background-repeat: no-repeat;
+    position: absolute;
+}
+
+.mundo-minecraft .mc-sol {
+    background: url("img/sol.png") center / 100% 100%;
+    height: 28px;
+    right: 12%;
+    top: 10%;
+    width: 28px;
+}
+
+.mundo-minecraft .mundo-cena > .mc-nuvens {
+    animation: mc-mundo-nuvens 40s linear infinite;
+    background: url("img/nuvens.png") 0 10px / 320px 50px repeat-x;
+    inset: 0;
+}
+
+.mundo-minecraft .mc-arvore {
+    background: url("img/arvore.png") center / 100% 100%;
+    bottom: 0;
+    height: 96px;
+    left: 3%;
+    width: 96px;
+}
+
+.mundo-minecraft .mc-flor {
+    background: url("img/papoula.png") center / 100% 100%;
+    bottom: 0;
+    height: 24px;
+    left: 38%;
+    width: 24px;
+}
+
+.mundo-minecraft .mc-minerador {
+    background: url("img/minerador.png") 0 0 / 84px 64px;
+    bottom: 0;
+    height: 64px;
+    left: 47%;
+    width: 28px;
+}
+
+.mundo-minecraft .mc-minerio {
+    background: url("img/minerio-diamante.png") center / 100% 100%;
+    bottom: 0;
+    height: 32px;
+    left: calc(47% + 30px);
+    width: 32px;
+}
+
+.mundo-minecraft .mc-minerio::after {
+    background: url("img/rachaduras.png") 0 0 / 160px 32px no-repeat;
+    content: "";
+    inset: 0;
+    position: absolute;
+}
+
+.mundo-minecraft .mc-orbe {
+    background: url("img/orbe.png") center / 100% 100%;
+    bottom: 8px;
+    height: 14px;
+    left: calc(47% + 39px);
+    opacity: 0;
+    width: 14px;
+}
+
+.mundo-minecraft .mc-criatura {
+    animation: mc-mundo-patrulha 8s ease-in-out infinite alternate, mc-mundo-passos .5s steps(1) infinite;
+    background: url("img/criatura.png") 0 0 / 32px 52px;
+    bottom: 0;
+    height: 52px;
+    right: 6%;
+    width: 16px;
+}
+
+/* A plataforma com o nome é o próprio chão: grama por cima, terra por baixo. */
+.mundo-minecraft .mundo-nome {
+    background:
+        url("img/grama-lado.png") 0 0 / 32px 32px repeat-x,
+        url("img/terra.png") 0 0 / 32px 32px repeat;
+    border: 3px solid #000;
+    border-top: 0;
+    color: #fff;
+    font-family: "Pixelify Sans", monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    image-rendering: pixelated;
+    padding: .9rem .5rem;
+    text-shadow: 2px 2px 0 #2b2b2b, -1px -1px 0 #2b2b2b, 1px -1px 0 #2b2b2b, -1px 1px 0 #2b2b2b;
+}
+
+/* Ao passar o mouse, o minerador bate no minério até ele quebrar e soltar um orbe de XP. */
+.mundo-minecraft:hover .mc-minerador,
+.mundo-minecraft:focus-visible .mc-minerador {
+    animation: mc-mundo-golpes .3s steps(1) 4;
+}
+
+.mundo-minecraft:hover .mc-minerio::after,
+.mundo-minecraft:focus-visible .mc-minerio::after {
+    animation: mc-mundo-rachar 1.2s steps(4) forwards;
+}
+
+.mundo-minecraft:hover .mc-minerio,
+.mundo-minecraft:focus-visible .mc-minerio {
+    animation: mc-mundo-quebrar 1.25s forwards;
+}
+
+.mundo-minecraft:hover .mc-orbe,
+.mundo-minecraft:focus-visible .mc-orbe {
+    animation: mc-mundo-orbe .9s ease-out 1.25s;
+}
+
+@keyframes mc-mundo-nuvens {
+    to {
+        background-position: -320px 10px;
+    }
+}
+
+@keyframes mc-mundo-patrulha {
+    to {
+        transform: translateX(-56px);
+    }
+}
+
+@keyframes mc-mundo-passos {
+    50% {
+        background-position: -16px 0;
+    }
+}
+
+@keyframes mc-mundo-golpes {
+    50% {
+        background-position: -56px 0;
+    }
+}
+
+@keyframes mc-mundo-rachar {
+    to {
+        background-position: -128px 0;
+    }
+}
+
+@keyframes mc-mundo-quebrar {
+    0%, 96% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes mc-mundo-orbe {
+    0% {
+        opacity: 1;
+        transform: none;
+    }
+
+    60% {
+        opacity: 1;
+        transform: translateY(-30px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-18px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mundo-minecraft .mundo-cena *,
+    .mundo-minecraft .mundo-cena *::after {
+        animation: none !important;
+    }
+}

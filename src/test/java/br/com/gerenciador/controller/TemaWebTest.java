@@ -107,7 +107,10 @@ class TemaWebTest {
         mvc.perform(get("/tema"))
                 .andExpect(content().string(containsString("value=\"mario\"")))
                 .andExpect(content().string(containsString("/temas/mario/mundo.css")))
-                .andExpect(content().string(containsString("mario-encanador")));
+                .andExpect(content().string(containsString("mario-encanador")))
+                .andExpect(content().string(containsString("value=\"minecraft\"")))
+                .andExpect(content().string(containsString("/temas/minecraft/mundo.css")))
+                .andExpect(content().string(containsString("mc-minerador")));
     }
 
     @Test
@@ -115,6 +118,22 @@ class TemaWebTest {
         mvc.perform(post("/tema").param("tema", "mario").with(csrf()))
                 .andExpect(redirectedUrl("/login"))
                 .andExpect(cookie().value("tema", "mario"));
+    }
+
+    @Test
+    void temaMinecraftCarregaSoOsArquivosDele() throws Exception {
+        mvc.perform(get("/login").cookie(new Cookie("tema", "minecraft")))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("/temas/minecraft/tema.css")))
+                .andExpect(content().string(containsString("/temas/minecraft/tema.js")))
+                .andExpect(content().string(not(containsString("/temas/mario/"))));
+    }
+
+    @Test
+    void escolherMinecraftGuardaOTemaNoCookie() throws Exception {
+        mvc.perform(post("/tema").param("tema", "minecraft").with(csrf()))
+                .andExpect(redirectedUrl("/login"))
+                .andExpect(cookie().value("tema", "minecraft"));
     }
 
     @Test
