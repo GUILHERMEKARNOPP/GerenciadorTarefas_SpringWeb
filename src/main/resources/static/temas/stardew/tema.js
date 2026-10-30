@@ -1,6 +1,6 @@
 /*
-  Tema Stardew Valley: sons gerados na hora (Web Audio, sem arquivos de áudio), ouro, caixa de data e hora,
-  canteiro para regar e colher e personagens. Tudo aqui é enfeite: sem este script o sistema funciona igual.
+  Tema Stardew Valley: sons gerados na hora (Web Audio, sem arquivos de áudio), ouro, o relógio do jogo com data,
+  hora e ouro, canteiro para regar e colher e personagens. Tudo aqui é enfeite: sem este script o sistema funciona igual.
 */
 (() => {
     'use strict';
@@ -344,7 +344,8 @@
         const valor = document.createElement('span');
         ouroCaixa.title = 'Ouro: ganhe concluindo tarefas';
         valor.dataset.svOuro = '';
-        ouroCaixa.append(valor, 'g');
+        // Sem o "g": a caixa do ouro do jogo já traz o "G" desenhado.
+        ouroCaixa.append(valor);
         relogio.append(data, estacao, hora);
         caixa.append(relogio, ouroCaixa);
         hud.append(caixa);
@@ -470,15 +471,15 @@
         }
     }
 
-    function colocarFazendeiro() {
+    function colocarMoradora() {
         if (!reduzMovimento) {
-            document.body.append(criarEnfeite('sv-personagem fazendeiro'));
+            document.body.append(criarEnfeite('sv-personagem moradora'));
         }
     }
 
     criarBotaoSom();
     colocarHud();
     montarTelaDeAcesso();
-    colocarFazendeiro();
+    colocarMoradora();
     atualizarOuro();
 })();
