@@ -1,7 +1,8 @@
 /*
-  Tema Counter-Strike 2: o sistema vira o menu e o HUD do jogo (painéis escuros translúcidos, faixa laranja
-  dos Terroristas e azul dos Contra-Terroristas) por cima de um mapa de deserto ao entardecer, com fumaça passando.
-  O jogo não é pixel art: toda a arte em img/ é vetorial (SVG) e própria, só inspirada no estilo do jogo.
+  Tema Counter-Strike 2: o sistema vira o menu e o HUD do jogo (painéis de vidro escuro, azul dos Contra-Terroristas
+  e dourado dos Terroristas) por cima de um mapa de verdade, sorteado a cada sessão (a "partida").
+  Imagens em img/: screenshots, arte-chave, logotipo e renders 3D de armas e agentes tirados da página do jogo na
+  Steam e da CDN da Steam (economy). São marcas e arte da Valve, usadas aqui só como tema de fã, sem fins comerciais.
   Fonte Barlow Condensed (licença OFL, fontes/OFL.txt), parecida com a letra condensada dos menus.
 */
 
@@ -20,107 +21,106 @@
 }
 
 :root {
-    --cs-preto: #0b0e13;
-    --cs-painel: rgba(16, 20, 27, .9);
-    --cs-painel-solido: #141921;
-    --cs-painel-claro: #1f2631;
-    --cs-linha: rgba(255, 255, 255, .1);
-    --cs-linha-forte: rgba(255, 255, 255, .22);
-    --cs-texto: #e8eaed;
-    --cs-texto-fraco: #9ba5b3;
-    --cs-t: #e0a33a;
-    --cs-t-claro: #f3c470;
-    --cs-ct: #6ea8ff;
-    --cs-ct-claro: #a9cbff;
-    --cs-verde: #3d9b4a;
-    --cs-verde-claro: #4dff7a;
-    --cs-vermelho: #d9433b;
-    --cs-dinheiro: #8fe388;
+    --cs-preto: #0a0c10;
+    --cs-vidro: rgba(14, 17, 22, .74);
+    --cs-vidro-forte: rgba(10, 12, 16, .88);
+    --cs-painel-solido: #13171d;
+    --cs-painel-claro: rgba(255, 255, 255, .07);
+    --cs-linha: rgba(255, 255, 255, .08);
+    --cs-linha-forte: rgba(255, 255, 255, .18);
+    --cs-texto: #e6e9ed;
+    --cs-texto-fraco: #9aa3ad;
+    /* Cores dos times como aparecem no placar e no HUD. */
+    --cs-t: #de9b35;
+    --cs-t-claro: #ead18a;
+    --cs-ct: #5d79ae;
+    --cs-ct-claro: #b5d4ee;
+    --cs-verde: #4b9a3a;
+    --cs-verde-claro: #8ee26b;
+    --cs-vermelho: #e0383f;
+    --cs-dinheiro: #a2e26b;
     --cs-letra: "Barlow Condensed", "Arial Narrow", sans-serif;
-    --cs-sombra-texto: 0 1px 2px rgba(0, 0, 0, .8);
+    --cs-sombra-texto: 0 1px 3px rgba(0, 0, 0, .85);
+    --cs-desfoque: blur(14px) saturate(1.15);
 
-    --app-fundo: #1a2233;
+    --app-fundo: var(--cs-preto);
     --app-barra: var(--cs-preto);
     --app-borda: var(--cs-linha);
-    /* O céu é pintado só no body; o resto do Bootstrap usa os painéis escuros do menu. */
+    /* O mapa é pintado só no fundo; o resto do Bootstrap usa os painéis de vidro do menu. */
     --bs-body-bg: var(--cs-painel-solido);
     --bs-body-color: var(--cs-texto);
     --bs-emphasis-color: #fff;
     --bs-secondary-color: var(--cs-texto-fraco);
-    --bs-secondary-color-rgb: 155, 165, 179;
-    --bs-tertiary-color: #7d8794;
-    --bs-tertiary-color-rgb: 125, 135, 148;
+    --bs-secondary-color-rgb: 154, 163, 173;
+    --bs-tertiary-color: #78818c;
+    --bs-tertiary-color-rgb: 120, 129, 140;
     --bs-border-color: var(--cs-linha-forte);
-    --bs-border-radius: 2px;
+    --bs-border-radius: 3px;
     --bs-border-radius-sm: 2px;
-    --bs-border-radius-lg: 2px;
-    --bs-border-radius-pill: 2px;
+    --bs-border-radius-lg: 4px;
+    --bs-border-radius-pill: 3px;
     --bs-link-color: var(--cs-ct-claro);
-    --bs-link-color-rgb: 169, 203, 255;
+    --bs-link-color-rgb: 181, 212, 238;
     --bs-link-hover-color: var(--cs-t-claro);
-    --bs-link-hover-color-rgb: 243, 196, 112;
-    --bs-primary-rgb: 110, 168, 255;
-    --bs-success-rgb: 77, 200, 100;
-    --bs-danger-rgb: 255, 107, 98;
+    --bs-link-hover-color-rgb: 234, 209, 138;
+    --bs-primary-rgb: 93, 121, 174;
+    --bs-success-rgb: 142, 226, 107;
+    --bs-danger-rgb: 224, 56, 63;
     --bs-heading-color: #fff;
 }
 
-/* ---------- Cenário ---------- */
+/* ---------- Cenário: o mapa da partida ---------- */
 
 body {
-    background-color: var(--app-fundo);
-    background-image:
-        url("img/caixote.svg"),
-        url("img/caixote.svg"),
-        url("img/caixote.svg"),
-        url("img/cenario.svg"),
-        linear-gradient(#0d121c, #1a2233 25%, #3d3442 52%, #9a6744 80%, #d9a46e);
-    background-position:
-        left 3% bottom 14px,
-        left calc(3% + 14px) bottom 78px,
-        right 4% bottom 14px,
-        left bottom,
-        0 0;
-    background-repeat: no-repeat, no-repeat, no-repeat, repeat-x, no-repeat;
-    background-size: 64px 64px, 44px 44px, 64px 64px, 640px 200px, 100% 100%;
+    background: var(--cs-preto);
     color: var(--cs-texto);
-    /* Mira do jogo no fundo; sobre os painéis o cursor volta ao normal. */
-    cursor: url("img/mira.svg") 16 16, crosshair;
-    /* O operador entra e sai pelas laterais sem criar rolagem horizontal. */
+    /* Os agentes no rodapé ficam nas laterais sem criar rolagem horizontal. */
     overflow-x: clip;
     padding-bottom: 230px;
     position: relative;
 }
 
-.barra-app,
-main .card,
-main .alert,
-main .breadcrumb,
-.cs-hud,
-.cs-radio {
-    cursor: auto;
-}
-
-/* Fumaça volumétrica passando devagar atrás de todo o conteúdo. */
+/* Screenshot do mapa, fixo atrás de tudo, escurecido para os painéis ficarem legíveis. */
 body::before {
-    animation: cs-fumaca 90s linear infinite;
-    background-image: url("img/fumaca.svg"), url("img/fumaca.svg");
-    background-position: 0 calc(100% - 40px), 520px calc(100% - 90px);
-    background-repeat: repeat-x;
-    background-size: 900px 300px, 700px 240px;
+    background:
+        radial-gradient(ellipse at 50% 40%, transparent 45%, rgba(5, 6, 9, .55)),
+        linear-gradient(rgba(6, 8, 11, .7), rgba(6, 8, 11, .42) 35%, rgba(6, 8, 11, .55) 70%, rgba(6, 8, 11, .85)),
+        var(--cs-mapa, url("img/mapa-dust2.webp")) center / cover no-repeat,
+        var(--cs-preto);
     content: "";
     inset: 0;
-    opacity: .35;
     pointer-events: none;
     position: fixed;
-    z-index: -1;
+    z-index: -2;
 }
 
-/* A fumaça anda exatamente uma largura do ladrilho, então o fim emenda com o começo. */
-@keyframes cs-fumaca {
-    to {
-        background-position: -900px calc(100% - 40px), -180px calc(100% - 90px);
-    }
+/* O tema.js sorteia o mapa uma vez por sessão; sem script fica o Dust II. */
+.cs-mapa-mirage {
+    --cs-mapa: url("img/mapa-mirage.webp");
+}
+
+.cs-mapa-inferno {
+    --cs-mapa: url("img/mapa-inferno.webp");
+}
+
+.cs-mapa-vertigo {
+    --cs-mapa: url("img/mapa-vertigo.webp");
+}
+
+/* Um agente de cada time no fim da página, como na escalação antes da partida. */
+body::after {
+    background:
+        url("img/agente-ct.webp") left max(0px, calc(50vw - 900px)) bottom 0 / auto 100% no-repeat,
+        url("img/agente-t.webp") right max(0px, calc(50vw - 900px)) bottom 0 / auto 100% no-repeat;
+    bottom: 0;
+    content: "";
+    filter: drop-shadow(0 -6px 24px rgba(0, 0, 0, .6));
+    height: 240px;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    z-index: -1;
 }
 
 /* ---------- Tipografia ---------- */
@@ -133,9 +133,9 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5,
 
 h1, .h1, h2, .h2, h3, .h3 {
     color: #fff;
-    font-size: clamp(1.5rem, 3.4vw, 2rem);
+    font-size: clamp(1.6rem, 3.6vw, 2.2rem);
     font-weight: 700;
-    letter-spacing: .04em;
+    letter-spacing: .05em;
     text-shadow: var(--cs-sombra-texto);
     text-transform: uppercase;
 }
@@ -165,7 +165,7 @@ main > header strong {
 }
 
 .text-danger {
-    color: #ff7b72 !important;
+    color: #ff6b6f !important;
 }
 
 .text-success {
@@ -175,20 +175,20 @@ main > header strong {
 /* ---------- Barra de navegação: o menu superior do jogo ---------- */
 
 .barra-app {
-    backdrop-filter: blur(6px);
-    background: linear-gradient(rgba(11, 14, 19, .96), rgba(11, 14, 19, .86));
-    border-bottom: 1px solid var(--cs-linha-forte);
-    box-shadow: 0 2px 0 var(--cs-t), 0 8px 24px rgba(0, 0, 0, .45);
+    backdrop-filter: var(--cs-desfoque);
+    background: linear-gradient(rgba(8, 10, 13, .95), rgba(8, 10, 13, .78));
+    border-bottom: 1px solid var(--cs-linha);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
 }
 
 .barra-app .navbar-brand {
     align-items: center;
-    color: #fff;
+    color: #c9cfd6;
     display: inline-flex;
-    font-size: 1.35rem;
-    font-weight: 700;
-    gap: .5rem;
-    letter-spacing: .06em;
+    font-size: .95rem;
+    font-weight: 500;
+    gap: .75rem;
+    letter-spacing: .12em;
     text-transform: uppercase;
 }
 
@@ -196,37 +196,47 @@ main > header strong {
     display: none;
 }
 
+/* Logotipo oficial no lugar do ícone, separado do nome do sistema por um traço. */
 .barra-app .navbar-brand::before {
-    background: url("img/mira.svg") center / 100% 100% no-repeat;
+    aspect-ratio: 360 / 74;
+    background: url("img/logo.webp") center / contain no-repeat;
+    /* O traço fica no padding, fora da área do logotipo. */
+    background-origin: content-box;
+    border-right: 1px solid var(--cs-linha-forte);
+    box-sizing: content-box;
     content: "";
     height: 26px;
-    width: 26px;
+    padding-right: .75rem;
 }
 
-.barra-app .nav-link {
-    color: #b8c0cb;
-    font-family: var(--cs-letra);
-    font-size: 1.1rem;
-    font-weight: 500;
-    letter-spacing: .06em;
-    padding-inline: .7rem;
-    text-transform: uppercase;
-    transition: color .12s, background-color .12s;
-}
-
-.barra-app .nav-link .bi {
-    opacity: .8;
-}
-
-.barra-app .nav-link:hover {
-    background: rgba(255, 255, 255, .06);
+.barra-app .navbar-brand:hover {
     color: #fff;
 }
 
-/* Item ativo: a aba selecionada, com a faixa laranja embaixo. */
+.barra-app .nav-link {
+    color: #a9b1bb;
+    font-family: var(--cs-letra);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding-inline: .8rem;
+    text-transform: uppercase;
+    transition: color .12s, background-color .12s, box-shadow .12s;
+}
+
+.barra-app .nav-link .bi {
+    opacity: .75;
+}
+
+.barra-app .nav-link:hover {
+    background: rgba(255, 255, 255, .05);
+    color: #fff;
+}
+
+/* Aba selecionada: texto branco com a linha clara embaixo, como no menu do jogo. */
 .barra-app .nav-link.active {
-    background: linear-gradient(transparent, rgba(224, 163, 58, .16));
-    box-shadow: inset 0 -3px 0 var(--cs-t);
+    background: linear-gradient(transparent 40%, rgba(255, 255, 255, .07));
+    box-shadow: inset 0 -2px 0 #fff;
     color: #fff;
 }
 
@@ -237,85 +247,103 @@ main > header strong {
     font-weight: 700;
 }
 
-/* ---------- Cartões: os painéis translúcidos do menu ---------- */
+/* ---------- Cartões: os painéis de vidro do menu ---------- */
 
 .card {
-    backdrop-filter: blur(8px);
-    background: var(--cs-painel);
-    border: 1px solid var(--cs-linha-forte);
-    border-radius: 2px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+    backdrop-filter: var(--cs-desfoque);
+    background: linear-gradient(rgba(255, 255, 255, .035), transparent 120px), var(--cs-vidro);
+    border: 1px solid var(--cs-linha);
+    border-radius: 4px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 18px 40px rgba(0, 0, 0, .45);
     color: var(--cs-texto);
-}
-
-/* Um canto cortado em diagonal, como as molduras do HUD. */
-.card::before {
-    border-right: 14px solid var(--cs-t);
-    border-top: 14px solid transparent;
-    content: "";
-    pointer-events: none;
-    position: absolute;
-    right: -1px;
-    bottom: -1px;
-    opacity: .85;
 }
 
 .card-header,
 .card-footer,
 .card-footer.bg-white {
-    background: rgba(255, 255, 255, .04) !important;
+    background: rgba(0, 0, 0, .25) !important;
     border-color: var(--cs-linha);
     color: var(--cs-texto);
 }
 
 .card-header {
+    font-size: 1.1rem;
     font-weight: 700;
-    letter-spacing: .05em;
+    letter-spacing: .08em;
     text-transform: uppercase;
 }
 
 .zona-perigo {
-    border-color: rgba(217, 67, 59, .7);
-    box-shadow: 0 0 0 1px rgba(217, 67, 59, .3), 0 10px 30px rgba(0, 0, 0, .45);
+    border-color: rgba(224, 56, 63, .6);
+    box-shadow: inset 0 3px 0 var(--cs-vermelho), 0 18px 40px rgba(0, 0, 0, .45);
 }
 
-.zona-perigo::before {
-    border-right-color: var(--cs-vermelho);
-}
-
-/* Resumo da lista de tarefas: cada contador é um quadro do placar. */
+/*
+  Resumo da lista de tarefas: cada contador é um item do inventário, com o render 3D da arma
+  e a faixa de raridade embaixo (Militar, Restrito, Secreto, Oculto e Extraordinário).
+*/
 .resumo .card {
-    border-top: 3px solid var(--cs-ct);
-    transition: transform .15s ease, border-color .15s;
+    --cs-raridade: #4b69ff;
+    --cs-arma: url("img/arma-m4a4.webp");
+    background:
+        var(--cs-arma) right -6% bottom 10px / auto 62% no-repeat,
+        radial-gradient(ellipse at 85% 100%, color-mix(in srgb, var(--cs-raridade) 35%, transparent), transparent 70%),
+        linear-gradient(160deg, rgba(40, 46, 56, .85), rgba(14, 17, 22, .9));
+    border: 1px solid var(--cs-linha);
+    border-bottom: 4px solid var(--cs-raridade);
+    min-height: 118px;
+    overflow: hidden;
+    transition: transform .15s ease, box-shadow .15s ease;
 }
 
-.resumo .col-6:nth-child(even) .card {
-    border-top-color: var(--cs-t);
+.resumo .col-6:nth-child(2) .card {
+    --cs-raridade: #8847ff;
+    --cs-arma: url("img/arma-ak47.webp");
 }
 
-.resumo .card::before {
-    display: none;
+.resumo .col-6:nth-child(3) .card {
+    --cs-raridade: #d32ce6;
+    --cs-arma: url("img/arma-awp.webp");
+}
+
+.resumo .col-6:nth-child(4) .card {
+    --cs-raridade: #eb4b4b;
+    --cs-arma: url("img/arma-deagle.webp");
+}
+
+.resumo .col-6:nth-child(5) .card {
+    --cs-raridade: #e4ae39;
+    --cs-arma: url("img/arma-karambit.webp");
+}
+
+/* O último contador é o de atrasadas: a granada, sempre em vermelho. */
+.resumo .col-6:last-child .card {
+    --cs-raridade: #eb4b4b;
+    --cs-arma: url("img/arma-he.webp");
+    background-position: right 8% bottom 10px, 0 0, 0 0;
 }
 
 .resumo .card:hover {
+    box-shadow: 0 0 0 1px var(--cs-raridade), 0 14px 30px rgba(0, 0, 0, .5);
     transform: translateY(-3px);
 }
 
 .resumo .card .small {
-    color: var(--cs-texto-fraco) !important;
+    color: #c3cad2 !important;
     font-family: var(--cs-letra);
-    font-size: .95rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 700;
     letter-spacing: .08em;
+    text-shadow: var(--cs-sombra-texto);
     text-transform: uppercase;
 }
 
 .resumo .numero {
     color: #fff;
-    font-size: 2.4rem;
+    font-size: 2.6rem;
     font-weight: 700;
-    margin-top: .2rem;
-    text-shadow: var(--cs-sombra-texto);
+    line-height: 1.1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, .8);
 }
 
 /* ---------- Botões ---------- */
@@ -325,21 +353,21 @@ main > header strong {
     --bs-btn-font-size: 1.1rem;
     --bs-btn-font-weight: 700;
     --bs-btn-padding-y: .4rem;
-    --bs-btn-padding-x: 1.1rem;
+    --bs-btn-padding-x: 1.2rem;
     --bs-btn-border-radius: 2px;
     --bs-btn-color: var(--cs-texto);
     --bs-btn-bg: var(--cs-painel-claro);
     --bs-btn-border-color: var(--cs-linha-forte);
     --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #2a3341;
+    --bs-btn-hover-bg: rgba(255, 255, 255, .14);
     --bs-btn-hover-border-color: rgba(255, 255, 255, .4);
     --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #161c25;
+    --bs-btn-active-bg: rgba(255, 255, 255, .04);
     --bs-btn-active-border-color: rgba(255, 255, 255, .4);
     --bs-btn-disabled-color: #6b7480;
-    --bs-btn-disabled-bg: #1a2029;
+    --bs-btn-disabled-bg: rgba(255, 255, 255, .03);
     --bs-btn-disabled-border-color: var(--cs-linha);
-    letter-spacing: .06em;
+    letter-spacing: .08em;
     text-transform: uppercase;
     transition: background-color .12s, border-color .12s, color .12s, box-shadow .12s;
 }
@@ -347,7 +375,7 @@ main > header strong {
 .btn-sm {
     --bs-btn-font-size: 1rem;
     --bs-btn-padding-y: .2rem;
-    --bs-btn-padding-x: .6rem;
+    --bs-btn-padding-x: .65rem;
 }
 
 .btn:focus-visible {
@@ -363,74 +391,78 @@ main > header strong {
 .btn-primary {
     --bs-btn-color: #fff;
     --bs-btn-bg: var(--cs-verde);
-    --bs-btn-border-color: #5cc46a;
+    --bs-btn-border-color: #6fbf5a;
     --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #47b055;
-    --bs-btn-hover-border-color: #8ff09a;
+    --bs-btn-hover-bg: #5bb347;
+    --bs-btn-hover-border-color: #a6ec8c;
     --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #2f7c3a;
-    --bs-btn-active-border-color: #8ff09a;
+    --bs-btn-active-bg: #3c7e2e;
+    --bs-btn-active-border-color: #a6ec8c;
     --bs-btn-disabled-color: #b5d6ba;
-    --bs-btn-disabled-bg: #2e4a33;
-    background-image: linear-gradient(rgba(255, 255, 255, .12), transparent);
+    --bs-btn-disabled-bg: #2e4a29;
+    background-image: linear-gradient(rgba(255, 255, 255, .16), transparent 60%);
+    box-shadow: 0 4px 14px rgba(75, 154, 58, .3);
     text-shadow: 0 1px 1px rgba(0, 0, 0, .5);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 4px 20px rgba(110, 200, 85, .45);
 }
 
 .btn-danger {
     --bs-btn-color: #fff;
-    --bs-btn-bg: var(--cs-vermelho);
-    --bs-btn-border-color: #f0756d;
+    --bs-btn-bg: #b8262c;
+    --bs-btn-border-color: #f0656a;
     --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #e8574f;
-    --bs-btn-hover-border-color: #ffb0aa;
+    --bs-btn-hover-bg: var(--cs-vermelho);
+    --bs-btn-hover-border-color: #ffb0b2;
     --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #a8302a;
-    background-image: linear-gradient(rgba(255, 255, 255, .12), transparent);
+    --bs-btn-active-bg: #8f1d22;
+    background-image: linear-gradient(rgba(255, 255, 255, .14), transparent 60%);
 }
 
 .btn-outline-danger {
-    --bs-btn-color: #ff8a82;
-    --bs-btn-border-color: rgba(217, 67, 59, .6);
+    --bs-btn-color: #ff8589;
+    --bs-btn-border-color: rgba(224, 56, 63, .6);
     --bs-btn-hover-color: #fff;
     --bs-btn-hover-bg: var(--cs-vermelho);
-    --bs-btn-hover-border-color: #f0756d;
+    --bs-btn-hover-border-color: #f0656a;
     --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #a8302a;
+    --bs-btn-active-bg: #8f1d22;
 }
 
-/* Concluir tarefa: abater o alvo, com o verde da mira. */
+/* Concluir tarefa: abater o alvo. */
 .btn-outline-success {
     --bs-btn-color: var(--cs-verde-claro);
-    --bs-btn-border-color: rgba(77, 255, 122, .45);
+    --bs-btn-border-color: rgba(142, 226, 107, .45);
     --bs-btn-hover-color: var(--cs-preto);
     --bs-btn-hover-bg: var(--cs-verde-claro);
     --bs-btn-hover-border-color: var(--cs-verde-claro);
     --bs-btn-active-color: var(--cs-preto);
-    --bs-btn-active-bg: #3bd463;
-    --bs-btn-disabled-color: #4f6a57;
-    --bs-btn-disabled-border-color: rgba(77, 255, 122, .15);
+    --bs-btn-active-bg: #6fc94d;
+    --bs-btn-disabled-color: #4f6a47;
+    --bs-btn-disabled-border-color: rgba(142, 226, 107, .15);
 }
 
 .btn-outline-secondary {
     --bs-btn-color: var(--cs-ct-claro);
-    --bs-btn-border-color: rgba(110, 168, 255, .45);
-    --bs-btn-hover-color: var(--cs-preto);
-    --bs-btn-hover-bg: var(--cs-ct-claro);
+    --bs-btn-border-color: rgba(93, 121, 174, .7);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--cs-ct);
     --bs-btn-hover-border-color: var(--cs-ct-claro);
-    --bs-btn-active-color: var(--cs-preto);
-    --bs-btn-active-bg: var(--cs-ct);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #475f8c;
 }
 
-/* "Sair" na barra: o botão de sair do jogo. */
 .btn-outline-light {
     --bs-btn-color: #d3d8df;
     --bs-btn-bg: transparent;
     --bs-btn-border-color: var(--cs-linha-forte);
     --bs-btn-hover-color: #fff;
     --bs-btn-hover-bg: var(--cs-vermelho);
-    --bs-btn-hover-border-color: #f0756d;
+    --bs-btn-hover-border-color: #f0656a;
     --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #a8302a;
+    --bs-btn-active-bg: #8f1d22;
 }
 
 .btn-link {
@@ -443,23 +475,23 @@ main > header strong {
 /* ---------- Formulários ---------- */
 
 .form-label {
-    color: #c9d0d9;
+    color: #c3cad2;
     font-size: 1.05rem;
-    font-weight: 500;
-    letter-spacing: .06em;
+    font-weight: 700;
+    letter-spacing: .08em;
     text-transform: uppercase;
 }
 
 .form-control,
 .form-select {
-    background-color: rgba(0, 0, 0, .35);
+    background-color: rgba(0, 0, 0, .4);
     border: 1px solid var(--cs-linha-forte);
     border-radius: 2px;
     color: #fff;
 }
 
 .form-select {
-    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e0a33a' stroke-linecap='square' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ead18a' stroke-linecap='square' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
     cursor: pointer;
 }
 
@@ -475,9 +507,9 @@ main > header strong {
 
 .form-control:focus,
 .form-select:focus {
-    background-color: rgba(0, 0, 0, .5);
-    border-color: var(--cs-t);
-    box-shadow: 0 0 0 3px rgba(224, 163, 58, .3);
+    background-color: rgba(0, 0, 0, .55);
+    border-color: var(--cs-t-claro);
+    box-shadow: 0 0 0 3px rgba(222, 155, 53, .28);
     color: #fff;
 }
 
@@ -494,7 +526,7 @@ main > header strong {
 }
 
 .invalid-feedback {
-    color: #ff8a82;
+    color: #ff8589;
 }
 
 .form-text {
@@ -504,11 +536,11 @@ main > header strong {
 .input-group-text {
     background: rgba(255, 255, 255, .06);
     border: 1px solid var(--cs-linha-forte);
-    color: var(--cs-t);
+    color: var(--cs-t-claro);
 }
 
 .form-check-input {
-    background-color: rgba(0, 0, 0, .35);
+    background-color: rgba(0, 0, 0, .4);
     border: 1px solid rgba(255, 255, 255, .35);
 }
 
@@ -518,8 +550,8 @@ main > header strong {
 }
 
 .form-check-input:focus {
-    border-color: var(--cs-t);
-    box-shadow: 0 0 0 3px rgba(224, 163, 58, .3);
+    border-color: var(--cs-t-claro);
+    box-shadow: 0 0 0 3px rgba(222, 155, 53, .28);
 }
 
 .form-control-color {
@@ -532,13 +564,13 @@ main > header strong {
     --bs-table-bg: transparent;
     --bs-table-color: var(--cs-texto);
     --bs-table-striped-bg: rgba(255, 255, 255, .03);
-    --bs-table-hover-bg: rgba(224, 163, 58, .08);
+    --bs-table-hover-bg: rgba(255, 255, 255, .06);
     --bs-table-hover-color: #fff;
     --bs-table-border-color: var(--cs-linha);
 }
 
 .table thead.table-light {
-    --bs-table-bg: rgba(0, 0, 0, .35);
+    --bs-table-bg: rgba(0, 0, 0, .4);
     --bs-table-color: var(--cs-texto-fraco);
     --bs-table-border-color: var(--cs-linha-forte);
 }
@@ -546,10 +578,11 @@ main > header strong {
 .table thead th {
     color: var(--cs-texto-fraco);
     font-size: .95rem;
-    font-weight: 500;
-    letter-spacing: .1em;
+    font-weight: 700;
+    letter-spacing: .12em;
 }
 
+/* Linha sob o mouse ganha a faixa do time, como o jogador destacado no placar. */
 .table-hover > tbody > tr:hover > * {
     box-shadow: inset 3px 0 0 var(--cs-t);
 }
@@ -568,7 +601,8 @@ main > header strong {
     content: "";
     display: inline-block;
     height: 18px;
-    margin-right: .4rem;
+    margin-right: .45rem;
+    opacity: .85;
     vertical-align: -3px;
     width: 18px;
 }
@@ -589,35 +623,36 @@ main > header strong {
 /* ---------- Selos ---------- */
 
 .badge {
+    border-radius: 2px;
     font-size: .9rem;
     font-weight: 700;
-    letter-spacing: .05em;
-    padding: .3em .55em;
+    letter-spacing: .06em;
+    padding: .3em .6em;
     text-shadow: 0 1px 1px rgba(0, 0, 0, .45);
     text-transform: uppercase;
 }
 
 .badge.bg-success-subtle {
-    background: rgba(77, 255, 122, .15) !important;
-    box-shadow: inset 0 0 0 1px rgba(77, 255, 122, .5);
+    background: rgba(142, 226, 107, .14) !important;
+    box-shadow: inset 0 0 0 1px rgba(142, 226, 107, .5);
     color: var(--cs-verde-claro) !important;
 }
 
 .badge.bg-danger-subtle {
-    background: rgba(217, 67, 59, .2) !important;
-    box-shadow: inset 0 0 0 1px rgba(255, 107, 98, .6);
-    color: #ff8a82 !important;
+    background: rgba(224, 56, 63, .2) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 107, 111, .6);
+    color: #ff8589 !important;
 }
 
 .badge.bg-warning-subtle {
-    background: rgba(224, 163, 58, .18) !important;
-    box-shadow: inset 0 0 0 1px rgba(224, 163, 58, .6);
+    background: rgba(222, 155, 53, .18) !important;
+    box-shadow: inset 0 0 0 1px rgba(222, 155, 53, .6);
     color: var(--cs-t-claro) !important;
 }
 
 .badge.bg-secondary-subtle {
-    background: rgba(110, 168, 255, .14) !important;
-    box-shadow: inset 0 0 0 1px rgba(110, 168, 255, .45);
+    background: rgba(93, 121, 174, .2) !important;
+    box-shadow: inset 0 0 0 1px rgba(93, 121, 174, .7);
     color: var(--cs-ct-claro) !important;
 }
 
@@ -631,13 +666,14 @@ main > header strong {
     border-radius: 2px;
 }
 
-/* ---------- Alertas: as mensagens de rádio ---------- */
+/* ---------- Alertas: as notificações do jogo ---------- */
 
 .alert {
-    backdrop-filter: blur(6px);
-    background: var(--cs-painel);
-    border: 1px solid var(--cs-linha-forte);
+    backdrop-filter: var(--cs-desfoque);
+    background: var(--cs-vidro-forte);
+    border: 1px solid var(--cs-linha);
     border-left: 4px solid var(--cs-ct);
+    border-radius: 2px;
     color: var(--cs-texto);
     font-weight: 500;
 }
@@ -655,7 +691,7 @@ main > header strong {
 }
 
 .alert-danger .bi {
-    color: #ff8a82;
+    color: #ff8589;
 }
 
 .alert-warning {
@@ -681,7 +717,7 @@ main > header strong {
     --bs-breadcrumb-divider-color: var(--cs-t);
     --bs-breadcrumb-item-active-color: #d3d8df;
     font-size: 1.05rem;
-    letter-spacing: .05em;
+    letter-spacing: .06em;
     text-shadow: var(--cs-sombra-texto);
     text-transform: uppercase;
 }
@@ -698,13 +734,13 @@ main > header strong {
 }
 
 .page-link:hover {
-    background: #2a3341;
+    background: rgba(255, 255, 255, .14);
     border-color: rgba(255, 255, 255, .4) !important;
     color: #fff;
 }
 
 .page-link:focus {
-    box-shadow: 0 0 0 3px rgba(224, 163, 58, .35);
+    box-shadow: 0 0 0 3px rgba(222, 155, 53, .35);
 }
 
 .page-item.active .page-link {
@@ -718,63 +754,93 @@ main > header strong {
     color: #5d6672;
 }
 
-/* ---------- Login, cadastro e erro: a tela inicial do jogo ---------- */
+/* ---------- Login, cadastro e erro: o menu principal do jogo ---------- */
+
+/* O fundo é o menu principal: um agente parado no Ancient. Sem escalação no rodapé, ele já está ali. */
+body:has(.cartao-acesso) {
+    padding-bottom: 0;
+}
+
+body:has(.cartao-acesso)::before {
+    background:
+        linear-gradient(rgba(6, 8, 11, .55), transparent 30%, transparent 70%, rgba(6, 8, 11, .7)),
+        linear-gradient(270deg, rgba(6, 8, 11, .8), rgba(6, 8, 11, .25) 50%, transparent 70%),
+        url("img/menu-ancient.webp") center / cover no-repeat,
+        var(--cs-preto);
+}
+
+body:has(.cartao-acesso)::after {
+    display: none;
+}
 
 .cartao-acesso {
     max-width: 440px;
 }
 
-/* O ícone do topo vira a mira, girando devagar como na tela de carregamento. */
+/* Em telas largas o formulário vai para a direita, como os painéis do menu, e o agente fica à vista. */
+@media (min-width: 1200px) {
+    /* A imagem fica um pouco mais larga que a tela e presa à direita: o agente anda para a esquerda, longe do formulário. */
+    body:has(.cartao-acesso)::before {
+        background-position: 0 0, 0 0, right 0 top 50%, 0 0;
+        background-size: auto, auto, max(106vw, 177.3vh) auto, auto;
+    }
+
+    .cartao-acesso {
+        margin-left: auto !important;
+        margin-right: 0 !important;
+    }
+
+    /* Com o formulário à direita, o HUD vai para o canto esquerdo para não cobrir o logotipo. */
+    body:has(.cartao-acesso) .cs-hud.flutuante {
+        left: 1rem;
+        right: auto;
+    }
+}
+
+/* O ícone do topo vira o logotipo do jogo. */
 .cartao-acesso .display-5 .bi {
     display: none;
 }
 
 .cartao-acesso .display-5::before {
-    animation: cs-girar 6s linear infinite;
-    background: url("img/mira.svg") center / 100% 100% no-repeat;
+    aspect-ratio: 360 / 74;
+    background: url("img/logo.webp") center / contain no-repeat;
     content: "";
     display: inline-block;
-    filter: drop-shadow(0 0 8px rgba(77, 255, 122, .6));
-    height: 56px;
-    width: 56px;
+    filter: drop-shadow(0 2px 10px rgba(0, 0, 0, .8));
+    width: min(300px, 80vw);
 }
 
-@keyframes cs-girar {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* Título grande com a faixa laranja embaixo, como o logotipo da tela inicial. */
+/* Título com a faixa dos dois times embaixo: azul dos CT e dourado dos T. */
 .cartao-acesso > .text-center.mb-4 h1 {
     color: #fff;
     display: inline-block;
-    font-size: clamp(2rem, 7vw, 2.8rem);
+    font-size: clamp(1.4rem, 5vw, 1.8rem);
     font-weight: 700;
-    letter-spacing: .06em;
+    letter-spacing: .14em;
     line-height: 1;
-    padding-bottom: .4rem;
+    padding-bottom: .5rem;
     position: relative;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, .7);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, .8);
 }
 
 .cartao-acesso > .text-center.mb-4 h1::after {
     background: linear-gradient(90deg, var(--cs-ct) 0 50%, var(--cs-t) 50%);
     bottom: 0;
     content: "";
-    height: 4px;
-    left: 15%;
+    height: 3px;
+    left: 20%;
     position: absolute;
-    right: 15%;
+    right: 20%;
 }
 
 .cartao-acesso > .text-center.mb-4 p {
     color: #e3e7ec !important;
     font-family: var(--cs-letra);
     font-size: 1.2rem;
-    letter-spacing: .05em;
+    letter-spacing: .06em;
     margin-bottom: 0;
-    margin-top: .4rem;
+    margin-top: .5rem;
     text-shadow: var(--cs-sombra-texto);
     text-transform: uppercase;
 }
@@ -790,11 +856,11 @@ main > header strong {
     font-weight: 600;
 }
 
-/* Mensagem de rádio com uma dica (criada pelo tema.js). */
+/* Mensagem de rádio com uma dica (criada pelo tema.js), como no chat da partida. */
 .cs-radio {
     align-items: center;
     animation: cs-entrar .4s ease-out;
-    background: rgba(11, 14, 19, .82);
+    background: rgba(8, 10, 13, .8);
     border-left: 3px solid var(--cs-t);
     color: #e8eaed;
     display: inline-flex;
@@ -803,7 +869,7 @@ main > header strong {
     font-weight: 500;
     gap: .45rem;
     letter-spacing: .03em;
-    margin-top: .9rem;
+    margin-top: 1rem;
     padding: .3rem .8rem;
 }
 
@@ -827,7 +893,7 @@ main > header strong {
 
 @keyframes cs-dano {
     25% {
-        box-shadow: inset 0 0 40px rgba(217, 67, 59, .7);
+        box-shadow: inset 0 0 40px rgba(224, 56, 63, .7);
         transform: translateX(-6px);
     }
 
@@ -836,24 +902,30 @@ main > header strong {
     }
 
     75% {
-        box-shadow: inset 0 0 30px rgba(217, 67, 59, .5);
+        box-shadow: inset 0 0 30px rgba(224, 56, 63, .5);
         transform: translateX(-3px);
     }
 }
 
 /* Página de erro: a tela fica avermelhada, como no fim de uma rodada perdida. */
-body:has(.cartao-acesso.text-center)::after {
-    background: radial-gradient(ellipse at center, rgba(120, 20, 16, .35), rgba(20, 4, 4, .8));
-    content: "";
-    inset: 0;
-    pointer-events: none;
-    position: fixed;
-    z-index: -1;
+body:has(.cartao-acesso.text-center)::before {
+    background:
+        radial-gradient(ellipse at center, rgba(120, 16, 20, .45), rgba(16, 3, 4, .88)),
+        url("img/menu-ancient.webp") center / cover no-repeat,
+        var(--cs-preto);
+    filter: grayscale(.6);
 }
 
-.cartao-acesso.text-center .display-5::before {
-    animation: none;
-    filter: drop-shadow(0 0 8px rgba(255, 59, 48, .7)) hue-rotate(-120deg) saturate(3);
+@media (min-width: 1200px) {
+    body:has(.cartao-acesso.text-center)::before {
+        background-position: 0 0, center, 0 0;
+        background-size: auto, cover, auto;
+    }
+
+    .cartao-acesso.text-center {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
 }
 
 .cartao-acesso.text-center h1 {
@@ -875,8 +947,8 @@ body:has(.cartao-acesso.text-center)::after {
     color: var(--cs-t-claro);
     display: block;
     font-family: var(--cs-letra);
-    font-size: 1.5rem;
-    letter-spacing: .08em;
+    font-size: 1.6rem;
+    letter-spacing: .1em;
     text-transform: uppercase;
 }
 
@@ -906,7 +978,7 @@ body:has(.cartao-acesso.text-center)::after {
 
 /* ---------- Elementos criados pelo tema.js ---------- */
 
-/* HUD no canto: tempo que falta para a "rodada" (o dia) acabar e o dinheiro. */
+/* HUD no topo, como o placar da partida: mapa, tempo da "rodada" (o dia) e dinheiro. */
 /* Junto com a classe "container" do Bootstrap, o HUD alinha com a borda direita do conteúdo. */
 .cs-hud {
     display: flex;
@@ -925,23 +997,33 @@ body:has(.cartao-acesso.text-center)::after {
 
 .cs-caixa-hud {
     align-items: stretch;
-    background: rgba(11, 14, 19, .78);
+    backdrop-filter: var(--cs-desfoque);
+    background: linear-gradient(rgba(255, 255, 255, .05), transparent), rgba(8, 10, 13, .78);
     border: 1px solid var(--cs-linha);
+    border-radius: 3px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
     display: flex;
     font-family: var(--cs-letra);
     font-weight: 700;
     line-height: 1;
 }
 
+.cs-mapa,
 .cs-relogio,
 .cs-dinheiro {
     display: grid;
-    gap: .2rem;
-    padding: .4rem .8rem;
+    gap: .25rem;
+    padding: .45rem .9rem;
 }
 
+.cs-mapa,
 .cs-relogio {
     border-right: 1px solid var(--cs-linha);
+}
+
+/* O tempo fica entre as cores dos dois times, como no placar do topo da tela. */
+.cs-relogio {
+    box-shadow: inset 3px 0 0 var(--cs-ct), inset -3px 0 0 var(--cs-t);
     text-align: center;
 }
 
@@ -949,7 +1031,14 @@ body:has(.cartao-acesso.text-center)::after {
     color: var(--cs-texto-fraco);
     font-size: .75rem;
     font-weight: 500;
-    letter-spacing: .12em;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+
+.cs-nome-mapa {
+    color: #fff;
+    font-size: 1.35rem;
+    letter-spacing: .06em;
     text-transform: uppercase;
 }
 
@@ -963,7 +1052,7 @@ body:has(.cartao-acesso.text-center)::after {
 /* Última hora do dia: o tempo fica vermelho, como o relógio no fim da rodada. */
 .cs-tempo.acabando {
     animation: cs-alerta 1s steps(1) infinite;
-    color: #ff6b62;
+    color: #ff6b6f;
 }
 
 @keyframes cs-alerta {
@@ -1016,7 +1105,7 @@ body:has(.cartao-acesso.text-center)::after {
     }
 }
 
-/* Killfeed logo abaixo do HUD, no canto de cima: quem concluiu qual tarefa. */
+/* Killfeed logo abaixo do HUD: quem concluiu qual tarefa, com a arma e o ícone de headshot. */
 .cs-killfeed {
     display: grid;
     gap: 4px;
@@ -1028,19 +1117,21 @@ body:has(.cartao-acesso.text-center)::after {
     z-index: 1075;
 }
 
+/* Abate do próprio jogador: fundo escuro com a borda vermelha. */
 .cs-abate {
     align-items: center;
     animation: cs-abate 6s ease-in forwards;
-    background: rgba(11, 14, 19, .82);
-    border: 1px solid rgba(217, 67, 59, .9);
+    background: rgba(0, 0, 0, .65);
+    border: 2px solid var(--cs-vermelho);
+    border-radius: 2px;
     color: #fff;
     display: inline-flex;
     font-family: var(--cs-letra);
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     font-weight: 700;
-    gap: .45rem;
-    max-width: min(92vw, 30rem);
-    padding: .25rem .6rem;
+    gap: .5rem;
+    max-width: min(92vw, 32rem);
+    padding: .2rem .65rem;
 }
 
 .cs-abate .atacante {
@@ -1052,6 +1143,38 @@ body:has(.cartao-acesso.text-center)::after {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.cs-abate .arma {
+    background: var(--cs-icone-arma, url("img/killfeed-ak47.png")) center / contain no-repeat;
+    flex: 0 0 auto;
+    height: 20px;
+    width: 46px;
+}
+
+.cs-abate .arma-awp {
+    --cs-icone-arma: url("img/killfeed-awp.png");
+    width: 58px;
+}
+
+.cs-abate .arma-m4a1s {
+    --cs-icone-arma: url("img/killfeed-m4a1s.png");
+    width: 56px;
+}
+
+.cs-abate .arma-deagle {
+    --cs-icone-arma: url("img/killfeed-deagle.png");
+    width: 26px;
+}
+
+.cs-abate .arma-usps {
+    --cs-icone-arma: url("img/killfeed-usps.png");
+    width: 42px;
+}
+
+.cs-abate .arma-karambit {
+    --cs-icone-arma: url("img/killfeed-karambit.png");
+    width: 30px;
 }
 
 .cs-abate .icone {
@@ -1077,37 +1200,38 @@ body:has(.cartao-acesso.text-center)::after {
     }
 }
 
-/* C4 no chão das telas de acesso: cada clique avança o desarme até a bomba ser desarmada. */
+/* C4 (render do jogo) no chão das telas de acesso: cada clique avança o desarme. */
 .cs-bomba {
-    background: url("img/c4.svg") center / 100% 100% no-repeat;
+    aspect-ratio: 272 / 334;
+    background: url("img/arma-c4.webp") center / contain no-repeat;
     border: 0;
-    bottom: 22px;
+    bottom: 5vh;
     cursor: pointer;
-    height: 48px;
-    left: 18%;
+    filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .7));
+    left: 24%;
     padding: 0;
     position: absolute;
     width: 72px;
 }
 
+/* LED piscando em cima da tampa vermelha do detonador. */
 .cs-bomba::after {
     animation: cs-led 1s steps(1) infinite;
     background: #ff3b30;
     border-radius: 50%;
-    box-shadow: 0 0 8px 3px rgba(255, 59, 48, .7);
+    box-shadow: 0 0 10px 4px rgba(255, 59, 48, .8);
     content: "";
     height: 6px;
-    left: 50%;
-    margin-left: -3px;
+    left: 9%;
     position: absolute;
-    top: -2px;
+    top: 47%;
     width: 6px;
 }
 
 .cs-bomba.desarmada::after {
     animation: none;
     background: var(--cs-verde-claro);
-    box-shadow: 0 0 8px 3px rgba(77, 255, 122, .7);
+    box-shadow: 0 0 10px 4px rgba(142, 226, 107, .8);
 }
 
 @keyframes cs-led {
@@ -1126,9 +1250,9 @@ body:has(.cartao-acesso.text-center)::after {
     background: rgba(0, 0, 0, .7);
     border: 1px solid var(--cs-linha-forte);
     height: 8px;
-    left: -8px;
+    left: -12px;
     position: absolute;
-    right: -8px;
+    right: -12px;
     top: -18px;
 }
 
@@ -1156,16 +1280,17 @@ body:has(.cartao-acesso.text-center)::after {
     }
 }
 
-/* Aviso grande no meio da tela: "Bomba desarmada". */
+/* Aviso grande no meio da tela: "Bomba desarmada", com a faixa azul dos CT. */
 .cs-aviso {
     animation: cs-aviso 2s ease-out forwards;
-    background: linear-gradient(90deg, transparent, rgba(11, 14, 19, .9) 20%, rgba(11, 14, 19, .9) 80%, transparent);
+    background: linear-gradient(90deg, transparent, rgba(8, 10, 13, .9) 20%, rgba(8, 10, 13, .9) 80%, transparent);
+    border-block: 1px solid rgba(93, 121, 174, .6);
     color: var(--cs-ct-claro);
     font-family: var(--cs-letra);
-    font-size: clamp(1.4rem, 5vw, 2.2rem);
+    font-size: clamp(1.4rem, 5vw, 2.4rem);
     font-weight: 700;
     left: 0;
-    letter-spacing: .1em;
+    letter-spacing: .12em;
     padding: .5rem 0;
     pointer-events: none;
     position: fixed;
@@ -1192,35 +1317,13 @@ body:has(.cartao-acesso.text-center)::after {
     }
 }
 
-/* Operador patrulhando o chão do mapa, no fim da página. */
-.cs-personagem {
-    animation: cs-patrulha 40s linear infinite, cs-passos .5s ease-in-out infinite;
-    background: url("img/operador.svg") center / 100% 100% no-repeat;
-    bottom: 14px;
-    height: 96px;
-    left: -70px;
-    pointer-events: none;
-    position: absolute;
-    width: 64px;
-}
-
-@keyframes cs-patrulha {
-    to {
-        transform: translateX(calc(100vw + 140px));
-    }
-}
-
-@keyframes cs-passos {
-    50% {
-        translate: 0 -3px;
-    }
-}
-
 /* Botão de som, fixo no canto. */
 .cs-som {
     align-items: center;
-    background: rgba(11, 14, 19, .85);
+    backdrop-filter: var(--cs-desfoque);
+    background: rgba(8, 10, 13, .82);
     border: 1px solid var(--cs-linha-forte);
+    border-radius: 2px;
     bottom: 1rem;
     color: #d3d8df;
     cursor: pointer;
@@ -1229,7 +1332,7 @@ body:has(.cartao-acesso.text-center)::after {
     font-size: 1rem;
     font-weight: 700;
     gap: .4rem;
-    letter-spacing: .06em;
+    letter-spacing: .08em;
     padding: .35rem .75rem;
     position: fixed;
     right: 1rem;
@@ -1248,6 +1351,14 @@ body:has(.cartao-acesso.text-center)::after {
 }
 
 @media (max-width: 767.98px) {
+    body {
+        padding-bottom: 150px;
+    }
+
+    body::after {
+        height: 150px;
+    }
+
     .cs-hud {
         justify-content: center;
         margin-bottom: -.75rem;
@@ -1265,6 +1376,10 @@ body:has(.cartao-acesso.text-center)::after {
 }
 
 @media (max-width: 575.98px) {
+    .cs-mapa {
+        display: none;
+    }
+
     .cs-som {
         bottom: .6rem;
         padding: .4rem .55rem;
@@ -1277,12 +1392,11 @@ body:has(.cartao-acesso.text-center)::after {
 
     .cs-bomba {
         left: 6%;
+        width: 56px;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    body::before,
-    .cs-personagem,
     .cs-ganho,
     .cs-radio,
     .cs-tempo.acabando,
@@ -1291,14 +1405,9 @@ body:has(.cartao-acesso.text-center)::after {
     .cs-aviso,
     .cs-bomba,
     .cs-bomba::after,
-    .cartao-acesso .display-5::before,
     .resumo .card,
     .cartao-acesso form.card {
         animation: none !important;
         transition: none !important;
-    }
-
-    .cs-personagem {
-        left: 8%;
     }
 }

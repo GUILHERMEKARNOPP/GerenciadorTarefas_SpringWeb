@@ -116,7 +116,7 @@ class TemaWebTest {
                 .andExpect(content().string(containsString("sv-fazendeiro")))
                 .andExpect(content().string(containsString("value=\"cs2\"")))
                 .andExpect(content().string(containsString("/temas/cs2/mundo.css")))
-                .andExpect(content().string(containsString("cs-operador")));
+                .andExpect(content().string(containsString("cs-arte")));
     }
 
     @Test

@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Caixote de madeira com reforço em X. Arte própria. -->
-  <rect x="2" y="2" width="60" height="60" fill="#8a5a2b" stroke="#3b2412" stroke-width="4"/>
-  <path d="M8 8l48 48M56 8L8 56" stroke="#5e3b1a" stroke-width="7"/>
-  <path d="M8 8l48 48M56 8L8 56" stroke="#a87038" stroke-width="3"/>
-  <rect x="7" y="7" width="50" height="50" fill="none" stroke="#5e3b1a" stroke-width="5"/>
-</svg>

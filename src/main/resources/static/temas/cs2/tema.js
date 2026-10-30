@@ -1,6 +1,6 @@
 /*
-  Tema Counter-Strike 2: sons gerados na hora (Web Audio, sem arquivos de áudio), dinheiro da partida, HUD com o
-  tempo da rodada, killfeed ao concluir tarefas, bomba para desarmar nas telas de acesso e o operador patrulhando.
+  Tema Counter-Strike 2: sons gerados na hora (Web Audio, sem arquivos de áudio), mapa sorteado por sessão, dinheiro
+  da partida, HUD com mapa e tempo da rodada, killfeed ao concluir tarefas e bomba para desarmar nas telas de acesso.
   Tudo aqui é enfeite: sem este script o sistema funciona igual.
 */
 (() => {
@@ -8,6 +8,11 @@
 
     const CHAVE_SOM = 'cs2.som';
     const CHAVE_DINHEIRO = 'cs2.dinheiro';
+    // O mapa vale para a sessão inteira, como uma partida: não muda a cada página.
+    const CHAVE_MAPA = 'cs2.mapa';
+    // Chave = sufixo da classe cs-mapa-* e da imagem img/mapa-*.webp no tema.css.
+    const MAPAS = new Map([['dust2', 'Dust II'], ['mirage', 'Mirage'], ['inferno', 'Inferno'], ['vertigo', 'Vertigo']]);
+    const ARMAS_KILLFEED = ['ak47', 'awp', 'm4a1s', 'deagle', 'usps', 'karambit'];
     // O killfeed aparece na página seguinte, porque concluir a tarefa recarrega a lista.
     const CHAVE_ABATE = 'cs2.abate';
     // Valores da economia do jogo: começa com $800, o teto é $16.000 e um abate/desarme rende $300.
@@ -65,6 +70,21 @@
     }
 
     const somLigado = () => ler('localStorage', CHAVE_SOM) !== 'desligado';
+
+    const sortear = (lista) => lista[Math.floor(Math.random() * lista.length)];
+
+    // ---------- Mapa da partida ----------
+
+    /** Devolve a chave do mapa desta sessão; o valor guardado só vale se estiver na lista de mapas. */
+    function mapaDaPartida() {
+        const guardado = ler('sessionStorage', CHAVE_MAPA);
+        if (MAPAS.has(guardado)) {
+            return guardado;
+        }
+        const sorteado = sortear([...MAPAS.keys()]);
+        gravar('sessionStorage', CHAVE_MAPA, sorteado);
+        return sorteado;
+    }
 
     // ---------- Sons ----------
 
@@ -281,11 +301,12 @@
         const feed = criarEnfeite('cs-killfeed', 'div');
         const linha = criarEnfeite('cs-abate');
         const atacante = criarEnfeite('atacante');
+        const arma = criarEnfeite(`arma arma-${sortear(ARMAS_KILLFEED)}`);
         const icone = criarEnfeite('icone');
         const vitima = criarEnfeite('vitima');
         atacante.textContent = encurtar(abate.atacante);
         vitima.textContent = encurtar(abate.vitima);
-        linha.append(atacante, icone, vitima);
+        linha.append(atacante, arma, icone, vitima);
         feed.append(linha);
         (document.querySelector('.cs-hud') ?? document.body).append(feed);
         window.setTimeout(() => feed.remove(), DURACAO_ABATE_MS);
@@ -402,7 +423,8 @@
         return bloco;
     }
 
-    function criarHud(flutuante) {
+    /** nomeMapa: nome do mapa da partida, ou null nas telas de acesso (lá o fundo é o menu principal). */
+    function criarHud(flutuante, nomeMapa) {
         const hud = criarEnfeite(flutuante ? 'cs-hud flutuante' : 'cs-hud container', 'div');
         const caixa = criarEnfeite('cs-caixa-hud');
         const tempo = criarEnfeite('cs-tempo');
@@ -412,6 +434,11 @@
         relogio.title = 'Tempo até o fim do dia';
         carteira.title = 'Dinheiro: ganhe concluindo tarefas';
         valor.dataset.csDinheiro = '';
+        if (nomeMapa) {
+            const nome = criarEnfeite('cs-nome-mapa');
+            nome.textContent = nomeMapa;
+            caixa.append(criarBloco('cs-mapa', 'Mapa', nome));
+        }
         caixa.append(relogio, carteira);
         hud.append(caixa);
 
@@ -428,9 +455,11 @@
     function colocarHud() {
         const barra = document.querySelector('.barra-app');
         if (barra) {
-            barra.after(criarHud(false));
+            const mapa = mapaDaPartida();
+            document.documentElement.classList.add(`cs-mapa-${mapa}`);
+            barra.after(criarHud(false, MAPAS.get(mapa)));
         } else if (document.querySelector('.cartao-acesso')) {
-            document.body.append(criarHud(true));
+            document.body.append(criarHud(true, null));
         }
     }
 
@@ -503,22 +532,15 @@
             cartao.querySelector('p')?.after(fim);
         } else {
             const radio = criarEnfeite('cs-radio');
-            radio.textContent = RADIO[Math.floor(Math.random() * RADIO.length)];
+            radio.textContent = sortear(RADIO);
             cartao.querySelector(':scope > .text-center.mb-4')?.append(radio);
         }
         criarBomba();
     }
 
-    function colocarOperador() {
-        if (!reduzMovimento) {
-            document.body.append(criarEnfeite('cs-personagem'));
-        }
-    }
-
     criarBotaoSom();
     colocarHud();
     montarTelaDeAcesso();
-    colocarOperador();
     atualizarDinheiro();
     mostrarAbateGuardado();
 })();

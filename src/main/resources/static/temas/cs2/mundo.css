@@ -1,4 +1,4 @@
-/* Cartão do tema Counter-Strike 2 na tela "Escolha o tema": um bombsite no deserto, com arte vetorial própria (img/). */
+/* Cartão do tema Counter-Strike 2 na tela "Escolha o tema": a arte-chave do jogo (img/, imagens da Steam). */
 
 @font-face {
     font-display: swap;
@@ -8,13 +8,14 @@
 }
 
 .mundo-cs2 .mundo-cena {
-    background: linear-gradient(#1a2233, #4a3b3f 45%, #c98a52 85%, #e3b27a);
-    border: 1px solid #0b0e13;
+    background: #e08a12;
+    border: 1px solid #0a0c10;
     border-bottom: 0;
+    border-radius: 4px 4px 0 0;
     overflow: hidden;
 }
 
-/* O bombsite não "levanta" inteiro: quem se mexe é a fumaça e o operador. */
+/* A cena não "levanta" inteira: a câmera aproxima dentro do quadro. */
 .mundo-cs2:hover .mundo-cena,
 .mundo-cs2:focus-visible .mundo-cena {
     transform: none;
@@ -25,137 +26,109 @@
     position: absolute;
 }
 
-.mundo-cs2 .mundo-cena > .cs-cenario {
-    background: url("img/cenario.svg") 0 100% / 320px 100px repeat-x;
+.mundo-cs2 .cs-arte {
+    background: url("img/arte-chave.webp") center / cover;
     inset: 0;
+    transform-origin: 70% 40%;
+    transition: transform 1.2s cubic-bezier(.2, .7, .2, 1);
 }
 
-.mundo-cs2 .cs-caixote {
-    background: url("img/caixote.svg") center / 100% 100%;
-    bottom: 0;
-    height: 44px;
+.mundo-cs2 .cs-logo {
+    aspect-ratio: 360 / 74;
+    background: url("img/logo.webp") center / contain;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .5));
     left: 6%;
-    width: 44px;
+    /* Abaixo do selo "Tema atual", que fica no canto de cima. */
+    top: 24%;
+    width: 42%;
 }
 
-.mundo-cs2 .cs-caixote.pequeno {
-    bottom: 44px;
-    height: 28px;
-    left: calc(6% + 8px);
-    width: 28px;
-}
-
-.mundo-cs2 .cs-fumaca {
-    background: url("img/fumaca.svg") center / 100% 100%;
-    bottom: -14px;
-    height: 70px;
-    opacity: .75;
-    right: -10%;
-    transform-origin: bottom right;
-    transition: transform 1.2s ease-out, opacity 1.2s ease-out;
-    width: 140px;
-}
-
-.mundo-cs2 .cs-c4 {
-    background: url("img/c4.svg") center / 100% 100%;
-    bottom: 0;
-    height: 24px;
-    left: 46%;
-    width: 36px;
-}
-
-.mundo-cs2 .cs-led {
-    animation: cs-mundo-pisca 1s steps(1) infinite;
-    background: #ff3b30;
-    border-radius: 50%;
-    bottom: 22px;
-    box-shadow: 0 0 6px 2px rgba(255, 59, 48, .7);
-    height: 5px;
-    left: calc(46% + 16px);
-    width: 5px;
-}
-
-.mundo-cs2 .cs-operador {
-    background: url("img/operador.svg") center / 100% 100%;
-    bottom: 0;
-    height: 66px;
-    left: 18%;
-    width: 44px;
-}
-
-.mundo-cs2 .cs-mira {
-    background: url("img/mira.svg") center / 100% 100%;
-    height: 22px;
+.mundo-cs2 .cs-arma {
+    aspect-ratio: 400 / 203;
+    background: url("img/arma-ak47.webp") center / contain;
+    bottom: 4%;
+    filter: drop-shadow(0 6px 8px rgba(0, 0, 0, .55));
+    left: 2%;
     opacity: 0;
-    right: 26%;
-    top: 22%;
-    transition: opacity .3s;
+    transform: translateX(-40%) rotate(-8deg);
+    transition: transform .5s cubic-bezier(.2, .8, .2, 1), opacity .3s;
+    width: 46%;
+}
+
+/* Linha do killfeed: borda vermelha do abate do próprio jogador. */
+.mundo-cs2 .cs-kf {
+    align-items: center;
+    background: rgba(0, 0, 0, .7);
+    border: 1px solid #e0383f;
+    color: #fff;
+    display: flex;
+    font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+    font-size: .8rem;
+    font-weight: 700;
+    gap: 4px;
+    line-height: 1;
+    opacity: 0;
+    padding: 3px 6px;
+    right: 4%;
+    top: 8%;
+    transform: translateX(12px);
+    transition: transform .3s ease-out .35s, opacity .3s ease-out .35s;
+}
+
+.mundo-cs2 .cs-kf .ct {
+    color: #b5d4ee;
+}
+
+.mundo-cs2 .cs-kf .t {
+    color: #ead18a;
+}
+
+.mundo-cs2 .kf-arma {
+    background: url("img/killfeed-ak47.png") center / contain no-repeat;
+    height: 10px;
     width: 22px;
 }
 
-/* A plataforma com o nome é a barra do menu do jogo: escura, com a faixa laranja dos Terroristas. */
+.mundo-cs2 .kf-hs {
+    background: url("img/headshot.svg") center / contain no-repeat;
+    height: 11px;
+    width: 11px;
+}
+
+/* A plataforma com o nome é a barra do menu do jogo: escura, com a faixa dos dois times. */
 .mundo-cs2 .mundo-nome {
-    background: linear-gradient(#e0a33a 0 4px, #10141b 4px);
-    border: 1px solid #0b0e13;
+    background: linear-gradient(90deg, #5d79ae 0 50%, #de9b35 50%) top / 100% 3px no-repeat, #0a0c10;
+    border: 1px solid #0a0c10;
+    border-radius: 0 0 4px 4px;
     border-top: 0;
     color: #f1f3f5;
     font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
     font-size: 1.35rem;
     font-weight: 700;
-    letter-spacing: .08em;
+    letter-spacing: .1em;
     padding: .9rem .5rem .7rem;
     text-transform: uppercase;
 }
 
-/* Ao passar o mouse: a fumaça se espalha, a mira aparece e o operador corre até a bomba e desarma (o LED fica verde). */
-.mundo-cs2:hover .cs-fumaca,
-.mundo-cs2:focus-visible .cs-fumaca {
-    opacity: .95;
-    transform: scale(1.7);
+.mundo-cs2:hover .cs-arte,
+.mundo-cs2:focus-visible .cs-arte {
+    transform: scale(1.12);
 }
 
-.mundo-cs2:hover .cs-mira,
-.mundo-cs2:focus-visible .cs-mira {
+.mundo-cs2:hover .cs-arma,
+.mundo-cs2:focus-visible .cs-arma {
     opacity: 1;
+    transform: none;
 }
 
-.mundo-cs2:hover .cs-operador,
-.mundo-cs2:focus-visible .cs-operador {
-    animation: cs-mundo-corre .8s ease-out forwards;
-}
-
-.mundo-cs2:hover .cs-led,
-.mundo-cs2:focus-visible .cs-led {
-    animation: cs-mundo-pisca .25s steps(1) 4, cs-mundo-desarmada 0s 1s forwards;
-}
-
-@keyframes cs-mundo-pisca {
-    50% {
-        opacity: .15;
-    }
-}
-
-@keyframes cs-mundo-desarmada {
-    to {
-        background: #4dff7a;
-        box-shadow: 0 0 6px 2px rgba(77, 255, 122, .7);
-        opacity: 1;
-    }
-}
-
-@keyframes cs-mundo-corre {
-    40% {
-        translate: 0 -3px;
-    }
-
-    to {
-        translate: 40px 0;
-    }
+.mundo-cs2:hover .cs-kf,
+.mundo-cs2:focus-visible .cs-kf {
+    opacity: 1;
+    transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
     .mundo-cs2 .mundo-cena * {
-        animation: none !important;
         transition: none !important;
     }
 }

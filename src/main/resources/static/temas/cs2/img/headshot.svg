@@ -1,8 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <!-- Ícone de "abate na cabeça" do killfeed: cabeça com a mira por cima. Arte própria. -->
-  <path d="M12 3a7 7 0 0 0-7 7v3l2 2v4h10v-4l2-2v-3a7 7 0 0 0-7-7z" fill="#f2f2f2" stroke="#111" stroke-width="1.5"/>
-  <circle cx="9" cy="11" r="1.8" fill="#111"/><circle cx="15" cy="11" r="1.8" fill="#111"/>
-  <path d="M10 17v2M12 17v2M14 17v2" stroke="#111" stroke-width="1.2"/>
-  <circle cx="18.5" cy="5.5" r="4" fill="none" stroke="#e8483f" stroke-width="1.6"/>
-  <path d="M18.5 0v3.2M18.5 7.8V11M13 5.5h3.2M20.8 5.5H24" stroke="#e8483f" stroke-width="1.6"/>
+  <!-- Ícone de "abate na cabeça" no estilo do killfeed: crânio branco com o furo do tiro e as rachaduras. -->
+  <path fill="#fff" fill-rule="evenodd" d="M12 2C7 2 3.5 5.6 3.5 10.3c0 2.7 1.1 4.6 2.8 5.8V19c0 .9.7 1.6 1.6 1.6h.9v-2h1.6v2h3.2v-2h1.6v2h.9c.9 0 1.6-.7 1.6-1.6v-2.9c1.7-1.2 2.8-3.1 2.8-5.8C20.5 5.6 17 2 12 2zM8.4 9.6a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7.2 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM12 14.2l1.2 2.2h-2.4z"/>
+  <circle cx="15.8" cy="5.6" r="1.6" fill="#0a0c10"/>
+  <path d="M15.8 5.6l2.2-1.6M15.8 5.6l.6 2.6M15.8 5.6l-2.4-.4" stroke="#0a0c10" stroke-width=".9" stroke-linecap="round"/>
 </svg>
