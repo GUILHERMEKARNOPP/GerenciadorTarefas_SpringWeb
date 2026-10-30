@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- Ícone de "abate na cabeça" do killfeed: cabeça com a mira por cima. Arte própria. -->
+  <path d="M12 3a7 7 0 0 0-7 7v3l2 2v4h10v-4l2-2v-3a7 7 0 0 0-7-7z" fill="#f2f2f2" stroke="#111" stroke-width="1.5"/>
+  <circle cx="9" cy="11" r="1.8" fill="#111"/><circle cx="15" cy="11" r="1.8" fill="#111"/>
+  <path d="M10 17v2M12 17v2M14 17v2" stroke="#111" stroke-width="1.2"/>
+  <circle cx="18.5" cy="5.5" r="4" fill="none" stroke="#e8483f" stroke-width="1.6"/>
+  <path d="M18.5 0v3.2M18.5 7.8V11M13 5.5h3.2M20.8 5.5H24" stroke="#e8483f" stroke-width="1.6"/>
+</svg>

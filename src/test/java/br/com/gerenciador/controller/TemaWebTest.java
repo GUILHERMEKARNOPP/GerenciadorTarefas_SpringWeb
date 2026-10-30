@@ -113,7 +113,10 @@ class TemaWebTest {
                 .andExpect(content().string(containsString("mc-minerador")))
                 .andExpect(content().string(containsString("value=\"stardew\"")))
                 .andExpect(content().string(containsString("/temas/stardew/mundo.css")))
-                .andExpect(content().string(containsString("sv-fazendeiro")));
+                .andExpect(content().string(containsString("sv-fazendeiro")))
+                .andExpect(content().string(containsString("value=\"cs2\"")))
+                .andExpect(content().string(containsString("/temas/cs2/mundo.css")))
+                .andExpect(content().string(containsString("cs-operador")));
     }
 
     @Test
@@ -153,6 +156,22 @@ class TemaWebTest {
         mvc.perform(post("/tema").param("tema", "stardew").with(csrf()))
                 .andExpect(redirectedUrl("/login"))
                 .andExpect(cookie().value("tema", "stardew"));
+    }
+
+    @Test
+    void temaCs2CarregaSoOsArquivosDele() throws Exception {
+        mvc.perform(get("/login").cookie(new Cookie("tema", "cs2")))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("/temas/cs2/tema.css")))
+                .andExpect(content().string(containsString("/temas/cs2/tema.js")))
+                .andExpect(content().string(not(containsString("/temas/stardew/"))));
+    }
+
+    @Test
+    void escolherCs2GuardaOTemaNoCookie() throws Exception {
+        mvc.perform(post("/tema").param("tema", "cs2").with(csrf()))
+                .andExpect(redirectedUrl("/login"))
+                .andExpect(cookie().value("tema", "cs2"));
     }
 
     @Test

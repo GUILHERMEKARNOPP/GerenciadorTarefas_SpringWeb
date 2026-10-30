@@ -12,6 +12,7 @@ class TemaTest {
         assertThat(Tema.doSlug("mario")).contains(Tema.MARIO);
         assertThat(Tema.doSlug("minecraft")).contains(Tema.MINECRAFT);
         assertThat(Tema.doSlug("stardew")).contains(Tema.STARDEW);
+        assertThat(Tema.doSlug("cs2")).contains(Tema.CS2);
     }
 
     @Test

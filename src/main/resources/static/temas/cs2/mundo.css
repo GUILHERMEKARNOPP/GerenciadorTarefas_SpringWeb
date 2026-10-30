@@ -1,0 +1,161 @@
+/* Cartão do tema Counter-Strike 2 na tela "Escolha o tema": um bombsite no deserto, com arte vetorial própria (img/). */
+
+@font-face {
+    font-display: swap;
+    font-family: "Barlow Condensed";
+    font-weight: 700;
+    src: url("fontes/barlow-condensed-latin-700.woff2") format("woff2");
+}
+
+.mundo-cs2 .mundo-cena {
+    background: linear-gradient(#1a2233, #4a3b3f 45%, #c98a52 85%, #e3b27a);
+    border: 1px solid #0b0e13;
+    border-bottom: 0;
+    overflow: hidden;
+}
+
+/* O bombsite não "levanta" inteiro: quem se mexe é a fumaça e o operador. */
+.mundo-cs2:hover .mundo-cena,
+.mundo-cs2:focus-visible .mundo-cena {
+    transform: none;
+}
+
+.mundo-cs2 .mundo-cena > span {
+    background-repeat: no-repeat;
+    position: absolute;
+}
+
+.mundo-cs2 .mundo-cena > .cs-cenario {
+    background: url("img/cenario.svg") 0 100% / 320px 100px repeat-x;
+    inset: 0;
+}
+
+.mundo-cs2 .cs-caixote {
+    background: url("img/caixote.svg") center / 100% 100%;
+    bottom: 0;
+    height: 44px;
+    left: 6%;
+    width: 44px;
+}
+
+.mundo-cs2 .cs-caixote.pequeno {
+    bottom: 44px;
+    height: 28px;
+    left: calc(6% + 8px);
+    width: 28px;
+}
+
+.mundo-cs2 .cs-fumaca {
+    background: url("img/fumaca.svg") center / 100% 100%;
+    bottom: -14px;
+    height: 70px;
+    opacity: .75;
+    right: -10%;
+    transform-origin: bottom right;
+    transition: transform 1.2s ease-out, opacity 1.2s ease-out;
+    width: 140px;
+}
+
+.mundo-cs2 .cs-c4 {
+    background: url("img/c4.svg") center / 100% 100%;
+    bottom: 0;
+    height: 24px;
+    left: 46%;
+    width: 36px;
+}
+
+.mundo-cs2 .cs-led {
+    animation: cs-mundo-pisca 1s steps(1) infinite;
+    background: #ff3b30;
+    border-radius: 50%;
+    bottom: 22px;
+    box-shadow: 0 0 6px 2px rgba(255, 59, 48, .7);
+    height: 5px;
+    left: calc(46% + 16px);
+    width: 5px;
+}
+
+.mundo-cs2 .cs-operador {
+    background: url("img/operador.svg") center / 100% 100%;
+    bottom: 0;
+    height: 66px;
+    left: 18%;
+    width: 44px;
+}
+
+.mundo-cs2 .cs-mira {
+    background: url("img/mira.svg") center / 100% 100%;
+    height: 22px;
+    opacity: 0;
+    right: 26%;
+    top: 22%;
+    transition: opacity .3s;
+    width: 22px;
+}
+
+/* A plataforma com o nome é a barra do menu do jogo: escura, com a faixa laranja dos Terroristas. */
+.mundo-cs2 .mundo-nome {
+    background: linear-gradient(#e0a33a 0 4px, #10141b 4px);
+    border: 1px solid #0b0e13;
+    border-top: 0;
+    color: #f1f3f5;
+    font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: .9rem .5rem .7rem;
+    text-transform: uppercase;
+}
+
+/* Ao passar o mouse: a fumaça se espalha, a mira aparece e o operador corre até a bomba e desarma (o LED fica verde). */
+.mundo-cs2:hover .cs-fumaca,
+.mundo-cs2:focus-visible .cs-fumaca {
+    opacity: .95;
+    transform: scale(1.7);
+}
+
+.mundo-cs2:hover .cs-mira,
+.mundo-cs2:focus-visible .cs-mira {
+    opacity: 1;
+}
+
+.mundo-cs2:hover .cs-operador,
+.mundo-cs2:focus-visible .cs-operador {
+    animation: cs-mundo-corre .8s ease-out forwards;
+}
+
+.mundo-cs2:hover .cs-led,
+.mundo-cs2:focus-visible .cs-led {
+    animation: cs-mundo-pisca .25s steps(1) 4, cs-mundo-desarmada 0s 1s forwards;
+}
+
+@keyframes cs-mundo-pisca {
+    50% {
+        opacity: .15;
+    }
+}
+
+@keyframes cs-mundo-desarmada {
+    to {
+        background: #4dff7a;
+        box-shadow: 0 0 6px 2px rgba(77, 255, 122, .7);
+        opacity: 1;
+    }
+}
+
+@keyframes cs-mundo-corre {
+    40% {
+        translate: 0 -3px;
+    }
+
+    to {
+        translate: 40px 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mundo-cs2 .mundo-cena * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
