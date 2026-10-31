@@ -1,6 +1,7 @@
 /*
-  Tema Minecraft: sons gerados na hora (Web Audio, sem arquivos de áudio), experiência (XP), hotbar,
-  bloco para minerar e personagens. Tudo aqui é enfeite: sem este script o sistema funciona igual.
+  Tema Minecraft: sons do jogo (sons/*.ogg, tocados pela Web Audio com o volume e o tom que o jogo usa em cada
+  evento), experiência (XP), hotbar, panorama da tela de título e um minério para quebrar.
+  Tudo aqui é enfeite: sem este script o sistema funciona igual.
 */
 (() => {
     'use strict';
@@ -10,9 +11,12 @@
     const MAXIMO_XP = 99999;
     const XP_POR_TAREFA = 5;
     const XP_POR_MINERIO = 3;
-    const GOLPES_PARA_QUEBRAR = 5;
+    const GOLPES_PARA_QUEBRAR = 6;
+    const ESTAGIOS_DE_RACHADURA = 10; // destroy_stage_0 a 9
     // Tempo para o som começar antes de a página trocar (senão a navegação corta o som).
     const ATRASO_NAVEGACAO_MS = 180;
+    // Os volumes abaixo são os do jogo (0 a 1); este ganho só compensa o volume geral do navegador.
+    const GANHO = 2;
     const reduzMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const FRASES = [
@@ -28,20 +32,22 @@
         'Diamantes à vista!',
     ];
 
+    // Nomes oficiais em português (lang/pt_br.json do jogo).
     const ITENS = [
-        { nome: 'Bloco de grama', imagem: 'bloco-grama.svg' },
-        { nome: 'Terra', imagem: 'bloco-terra.svg' },
-        { nome: 'Pedra', imagem: 'bloco-pedra.svg' },
-        { nome: 'Tábuas de carvalho', imagem: 'bloco-tabuas.svg' },
-        { nome: 'Tronco de carvalho', imagem: 'bloco-tronco.svg' },
-        { nome: 'Folhas de carvalho', imagem: 'bloco-folhas.svg' },
-        { nome: 'Minério de diamante', imagem: 'bloco-diamante.svg' },
-        { nome: 'Picareta de diamante', imagem: 'picareta.png' },
+        { nome: 'Bloco de Grama', imagem: 'bloco-grama.png' },
+        { nome: 'Terra', imagem: 'bloco-terra.png' },
+        { nome: 'Pedra', imagem: 'bloco-pedra.png' },
+        { nome: 'Tábuas de Carvalho', imagem: 'bloco-tabuas.png' },
+        { nome: 'Tronco de Carvalho', imagem: 'bloco-tronco.png' },
+        { nome: 'Folhas de Carvalho', imagem: 'bloco-folhas.png' },
+        { nome: 'Minério de Diamante', imagem: 'bloco-diamante.png' },
+        { nome: 'Picareta de Diamante', imagem: 'picareta-diamante.png' },
         { nome: 'Papoula', imagem: 'papoula.png' },
     ];
 
-    // As imagens ficam ao lado deste script; a URL dele já traz o caminho de contexto da aplicação.
+    // As imagens e os sons ficam ao lado deste script; a URL dele já traz o caminho de contexto da aplicação.
     const pastaImagens = new URL('img/', document.currentScript.src).href;
+    const pastaSons = new URL('sons/', document.currentScript.src).href;
 
     // ---------- Preferências do navegador (podem estar bloqueadas, ex.: aba anônima restrita) ----------
 
@@ -65,8 +71,30 @@
 
     // ---------- Sons ----------
 
+    const sorteio = () => Math.random() - Math.random();
+
+    /** Eventos de som do jogo (sounds.json): arquivos, volume e tom. */
+    const EVENTOS = {
+        // ui.button.click: SimpleSoundInstance.forUI, volume 0.25
+        clique: { arquivos: ['clique'], volume: 0.25, tom: () => 1 },
+        // block.grass.step: SoundType.GRASS, passos com volume 0.15
+        passo: { arquivos: ['passo-1', 'passo-2', 'passo-3', 'passo-4', 'passo-5', 'passo-6'], volume: 0.15, tom: () => 1 },
+        // entity.experience_orb.pickup: volume 0.1, tom (r1 - r2) * 0.35 + 0.9
+        xp: { arquivos: ['orbe'], volume: 0.1, tom: () => sorteio() * 0.35 + 0.9 },
+        // entity.player.levelup: volume 0.75
+        nivel: { arquivos: ['nivel'], volume: 0.75, tom: () => 1 },
+        // block.stone.hit: volume (1 + 1) / 8, tom 0.5
+        golpe: { arquivos: ['golpe-1', 'golpe-2', 'golpe-3', 'golpe-4', 'golpe-5', 'golpe-6'], volume: 0.25, tom: () => 0.5 },
+        // block.stone.break: volume (1 + 1) / 2, tom 0.8
+        quebrar: { arquivos: ['quebrar-1', 'quebrar-2', 'quebrar-3', 'quebrar-4'], volume: 1, tom: () => 0.8 },
+        // entity.creeper.primed: o pavio aceso do creeper, tom 0.5
+        sibilo: { arquivos: ['pavio'], volume: 1, tom: () => 0.5 },
+        // entity.generic.explode: tom (1 + (r1 - r2) * 0.2) * 0.7
+        explosao: { arquivos: ['explosao-1', 'explosao-2', 'explosao-3', 'explosao-4'], volume: 1, tom: () => (1 + sorteio() * 0.2) * 0.7 },
+    };
+
     let audio = null;
-    let ruidoBranco = null;
+    const buffers = new Map();
 
     function contextoAudio() {
         const Contexto = window.AudioContext || window.webkitAudioContext;
@@ -80,85 +108,51 @@
         return audio;
     }
 
-    /** notas: lista de [frequência, duração em segundos, frequência final (opcional, faz um "deslize")]. */
-    function tocar(notas, onda = 'square', volume = 0.06) {
-        const ctx = somLigado() ? contextoAudio() : null;
-        if (!ctx) {
+    /** Baixa e decodifica um arquivo uma vez só; falha (ex.: navegador sem Ogg Vorbis) só deixa sem som. */
+    function carregar(arquivo) {
+        if (!buffers.has(arquivo)) {
+            const ctx = contextoAudio();
+            const promessa = ctx
+                ? fetch(`${pastaSons}${arquivo}.ogg`)
+                    .then((resposta) => (resposta.ok ? resposta.arrayBuffer() : Promise.reject(new Error(resposta.statusText))))
+                    .then((dados) => ctx.decodeAudioData(dados))
+                    .catch(() => null)
+                : Promise.resolve(null);
+            buffers.set(arquivo, promessa);
+        }
+        return buffers.get(arquivo);
+    }
+
+    function tocar(nome) {
+        if (!somLigado()) {
             return;
         }
-        let inicio = ctx.currentTime + 0.01;
-        for (const [frequencia, duracao, frequenciaFinal] of notas) {
-            const oscilador = ctx.createOscillator();
+        const evento = EVENTOS[nome];
+        const arquivo = evento.arquivos[Math.floor(Math.random() * evento.arquivos.length)];
+        carregar(arquivo).then((buffer) => {
+            const ctx = contextoAudio();
+            if (!buffer || !ctx) {
+                return;
+            }
+            const fonte = ctx.createBufferSource();
             const ganho = ctx.createGain();
-            oscilador.type = onda;
-            oscilador.frequency.setValueAtTime(frequencia, inicio);
-            if (frequenciaFinal) {
-                oscilador.frequency.exponentialRampToValueAtTime(frequenciaFinal, inicio + duracao);
-            }
-            ganho.gain.setValueAtTime(volume, inicio);
-            ganho.gain.exponentialRampToValueAtTime(0.0001, inicio + duracao);
-            oscilador.connect(ganho).connect(ctx.destination);
-            oscilador.start(inicio);
-            oscilador.stop(inicio + duracao + 0.02);
-            inicio += duracao;
-        }
+            fonte.buffer = buffer;
+            // No jogo o tom muda a velocidade junto, igual ao playbackRate.
+            fonte.playbackRate.value = evento.tom();
+            ganho.gain.value = Math.min(1, evento.volume * GANHO);
+            fonte.connect(ganho).connect(ctx.destination);
+            fonte.start();
+        });
     }
 
-    /** Ruído filtrado: passos, golpes de picareta, blocos quebrando e explosões. */
-    function chiado(duracao, filtro, frequencia, frequenciaFinal, volume) {
-        const ctx = somLigado() ? contextoAudio() : null;
-        if (!ctx) {
-            return;
+    // O navegador só libera o áudio depois de um gesto; nesse primeiro gesto já deixa os sons prontos.
+    function prepararSons() {
+        if (somLigado()) {
+            Object.values(EVENTOS).forEach((evento) => evento.arquivos.forEach(carregar));
         }
-        if (!ruidoBranco) {
-            ruidoBranco = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
-            const dados = ruidoBranco.getChannelData(0);
-            for (let i = 0; i < dados.length; i += 1) {
-                dados[i] = Math.random() * 2 - 1;
-            }
-        }
-        const inicio = ctx.currentTime + 0.01;
-        const fonte = ctx.createBufferSource();
-        const passaFaixa = ctx.createBiquadFilter();
-        const ganho = ctx.createGain();
-        fonte.buffer = ruidoBranco;
-        passaFaixa.type = filtro;
-        passaFaixa.frequency.setValueAtTime(frequencia, inicio);
-        passaFaixa.frequency.exponentialRampToValueAtTime(frequenciaFinal, inicio + duracao);
-        ganho.gain.setValueAtTime(volume, inicio);
-        ganho.gain.exponentialRampToValueAtTime(0.0001, inicio + duracao);
-        fonte.connect(passaFaixa).connect(ganho).connect(ctx.destination);
-        fonte.start(inicio);
-        fonte.stop(inicio + duracao + 0.02);
     }
-
-    const SONS = {
-        clique: () => tocar([[1500, 0.025], [950, 0.035]], 'square', 0.035),
-        passo: () => chiado(0.09, 'lowpass', 900, 300, 0.35),
-        xp: () => {
-            const nota = 1300 + Math.random() * 700;
-            tocar([[nota, 0.18]], 'sine', 0.13);
-            tocar([[nota * 2, 0.1]], 'triangle', 0.025);
-        },
-        nivel: () => {
-            tocar([[523, 0.08], [659, 0.08], [784, 0.08], [1047, 0.4]], 'triangle', 0.13);
-            tocar([[1047, 0.24], [1568, 0.4]], 'sine', 0.04);
-        },
-        golpe: () => {
-            chiado(0.06, 'bandpass', 2200, 900, 0.5);
-            tocar([[320, 0.04, 200]], 'square', 0.025);
-        },
-        quebrar: () => {
-            chiado(0.25, 'lowpass', 2600, 350, 0.55);
-            tocar([[190, 0.12, 80]], 'triangle', 0.18);
-        },
-        sibilo: () => chiado(0.35, 'highpass', 2500, 5000, 0.12),
-        explosao: () => {
-            chiado(0.9, 'lowpass', 1800, 120, 0.7);
-            tocar([[90, 0.5, 35]], 'sine', 0.35);
-        },
-        porta: () => tocar([[150, 0.06, 110], [120, 0.09, 80]], 'square', 0.06),
-    };
+    document.addEventListener('pointerdown', prepararSons, { once: true });
+    document.addEventListener('keydown', prepararSons, { once: true });
 
     function somDoBotao(elemento) {
         if (!elemento) {
@@ -175,9 +169,6 @@
         }
         if (elemento.matches('.btn-outline-danger')) {
             return 'sibilo';
-        }
-        if (elemento.matches('.btn-outline-light')) {
-            return 'porta';
         }
         return 'clique';
     }
@@ -203,10 +194,13 @@
     function atualizarBarrasDeXp() {
         const { nivel, progresso } = nivelDe(xp());
         document.querySelectorAll('[data-mc-xp]').forEach((barra) => {
-            barra.style.width = `${Math.round(progresso * 100)}%`;
+            // O jogo recorta o sprite em pixels inteiros: 182 * progresso.
+            barra.style.width = `${Math.floor(progresso * 182) * 2}px`;
         });
         document.querySelectorAll('[data-mc-nivel]').forEach((elemento) => {
             elemento.textContent = String(nivel);
+            // Nível 0 não aparece no jogo.
+            elemento.hidden = nivel === 0;
         });
     }
 
@@ -253,7 +247,7 @@
             return;
         }
         evento.preventDefault();
-        SONS[link.classList.contains('btn') ? somDoBotao(link) : 'passo']();
+        tocar(link.classList.contains('btn') || link.classList.contains('nav-link') ? somDoBotao(link) : 'passo');
         window.setTimeout(() => window.location.assign(link.href), ATRASO_NAVEGACAO_MS);
     });
 
@@ -278,7 +272,7 @@
         }
         evento.preventDefault();
         formulario.dataset.mcEnvio = 'aguardando';
-        SONS[som]();
+        tocar(som);
         window.setTimeout(() => {
             formulario.dataset.mcEnvio = 'liberado';
             formulario.requestSubmit(botao ?? undefined);
@@ -309,14 +303,16 @@
         const atualizar = () => {
             const ligado = somLigado();
             icone.className = ligado ? 'bi bi-volume-up-fill' : 'bi bi-volume-mute-fill';
-            texto.textContent = ligado ? 'Som: ligado' : 'Som: desligado';
+            // Como os botões de opção do jogo: "Nome: Sim/Não" (options.on/off em pt_br).
+            texto.textContent = ligado ? 'Sons: Sim' : 'Sons: Não';
             // No celular o texto some (só fica o ícone); o rótulo continua para leitores de tela.
-            botao.setAttribute('aria-label', texto.textContent);
+            botao.setAttribute('aria-label', ligado ? 'Sons ligados' : 'Sons desligados');
         };
         botao.addEventListener('click', () => {
             gravar(CHAVE_SOM, somLigado() ? 'desligado' : 'ligado');
             atualizar();
-            SONS.clique();
+            prepararSons();
+            tocar('clique');
         });
         document.addEventListener('keydown', (evento) => {
             if (evento.key?.toLowerCase() === 'm' && !digitando(evento.target)
@@ -358,6 +354,7 @@
         const hud = criarEnfeite('mc-hud', 'div');
         const nomeDoItem = criarEnfeite('mc-item-nome');
         const hotbar = criarEnfeite('mc-hotbar', 'div');
+        const selecao = criarEnfeite('mc-selecao');
         let esconderNome = 0;
 
         const slots = ITENS.map((item) => {
@@ -369,9 +366,10 @@
             hotbar.append(slot);
             return slot;
         });
+        hotbar.append(selecao);
 
         const selecionar = (indice) => {
-            slots.forEach((slot, i) => slot.classList.toggle('selecionado', i === indice));
+            selecao.style.setProperty('--mc-indice', String(indice));
             nomeDoItem.textContent = ITENS[indice].nome;
             nomeDoItem.classList.add('visivel');
             window.clearTimeout(esconderNome);
@@ -379,7 +377,7 @@
         };
         slots.forEach((slot, i) => slot.addEventListener('click', () => {
             selecionar(i);
-            SONS.clique();
+            tocar('clique');
         }));
         // Teclas 1 a 9 trocam o item, como no jogo (menos quando o foco está num campo).
         document.addEventListener('keydown', (evento) => {
@@ -387,27 +385,27 @@
             if (numero >= 1 && numero <= ITENS.length && !digitando(evento.target)
                 && !evento.ctrlKey && !evento.metaKey && !evento.altKey) {
                 selecionar(numero - 1);
-                SONS.clique();
+                tocar('clique');
             }
         });
-        slots[0].classList.add('selecionado');
 
         hud.append(nomeDoItem, criarBarraDeXp(), hotbar);
         document.body.append(hud);
     }
 
+    /** Pedacinhos do próprio bloco voando, como as partículas de quebra do jogo. */
     function soltarPedacinhos(origem) {
         if (reduzMovimento) {
             return;
         }
         const area = origem.getBoundingClientRect();
-        const cores = ['#7f7f7f', '#9c9c9c', '#606060', '#4be0e6', '#d5fffa'];
-        for (let i = 0; i < 8; i += 1) {
+        for (let i = 0; i < 10; i += 1) {
             const pedaco = document.createElement('span');
             pedaco.className = 'mc-particula';
-            pedaco.style.background = cores[i % cores.length];
             pedaco.style.left = `${area.left + window.scrollX + area.width / 2 - 4}px`;
             pedaco.style.top = `${area.top + window.scrollY + area.height / 2 - 4}px`;
+            pedaco.style.setProperty('--px', `${-Math.floor(40 + Math.random() * 170)}px`);
+            pedaco.style.setProperty('--py', `${-Math.floor(40 + Math.random() * 170)}px`);
             pedaco.style.setProperty('--dx', `${(Math.random() - 0.5) * 90}px`);
             pedaco.style.setProperty('--dy', `${-20 - Math.random() * 40}px`);
             pedaco.addEventListener('animationend', () => pedaco.remove());
@@ -420,30 +418,25 @@
         let golpes = 0;
         bloco.type = 'button';
         bloco.className = 'mc-bloco-minerar';
-        bloco.title = 'Minério de diamante: clique para minerar';
-        bloco.setAttribute('aria-label', 'Minério de diamante: clique para minerar e ganhar XP');
+        bloco.title = 'Minério de Diamante: clique para minerar';
+        bloco.setAttribute('aria-label', 'Minério de Diamante: clique para minerar e ganhar XP');
         bloco.addEventListener('click', () => {
             if (bloco.classList.contains('quebrado')) {
                 return;
             }
             golpes += 1;
             if (golpes < GOLPES_PARA_QUEBRAR) {
-                bloco.style.setProperty('--estagio', String(golpes));
-                bloco.classList.remove('batendo');
-                void bloco.offsetWidth; // reinicia a animação a cada golpe
-                bloco.classList.add('batendo');
-                SONS.golpe();
+                // O quadro 0 é o bloco inteiro; os quadros 1 a 10 são as rachaduras.
+                bloco.style.setProperty('--estagio', String(Math.round(golpes * ESTAGIOS_DE_RACHADURA / GOLPES_PARA_QUEBRAR)));
+                tocar('golpe');
                 return;
             }
             golpes = 0;
             bloco.style.setProperty('--estagio', '0');
             soltarPedacinhos(bloco);
-            SONS.quebrar();
-            if (ganharXp(XP_POR_MINERIO, bloco)) {
-                window.setTimeout(SONS.nivel, 200);
-            } else {
-                window.setTimeout(SONS.xp, 200);
-            }
+            tocar('quebrar');
+            const subiu = ganharXp(XP_POR_MINERIO, bloco);
+            window.setTimeout(() => tocar(subiu ? 'nivel' : 'xp'), 200);
             bloco.classList.add('quebrado');
             // O minério "nasce" de novo para poder minerar outra vez.
             window.setTimeout(() => bloco.classList.remove('quebrado'), 1500);
@@ -451,40 +444,68 @@
         document.body.append(bloco);
     }
 
-    /** Login, cadastro e erro (telas sem a barra de navegação) viram a tela de título do jogo. */
+    /** Cubo com as 6 faces do panorama; o giro e a câmera ficam no tema.css. */
+    function criarPanorama() {
+        const panorama = criarEnfeite('mc-panorama', 'div');
+        const cubo = criarEnfeite('mc-cubo', 'div');
+        for (let i = 0; i < 6; i += 1) {
+            cubo.append(criarEnfeite('mc-face'));
+        }
+        panorama.append(cubo);
+        document.body.prepend(panorama);
+        document.body.classList.add('mc-titulo');
+    }
+
+    /** A frase amarela: o tamanho depende do comprimento do texto, como no SplashRenderer. */
+    function criarFrase(cabecalho) {
+        const frase = criarEnfeite('mc-frase');
+        frase.textContent = FRASES[Math.floor(Math.random() * FRASES.length)];
+        cabecalho.append(frase);
+        const ajustar = () => {
+            // offsetWidth ignora o transform; 2px por pixel do jogo.
+            const larguraNoJogo = frase.offsetWidth / 2;
+            frase.style.setProperty('--mc-escala', String(180 / (larguraNoJogo + 32)));
+        };
+        ajustar();
+        document.fonts?.ready.then(ajustar);
+    }
+
+    function criarRodape() {
+        const versao = criarEnfeite('mc-rodape', 'p');
+        const aviso = criarEnfeite('mc-rodape direita', 'p');
+        versao.textContent = 'Gerenciador de Tarefas';
+        aviso.textContent = 'Arte do jogo © Mojang. Tema de fã.';
+        document.body.append(versao, aviso);
+    }
+
+    /** Login e cadastro viram a tela de título; a página de erro vira a tela "Você morreu!". */
     function montarTelaDeAcesso() {
         const cartao = document.querySelector('.cartao-acesso');
         if (!cartao || document.querySelector('.barra-app')) {
             return;
         }
-        const ehErro = cartao.classList.contains('text-center');
-        if (ehErro) {
+        document.body.classList.add('mc-acesso');
+        if (cartao.classList.contains('text-center')) {
             const pontuacao = criarEnfeite('mc-pontuacao', 'p');
             const valor = document.createElement('span');
             valor.textContent = String(xp());
+            // deathScreen.score.value em pt_br: "Pontuação: %s", com o número em amarelo.
             pontuacao.append('Pontuação: ', valor);
             cartao.querySelector('p')?.after(pontuacao);
-        } else {
-            const frase = criarEnfeite('mc-frase');
-            frase.textContent = FRASES[Math.floor(Math.random() * FRASES.length)];
-            cartao.querySelector(':scope > .text-center.mb-4')?.append(frase);
+            return;
         }
+        criarPanorama();
+        const cabecalho = cartao.querySelector(':scope > .text-center.mb-4');
+        if (cabecalho) {
+            criarFrase(cabecalho);
+        }
+        criarRodape();
         criarHotbar();
         criarBlocoParaMinerar();
-        if (!reduzMovimento) {
-            document.body.append(criarEnfeite('mc-personagem criatura'));
-        }
-    }
-
-    function colocarMinerador() {
-        if (!reduzMovimento) {
-            document.body.append(criarEnfeite('mc-personagem minerador'));
-        }
     }
 
     criarBotaoSom();
     barraDeXpNoMenu();
     montarTelaDeAcesso();
-    colocarMinerador();
     atualizarBarrasDeXp();
 })();

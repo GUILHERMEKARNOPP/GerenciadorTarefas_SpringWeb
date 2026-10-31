@@ -110,7 +110,7 @@ class TemaWebTest {
                 .andExpect(content().string(containsString("mario-encanador")))
                 .andExpect(content().string(containsString("value=\"minecraft\"")))
                 .andExpect(content().string(containsString("/temas/minecraft/mundo.css")))
-                .andExpect(content().string(containsString("mc-minerador")))
+                .andExpect(content().string(containsString("mc-minerio")))
                 .andExpect(content().string(containsString("value=\"stardew\"")))
                 .andExpect(content().string(containsString("/temas/stardew/mundo.css")))
                 .andExpect(content().string(containsString("sv-abigail")))

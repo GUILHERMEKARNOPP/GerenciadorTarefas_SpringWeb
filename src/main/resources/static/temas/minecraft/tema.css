@@ -1,98 +1,97 @@
 /*
-  Tema Minecraft: o sistema inteiro vira um mundo de blocos (céu do Classic, nuvens retas, grama, terra e pedra).
-  Toda a pixel art em img/ é própria, só inspirada no estilo do jogo. Fonte Pixelify Sans (licença OFL, fontes/OFL.txt).
+  Tema Minecraft: o sistema vira os menus do jogo. Login e cadastro são a tela de título (panorama girando, logotipo
+  e a frase amarela); as telas internas são um menu sobre o panorama desfocado, com abas, painéis de inventário,
+  botões, campos e dicas do próprio jogo.
+  As imagens (img/), os sons (sons/) e a fonte (fontes/) saem do client.jar 26.3 e do índice de assets oficial da
+  Mojang, e as medidas/cores vêm do bytecode do jogo (TitleScreen, LogoRenderer, SplashRenderer, ContextualBar,
+  DeathScreen, CubeMap). São arte da Mojang, usadas aqui só como tema de fã, sem fins comerciais.
+  A interface do jogo é desenhada em escala inteira: aqui 1 pixel do jogo = 2px (a "escala da interface 2"), com
+  image-rendering: pixelated para os pixels não borrarem. A fonte tem em = 8 pixels, então 16px, 24px e 32px
+  ficam nítidos.
 */
 
 @font-face {
     font-display: swap;
-    font-family: "Pixelify Sans";
-    font-weight: 400 700;
-    src: url("fontes/pixelify-sans-latin-wght.woff2") format("woff2");
+    font-family: "Minecraft";
+    font-weight: 400;
+    src: url("fontes/minecraft-regular.woff2") format("woff2");
+}
+
+@font-face {
+    font-display: swap;
+    font-family: "Minecraft";
+    font-weight: 700;
+    src: url("fontes/minecraft-negrito.woff2") format("woff2");
 }
 
 :root {
-    --mc-ceu: #8ec3ff;
-    --mc-painel: #c6c6c6;
-    --mc-painel-claro: #fff;
-    --mc-painel-escuro: #555;
-    --mc-slot: #373737;
-    --mc-pedra: #6f6f6f;
-    --mc-verde: #3c8527;
-    --mc-verde-claro: #55ff55;
-    --mc-vermelho: #b0302a;
+    /* Cores do texto do jogo (códigos de formatação §) e a sombra, que é a própria cor a 25%. */
+    --mc-branco: #fff;
+    --mc-cinza: #a0a0a0;
+    --mc-cinza-escuro: #404040;
+    --mc-verde: #55ff55;
+    --mc-vermelho: #ff5555;
     --mc-amarelo: #ffff55;
+    --mc-ciano: #55ffff;
+    --mc-dourado: #ffaa00;
     --mc-xp: #80ff20;
-    --mc-texto: #1e1e1e;
-    --mc-sombra-texto: 2px 2px 0 #3f3f3f;
-    --mc-contorno-texto: 2px 2px 0 #2b2b2b, -1px -1px 0 #2b2b2b, 1px -1px 0 #2b2b2b, -1px 1px 0 #2b2b2b, 1px 1px 0 #2b2b2b;
-    --mc-pixel: "Pixelify Sans", ui-monospace, monospace;
-    --mc-relevo: inset 2px 2px 0 rgba(255, 255, 255, .35), inset -2px -3px 0 rgba(0, 0, 0, .35);
-    --mc-afundado: inset 2px 3px 0 rgba(0, 0, 0, .35), inset -2px -2px 0 rgba(255, 255, 255, .2);
+    --mc-sombra: 2px 2px 0 #3f3f3f;
+    --mc-sombra-cinza: 2px 2px 0 #282828;
+    --mc-fonte: "Minecraft", ui-monospace, monospace;
 
-    --app-fundo: var(--mc-ceu);
-    --app-barra: #5d4030;
+    --app-fundo: #000;
+    --app-barra: transparent;
     --app-borda: #000;
-    /* O céu é pintado só no body; o resto do Bootstrap usa o cinza dos painéis de inventário. */
-    --bs-body-bg: var(--mc-painel);
-    --bs-body-color: var(--mc-texto);
-    --bs-secondary-color: #404040;
-    --bs-tertiary-color: #555;
+    --bs-body-bg: #000;
+    --bs-body-color: var(--mc-branco);
+    --bs-body-font-family: var(--mc-fonte);
+    --bs-body-font-size: 1rem;
+    --bs-body-line-height: 1.5;
+    --bs-secondary-color: var(--mc-cinza);
+    --bs-secondary-color-rgb: 160, 160, 160;
+    --bs-tertiary-color: var(--mc-cinza);
+    --bs-tertiary-color-rgb: 160, 160, 160;
     --bs-border-color: #000;
     --bs-border-radius: 0;
     --bs-border-radius-sm: 0;
     --bs-border-radius-lg: 0;
     --bs-border-radius-pill: 0;
-    --bs-link-color: #1d4f9c;
-    --bs-link-color-rgb: 29, 79, 156;
-    --bs-link-hover-color: #2a641c;
-    --bs-link-hover-color-rgb: 42, 100, 28;
-    --bs-success-rgb: 30, 110, 20;
-    --bs-danger-rgb: 170, 20, 20;
+    --bs-link-color: var(--mc-amarelo);
+    --bs-link-color-rgb: 255, 255, 85;
+    --bs-link-hover-color: var(--mc-branco);
+    --bs-link-hover-color-rgb: 255, 255, 255;
+    --bs-success-rgb: 85, 255, 85;
+    --bs-danger-rgb: 255, 85, 85;
 }
 
-/* ---------- Cenário ---------- */
+/* ---------- Fundo: o panorama da tela de título ---------- */
 
 body {
-    background-color: var(--mc-ceu);
-    background-image:
-        url("img/dente-de-leao.png"),
-        url("img/papoula.png"),
-        url("img/grama-alta.png"),
-        url("img/grama-alta.png"),
-        url("img/arvore.png"),
-        url("img/arvore.png"),
-        url("img/grama-lado.png"),
-        url("img/terra.png"),
-        url("img/subsolo.png"),
-        linear-gradient(#6fa8ff, #b9dcff 85%);
-    background-position:
-        left 24% bottom 144px,
-        right 30% bottom 144px,
-        left 40% bottom 144px,
-        right 14% bottom 144px,
-        left 2% bottom 144px,
-        right 3% bottom 144px,
-        left bottom 96px,
-        left bottom 48px,
-        left bottom,
-        0 0;
-    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat-x, repeat-x, repeat-x, no-repeat;
-    background-size: 48px 48px, 48px 48px, 48px 48px, 48px 48px, 240px 240px, 240px 240px,
-        48px 48px, 48px 48px, 384px 48px, 100% 100%;
-    image-rendering: pixelated;
-    /* Personagens entram e saem pelas laterais sem criar rolagem horizontal. */
+    background: #000;
+    color: var(--mc-branco);
+    font-family: var(--mc-fonte);
+    /* A fonte só fica nítida em múltiplos de 8px: o tamanho "pequeno" do Bootstrap volta ao normal. */
+    font-size: 1rem;
     overflow-x: clip;
-    padding-bottom: 260px;
+    padding-bottom: 4rem;
     position: relative;
+    text-shadow: var(--mc-sombra);
 }
 
-/* Sol quadrado e nuvens retas passando ao fundo, atrás de todo o conteúdo. */
+/* Nos menus o jogo desfoca o panorama e escurece com o menu_background (preto a 25%). Parado aqui: girar um fundo
+   desfocado em toda página custaria GPU à toa. A face 0 é a frente do cubo, o que a câmera vê com o giro em zero. */
 body::before {
-    animation: mc-nuvens 140s linear infinite;
-    background-image: url("img/nuvens.png"), url("img/nuvens.png"), url("img/sol.png");
-    background-position: 0 50px, 140px 190px, right 12% top 36px;
-    background-repeat: repeat-x, repeat-x, no-repeat;
-    background-size: 512px 80px, 384px 60px, 80px 80px;
+    background: url("img/panorama-0.webp") center / cover no-repeat;
+    content: "";
+    filter: blur(6px);
+    inset: -24px;
+    pointer-events: none;
+    position: fixed;
+    z-index: -2;
+}
+
+body::after {
+    background: rgba(0, 0, 0, .25);
     content: "";
     inset: 0;
     pointer-events: none;
@@ -100,432 +99,521 @@ body::before {
     z-index: -1;
 }
 
-/* Cada camada anda um número inteiro de "ladrilhos", então o fim emenda com o começo. */
-@keyframes mc-nuvens {
-    to {
-        background-position: -512px 50px, -628px 190px, right 12% top 36px;
-    }
+small, .small, .form-text, .form-label.small, .badge {
+    font-size: 1rem;
 }
 
 /* ---------- Tipografia ---------- */
 
-h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5,
-.navbar-brand, .form-label, .btn, .badge, .page-link, .table thead th, .card-header, .resumo .numero, .alert {
-    font-family: var(--mc-pixel);
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+    font-family: var(--mc-fonte);
+    font-weight: 400;
     letter-spacing: 0;
+    line-height: 1.25;
 }
 
 h1, .h1, h2, .h2, h3, .h3 {
-    color: #fff;
-    font-size: clamp(1.25rem, 3vw, 1.6rem);
+    color: var(--mc-branco);
+    font-size: 1.5rem;
+}
+
+h4, .h4, h5, .h5, h6, .h6 {
+    font-size: 1rem;
+}
+
+.fw-semibold, .fw-bold, strong, b, th {
     font-weight: 700;
-    text-shadow: var(--mc-contorno-texto);
 }
 
-h4, .h4, h5, .h5 {
-    font-weight: 600;
+.text-body-secondary {
+    color: var(--mc-cinza) !important;
 }
 
-/* Dentro dos painéis cinza o título volta a ser escuro, como os rótulos do inventário. */
-.card h1, .card .h1, .card h2, .card .h2, .card h3, .card .h3, .card h4, .card .h4, .card h5, .card .h5 {
-    color: #404040;
-    text-shadow: none;
-}
-
+/* Fora dos painéis o texto secundário é o cinza dos rótulos do jogo, com a própria sombra. */
 main > .d-flex > div > p.text-body-secondary,
 main > header > p.text-body-secondary,
 main > p {
-    color: #fff !important;
-    font-family: var(--mc-pixel);
-    font-size: 1.05rem;
-    text-shadow: var(--mc-contorno-texto);
+    text-shadow: var(--mc-sombra-cinza);
 }
 
-main > header strong,
-main > p a,
-.cartao-acesso > p.small {
-    color: #fff;
+main > header strong {
+    color: var(--mc-branco);
 }
 
-/* ---------- Barra de navegação: uma fileira de blocos de grama ---------- */
+/* ---------- Barra de navegação: as abas da tela "Criar mundo" ---------- */
 
 .barra-app {
-    background:
-        url("img/grama-lado.png") 0 0 / 48px 48px repeat-x,
-        url("img/terra.png") 0 0 / 48px 48px repeat;
-    border-bottom: 3px solid #000;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, .25);
+    background: url("img/separador-topo.png") left bottom / 64px 4px repeat-x;
+    padding: .5rem 0 4px;
+    text-shadow: var(--mc-sombra);
 }
 
 .barra-app .navbar-brand {
     align-items: center;
-    color: #fff;
+    color: var(--mc-branco);
     display: inline-flex;
-    font-size: 1.2rem;
-    font-weight: 700;
-    gap: .45rem;
-    text-shadow: var(--mc-sombra-texto);
+    font-size: 1rem;
+    font-weight: 400;
+    gap: .5rem;
 }
 
-.barra-app .navbar-brand .bi {
-    display: none;
-}
-
-.barra-app .navbar-brand::before {
-    background: url("img/bloco-grama.svg") center / 100% 100% no-repeat;
-    content: "";
-    height: 30px;
-    width: 30px;
-}
-
-/* A fonte pixel é larga: sem os ícones, o menu cabe numa linha só. */
+.barra-app .navbar-brand .bi,
 .barra-app .nav-link .bi {
     display: none;
 }
 
+/* A fonte do jogo é larga: abaixo de 1400px o nome sai da vista (continua para leitores de tela) e fica o bloco. */
+@media (max-width: 1399.98px) {
+    .barra-app .navbar-brand {
+        font-size: 0;
+    }
+}
+
+.barra-app .navbar-brand::before {
+    background: url("img/bloco-grama.png") center / 100% 100% no-repeat;
+    content: "";
+    height: 32px;
+    image-rendering: pixelated;
+    width: 32px;
+}
+
+.barra-app .navbar-nav {
+    align-items: flex-end;
+    gap: 2px;
+}
+
+/* Cada link é uma aba (tab.png, nine-slice com 2 px nas laterais e no topo). */
 .barra-app .nav-link {
-    color: #fff;
-    font-family: var(--mc-pixel);
+    align-items: center;
+    border-image: url("img/aba.png") 2 2 0 fill / 4px 4px 0 stretch;
+    border-style: solid;
+    border-width: 4px 4px 0;
+    color: var(--mc-branco);
+    display: flex;
     font-size: 1rem;
-    font-weight: 600;
-    padding-inline: .55rem;
-    text-shadow: var(--mc-sombra-texto);
+    image-rendering: pixelated;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 .75rem;
 }
 
-.barra-app .nav-link:hover {
-    color: #ffffa0;
+.barra-app .nav-link:hover,
+.barra-app .nav-link:focus-visible {
+    border-image-source: url("img/aba-destaque.png");
+    color: var(--mc-branco);
 }
 
-/* Item ativo: o slot selecionado da hotbar. */
+/* Aba aberta: sem fundo, ligada ao conteúdo, e com o texto amarelo dos títulos selecionados. */
 .barra-app .nav-link.active {
-    background: rgba(0, 0, 0, .45);
-    box-shadow: inset 0 0 0 3px #fff, 0 0 0 2px #000;
-    color: #fff;
+    border-image-source: url("img/aba-selecionada.png");
+    color: var(--mc-amarelo);
+}
+
+.barra-app .nav-link:focus-visible {
+    outline: none;
 }
 
 .barra-app .rotulo-admin {
-    border-left-color: rgba(0, 0, 0, .6);
-    color: #ffaa00;
-    font-family: var(--mc-pixel);
-    font-weight: 600;
-    text-shadow: var(--mc-sombra-texto);
+    border-left: 0;
+    color: var(--mc-dourado);
+    padding: 0 .4rem;
 }
 
-/* ---------- Cartões: painéis de inventário ---------- */
+/* ---------- Cartões: os painéis cinza dos inventários ---------- */
 
 .card {
-    background: var(--mc-painel);
-    border: 3px solid #000;
-    box-shadow: inset 3px 3px 0 var(--mc-painel-claro), inset -3px -3px 0 var(--mc-painel-escuro), 6px 6px 0 rgba(0, 0, 0, .35);
-    color: var(--mc-texto);
+    --bs-card-border-width: 8px;
+    --bs-card-color: var(--mc-cinza-escuro);
+    --bs-secondary-color: #5b5b5b;
+    --bs-secondary-color-rgb: 91, 91, 91;
+    --bs-tertiary-color: #6f6f6f;
+    --bs-tertiary-color-rgb: 111, 111, 111;
+    background: none;
+    border-image: url("img/painel.png") 4 fill / 8px stretch;
+    border-style: solid;
+    color: var(--mc-cinza-escuro);
+    image-rendering: pixelated;
+    text-shadow: none;
 }
 
 .card-header,
 .card-footer,
 .card-footer.bg-white {
-    background: #b3b3b3 !important;
-    border-color: var(--mc-painel-escuro);
-    border-width: 3px;
+    background: transparent !important;
+    border-color: #8b8b8b;
+    border-width: 2px;
+    color: var(--mc-cinza-escuro);
 }
 
-.card-header {
-    color: #404040;
-    font-weight: 600;
+/* Títulos e rótulos dentro dos painéis são o cinza-escuro sem sombra, como "Inventário". */
+.card h1, .card .h1, .card h2, .card .h2, .card h3, .card .h3, .card h4, .card .h4, .card h5, .card .h5 {
+    color: var(--mc-cinza-escuro);
+    text-shadow: none;
 }
 
-.zona-perigo {
-    border-color: var(--mc-vermelho);
+.card .text-body-secondary,
+.card .form-text {
+    color: #5b5b5b !important;
 }
 
-/* Resumo da lista de tarefas: cada contador é um slot escuro, com o número como a quantidade de um item. */
+.card a:not(.btn):not(.page-link) {
+    color: #0000aa;
+}
+
+.card a:not(.btn):not(.page-link):hover {
+    color: #5555ff;
+}
+
+.zona-perigo .card-header,
+.card .text-danger {
+    color: #aa0000 !important;
+}
+
+/* Resumo da lista de tarefas: cada contador é um slot com um item e o número como a quantidade da pilha. */
 .resumo .card {
-    background: var(--mc-slot);
-    box-shadow: inset 3px 3px 0 #1b1b1b, inset -3px -3px 0 #5a5a5a, 6px 6px 0 rgba(0, 0, 0, .35);
-    transition: transform .12s steps(2);
+    --mc-item: url("img/livro-pena.png");
+    border-image: url("img/slot.png") 1 fill / 4px stretch;
+    border-width: 4px;
+    overflow-wrap: normal;
 }
 
-.resumo .card:hover {
-    transform: translateY(-4px);
+.resumo .card .card-body {
+    background: var(--mc-item) left .75rem center / 48px 48px no-repeat;
+    image-rendering: pixelated;
+    padding-left: 4.5rem;
+    text-shadow: var(--mc-sombra);
+}
+
+.resumo .col-6:nth-child(2) .card {
+    --mc-item: url("img/picareta-ferro.png");
+}
+
+.resumo .col-6:nth-child(3) .card {
+    --mc-item: url("img/relogio.png");
+}
+
+.resumo .col-6:nth-child(4) .card {
+    --mc-item: url("img/mapa.png");
+}
+
+.resumo .col-6:nth-child(5) .card {
+    --mc-item: url("img/esmeralda.png");
+}
+
+/* O status que conclui a tarefa vale um diamante; o último contador (atrasadas) é TNT. */
+.resumo .col-6 .card:has(.text-success) {
+    --mc-item: url("img/diamante.png");
+}
+
+.resumo .col-6:last-child .card {
+    --mc-item: url("img/bloco-tnt.png");
 }
 
 .resumo .card .small {
-    color: var(--mc-painel) !important;
-    font-family: var(--mc-pixel);
-    font-size: .85rem;
-    text-transform: uppercase;
+    color: var(--mc-branco) !important;
 }
 
 .resumo .numero {
-    color: #fff;
+    color: var(--mc-branco);
     font-size: 2rem;
-    font-weight: 700;
+    line-height: 1.125;
     margin-top: .25rem;
-    text-shadow: 3px 3px 0 #3f3f3f;
 }
 
 .resumo .numero.text-success {
-    color: var(--mc-verde-claro) !important;
+    color: var(--mc-verde) !important;
 }
 
 .resumo .numero.text-danger {
-    color: #ff5555 !important;
+    color: var(--mc-vermelho) !important;
 }
 
-/* ---------- Botões: os botões de pedra dos menus ---------- */
+/* ---------- Botões: o botão de pedra (widget/button.png, nine-slice com borda de 3 px) ---------- */
 
 .btn {
-    --bs-btn-border-width: 2px;
+    --bs-btn-border-width: 6px;
+    --bs-btn-font-family: var(--mc-fonte);
     --bs-btn-font-size: 1rem;
-    --bs-btn-font-weight: 600;
-    --bs-btn-padding-y: .5rem;
+    --bs-btn-font-weight: 400;
+    --bs-btn-padding-y: 0;
     --bs-btn-padding-x: 1rem;
-    --bs-btn-border-radius: 0;
-    --bs-btn-color: #fff;
-    --bs-btn-bg: var(--mc-pedra);
-    --bs-btn-border-color: #000;
-    --bs-btn-hover-color: #ffffa0;
-    --bs-btn-hover-bg: #808080;
-    --bs-btn-hover-border-color: #000;
-    --bs-btn-active-color: #ffffa0;
-    --bs-btn-active-bg: #5a5a5a;
-    --bs-btn-active-border-color: #000;
-    --bs-btn-disabled-color: #a0a0a0;
-    --bs-btn-disabled-bg: #2c2c2c;
-    --bs-btn-disabled-border-color: #000;
-    box-shadow: var(--mc-relevo);
-    line-height: 1.3;
-    text-shadow: var(--mc-sombra-texto);
-    transition: background-color .08s, color .08s;
+    --bs-btn-color: var(--mc-branco);
+    --bs-btn-hover-color: var(--mc-branco);
+    --bs-btn-active-color: var(--mc-branco);
+    --bs-btn-disabled-color: var(--mc-cinza);
+    --bs-btn-disabled-opacity: 1;
+    align-items: center;
+    background: none !important;
+    border-image: url("img/botao.png") 3 fill / 6px repeat stretch;
+    border-style: solid;
+    display: inline-flex;
+    gap: .4rem;
+    image-rendering: pixelated;
+    justify-content: center;
+    line-height: 1.125;
+    min-height: 40px;
+    text-shadow: var(--mc-sombra);
+    transition: none;
 }
 
 .btn-sm {
-    --bs-btn-font-size: .9rem;
-    --bs-btn-padding-y: .3rem;
-    --bs-btn-padding-x: .6rem;
+    --bs-btn-padding-x: .5rem;
+    min-height: 32px;
 }
 
-/* Ao passar o mouse, o botão ganha a moldura branca dos menus do jogo. */
+/* Com o mouse (ou o foco do teclado) em cima, o jogo troca pelo button_highlighted, de moldura branca. */
 .btn:hover,
-.btn:focus-visible {
-    box-shadow: inset 0 0 0 2px #fff, var(--mc-relevo);
-}
-
+.btn:focus-visible,
 .btn:active,
 .btn.active {
-    box-shadow: var(--mc-afundado);
+    border-image-source: url("img/botao-destaque.png");
+    box-shadow: none !important;
 }
 
 .btn:disabled,
 .btn.disabled {
-    box-shadow: none;
-    opacity: 1;
-    text-shadow: none;
+    border-image: url("img/botao-desativado.png") 1 fill / 2px stretch;
+    border-width: 2px;
+    text-shadow: var(--mc-sombra-cinza);
 }
 
-/* Botão verde do launcher ("Jogar"): a ação principal. */
-.btn-primary {
-    --bs-btn-color: #fff;
-    --bs-btn-bg: var(--mc-verde);
-    --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #4a9d32;
-    --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #2a641c;
-    --bs-btn-disabled-color: #c6c6c6;
-    --bs-btn-disabled-bg: #2f5a22;
-    text-shadow: 2px 2px 0 #1d4413;
+/* No jogo todo botão é de pedra; o que muda é a cor do texto, como os códigos § do chat. */
+.btn-outline-success {
+    --bs-btn-color: var(--mc-verde);
+    --bs-btn-hover-color: var(--mc-verde);
+    --bs-btn-active-color: var(--mc-verde);
+    text-shadow: 2px 2px 0 #153f15;
 }
 
-/* Vermelho de redstone/TNT: ações destrutivas. */
 .btn-danger,
 .btn-outline-danger {
-    --bs-btn-color: #fff;
-    --bs-btn-bg: var(--mc-vermelho);
-    --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #c63a33;
-    --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #7f1f1b;
-    text-shadow: 2px 2px 0 #4a1210;
-}
-
-/* Concluir tarefa: botão de pedra com o ícone verde do XP. */
-.btn-outline-success {
-    --bs-btn-color: var(--mc-verde-claro);
-    --bs-btn-hover-color: #b6ff9c;
-    --bs-btn-active-color: #b6ff9c;
-    --bs-btn-disabled-color: #6a8a6a;
+    --bs-btn-color: var(--mc-vermelho);
+    --bs-btn-hover-color: var(--mc-vermelho);
+    --bs-btn-active-color: var(--mc-vermelho);
+    text-shadow: 2px 2px 0 #3f1515;
 }
 
 .btn-link {
-    --bs-btn-color: var(--bs-link-color);
-    --bs-btn-hover-color: var(--bs-link-hover-color);
-    background: none;
+    --bs-btn-color: var(--mc-amarelo);
+    --bs-btn-hover-color: var(--mc-branco);
+    border-image: none !important;
     border-color: transparent;
-    box-shadow: none;
+}
+
+.card .btn-link {
+    --bs-btn-color: #0000aa;
+    --bs-btn-hover-color: #5555ff;
+    --bs-btn-active-color: #5555ff;
     text-shadow: none;
 }
 
-.btn-link:hover,
-.btn-link:active {
-    box-shadow: none;
-}
-
-/* ---------- Formulários: campos pretos com borda cinza, como os do jogo ---------- */
+/* ---------- Formulários: a caixa de texto do jogo (preta, borda cinza; branca quando focada) ---------- */
 
 .form-label {
-    color: #404040;
-    font-size: 1rem;
-    font-weight: 600;
+    color: var(--mc-cinza);
+    font-weight: 400;
+    margin-bottom: .35rem;
+    text-shadow: var(--mc-sombra-cinza);
+}
+
+.card .form-label,
+.card .form-check-label {
+    color: var(--mc-cinza-escuro);
+    text-shadow: none;
 }
 
 .form-control,
 .form-select {
-    background-color: #000;
-    border: 2px solid #a0a0a0;
-    border-radius: 0;
-    color: #fff;
+    background-color: transparent;
+    border-image: url("img/campo.png") 1 fill / 2px stretch;
+    border-style: solid;
+    border-width: 2px;
+    color: #e0e0e0;
     color-scheme: dark;
-    font-family: var(--mc-pixel);
-    font-size: 1.05rem;
+    font-family: var(--mc-fonte);
+    font-size: 1rem;
+    image-rendering: pixelated;
+    min-height: 40px;
+    text-shadow: 2px 2px 0 #383838;
 }
 
 .form-select {
-    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='square' stroke-width='2.5' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3e%3cpath fill='%23e0e0e0' d='M3 5h10v2H3zM5 7h6v2H5zM7 9h2v2H7z'/%3e%3c/svg%3e");
+}
+
+/* As opções da lista aberta são desenhadas pelo sistema: fundo escuro para o texto claro aparecer. */
+.form-select option {
+    background: #000;
+    color: #e0e0e0;
 }
 
 .form-control::placeholder {
-    color: #8b8b8b;
+    color: #707070;
+    text-shadow: none;
 }
 
 .form-control:focus,
 .form-select:focus {
-    background-color: #000;
-    border-color: #fff;
-    box-shadow: 0 0 0 3px rgba(85, 255, 85, .55);
-    color: #fff;
+    background-color: transparent;
+    border-image-source: url("img/campo-foco.png");
+    box-shadow: none;
+    color: #e0e0e0;
 }
 
 .form-control:disabled,
 .form-select:disabled,
 .form-control[readonly] {
-    background-color: #2c2c2c;
-    color: #a0a0a0;
+    background-color: transparent;
+    color: #707070;
 }
 
 .form-control.is-invalid,
 .form-select.is-invalid {
-    border-color: #ff5555;
+    border-image: none;
+    border-color: var(--mc-vermelho);
+    background-color: #000;
 }
 
 .invalid-feedback {
-    color: #a00000;
-    font-weight: 600;
+    color: #aa0000;
+    font-size: 1rem;
+    text-shadow: none;
 }
 
-.form-text {
-    color: #404040;
+.cartao-acesso .invalid-feedback {
+    color: var(--mc-vermelho);
+    text-shadow: 2px 2px 0 #3f1515;
+}
+
+textarea.form-control {
+    min-height: 6rem;
 }
 
 .input-group-text {
-    background: #8b8b8b;
-    border: 2px solid #a0a0a0;
+    background: none;
+    border-image: url("img/slot.png") 1 fill / 2px stretch;
+    border-style: solid;
+    border-width: 2px;
+    color: var(--mc-branco);
+    image-rendering: pixelated;
+    text-shadow: var(--mc-sombra);
+}
+
+/* Caixa de seleção (widget/checkbox*.png, 20x20 desenhada em escala 1). */
+.form-check-input,
+.form-switch .form-check-input {
+    background: url("img/caixa.png") center / 100% 100% no-repeat;
+    border: 0;
     border-radius: 0;
-    color: var(--mc-texto);
+    height: 20px;
+    image-rendering: pixelated;
+    margin-top: .05rem;
+    width: 20px;
 }
 
-.form-check-input {
-    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3crect x='-3' y='-3' width='6' height='6' fill='%23a0a0a0'/%3e%3c/svg%3e");
-    background-color: #000;
-    border: 2px solid #a0a0a0;
-    border-radius: 0;
+.form-switch {
+    padding-left: 2.5em;
 }
 
-.form-check-input:checked {
-    background-color: var(--mc-verde);
-    border-color: #000;
+.form-switch .form-check-input {
+    margin-left: -2.5em;
 }
 
+.form-check-input:hover,
 .form-check-input:focus {
-    border-color: #fff;
-    box-shadow: 0 0 0 3px rgba(85, 255, 85, .55);
+    background-image: url("img/caixa-destaque.png");
+    box-shadow: none;
 }
 
-.form-switch .form-check-input,
+.form-check-input:checked,
 .form-switch .form-check-input:checked {
-    border-radius: 0;
+    background: url("img/caixa-marcada.png") center / 100% 100% no-repeat;
+}
+
+.form-check-input:checked:hover,
+.form-check-input:checked:focus {
+    background-image: url("img/caixa-marcada-destaque.png");
 }
 
 .form-control-color {
     padding: .2rem;
 }
 
-/* ---------- Tabelas ---------- */
+/* ---------- Tabelas (dentro dos painéis) ---------- */
 
 .table {
     --bs-table-bg: transparent;
-    --bs-table-color: var(--mc-texto);
+    --bs-table-color: var(--mc-cinza-escuro);
     --bs-table-hover-bg: rgba(255, 255, 255, .35);
-    --bs-table-hover-color: var(--mc-texto);
+    --bs-table-hover-color: var(--mc-cinza-escuro);
     --bs-table-border-color: #8b8b8b;
 }
 
+/* A fonte do jogo é larga: células mais justas para as ações caberem sem rolagem. */
+.table > :not(caption) > * > * {
+    padding-inline: .45rem;
+}
+
 .table thead.table-light {
-    --bs-table-bg: var(--mc-slot);
-    --bs-table-color: #fff;
+    --bs-table-bg: #8b8b8b;
+    --bs-table-color: var(--mc-branco);
 }
 
 .table thead th {
-    color: #fff;
-    font-weight: 600;
+    color: var(--mc-branco);
+    font-weight: 400;
+    text-shadow: var(--mc-sombra);
 }
 
 .tarefa-concluida .titulo-tarefa {
-    color: #555;
+    color: #6f6f6f;
 }
 
 .tarefa-concluida .titulo-tarefa::before {
     background: url("img/orbe.png") center / 100% 100% no-repeat;
     content: "";
     display: inline-block;
-    height: 12px;
+    height: 16px;
+    image-rendering: pixelated;
     margin-right: .4rem;
-    vertical-align: -1px;
-    width: 12px;
+    vertical-align: -2px;
+    width: 16px;
 }
 
 @media (max-width: 767.98px) {
     .tabela-tarefas tbody tr {
-        border-bottom: 3px solid #8b8b8b;
+        border-bottom: 2px solid #8b8b8b;
     }
 }
 
-/* ---------- Selos, com as cores do chat do jogo ---------- */
+/* ---------- Selos: uma linha do chat (fundo preto a 50% e as cores §) ---------- */
 
 .badge {
-    border: 2px solid #000;
-    font-size: .8rem;
-    font-weight: 600;
-    line-height: 1.2;
-    padding: .35em .5em;
+    background: rgba(0, 0, 0, .5) !important;
+    font-weight: 400;
+    line-height: 1.125;
+    padding: .2em .45em;
+    text-shadow: var(--mc-sombra);
 }
 
 .badge.bg-success-subtle {
-    background: var(--mc-verde-claro) !important;
-    color: #0a3a0a !important;
+    color: var(--mc-verde) !important;
+    text-shadow: 2px 2px 0 #153f15;
 }
 
 .badge.bg-danger-subtle {
-    background: #ff7d7d !important;
-    color: #3a0000 !important;
+    color: var(--mc-vermelho) !important;
+    text-shadow: 2px 2px 0 #3f1515;
 }
 
 .badge.bg-warning-subtle {
-    background: var(--mc-amarelo) !important;
-    color: #3a3a00 !important;
+    color: var(--mc-amarelo) !important;
+    text-shadow: 2px 2px 0 #3f3f15;
 }
 
 .badge.bg-secondary-subtle {
-    background: #e0e0e0 !important;
-    color: #2b2b2b !important;
+    color: #aaa !important;
+    text-shadow: 2px 2px 0 #2a2a2a;
 }
 
 .amostra-cor {
@@ -533,32 +621,37 @@ main > p a,
     border-radius: 0;
 }
 
-/* ---------- Alertas: a caixa roxa de dica dos itens ---------- */
+/* ---------- Alertas: a dica roxa dos itens (tooltip/background + tooltip/frame) ---------- */
 
 .alert {
-    background: #100010;
-    border: 3px solid;
-    border-image: linear-gradient(#5000ff, #28007f) 1;
-    box-shadow: 0 0 0 2px #100010, 5px 5px 0 2px rgba(0, 0, 0, .35);
-    font-size: 1.05rem;
-    font-weight: 500;
-    text-shadow: 2px 2px 0 rgba(0, 0, 0, .8);
+    --bs-alert-bg: transparent;
+    --bs-alert-border-color: transparent;
+    border-image: url("img/dica.png") 3 fill / 6px stretch;
+    border-style: solid;
+    border-width: 6px;
+    font-size: 1rem;
+    image-rendering: pixelated;
+    text-shadow: var(--mc-sombra);
 }
 
 .alert-success {
-    --bs-alert-color: var(--mc-verde-claro);
+    --bs-alert-color: var(--mc-verde);
+    text-shadow: 2px 2px 0 #153f15;
 }
 
 .alert-danger {
-    --bs-alert-color: #ff5555;
+    --bs-alert-color: var(--mc-vermelho);
+    text-shadow: 2px 2px 0 #3f1515;
 }
 
 .alert-warning {
     --bs-alert-color: var(--mc-amarelo);
+    text-shadow: 2px 2px 0 #3f3f15;
 }
 
 .alert-info {
-    --bs-alert-color: #55ffff;
+    --bs-alert-color: var(--mc-ciano);
+    text-shadow: 2px 2px 0 #153f3f;
 }
 
 .alert .alert-link,
@@ -569,141 +662,215 @@ main > p a,
 /* ---------- Paginação: botões de pedra ---------- */
 
 .pagination {
-    gap: .35rem;
+    gap: 2px;
 }
 
 .page-link {
-    background: var(--mc-pedra);
-    border: 2px solid #000 !important;
-    box-shadow: var(--mc-relevo);
-    color: #fff;
+    align-items: center;
+    background: none !important;
+    border-image: url("img/botao.png") 3 fill / 6px repeat stretch;
+    border-style: solid;
+    border-width: 6px;
+    color: var(--mc-branco) !important;
+    display: flex;
+    image-rendering: pixelated;
     margin: 0 !important;
-    text-shadow: var(--mc-sombra-texto);
+    min-height: 32px;
+    padding: 0 .6rem;
+    text-shadow: var(--mc-sombra);
 }
 
-.page-link:hover {
-    background: #808080;
-    box-shadow: inset 0 0 0 2px #fff, var(--mc-relevo);
-    color: #ffffa0;
+.page-link:hover,
+.page-link:focus-visible {
+    border-image-source: url("img/botao-destaque.png");
+    box-shadow: none;
 }
 
 .page-item.active .page-link {
-    background: var(--mc-verde);
-    color: #fff;
+    border-image-source: url("img/botao-destaque.png");
+    color: var(--mc-amarelo) !important;
 }
 
 .page-item.disabled .page-link {
-    background: #2c2c2c;
-    box-shadow: none;
-    color: #8b8b8b;
+    border-image: url("img/botao-desativado.png") 1 fill / 2px stretch;
+    border-width: 2px;
+    color: var(--mc-cinza) !important;
+    padding: 0 calc(.6rem + 4px);
+    text-shadow: var(--mc-sombra-cinza);
 }
 
-/* ---------- Login, cadastro e erro: a tela de título ---------- */
+/* ---------- Login e cadastro: a tela de título ---------- */
 
-.cartao-acesso {
-    max-width: 460px;
+/* Panorama em 3D (criado pelo tema.js): um cubo com a câmera no centro, FOV vertical de 85° e 10° de inclinação
+   (CubeMap.render), girando 0,1° por tick = 2°/s, uma volta a cada 3 minutos (Panorama). */
+.mc-panorama {
+    --mc-meio: calc(50vh / 0.9163); /* (altura / 2) / tan(42,5°) */
+    inset: 0;
+    overflow: hidden;
+    perspective: var(--mc-meio);
+    pointer-events: none;
+    position: fixed;
+    z-index: -1;
 }
 
-.cartao-acesso > .text-center.mb-4 {
-    position: relative;
+.mc-cubo {
+    animation: mc-giro 180s linear infinite;
+    height: 0;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateZ(var(--mc-meio)) rotateX(-10deg) rotateY(0deg);
+    transform-style: preserve-3d;
+    width: 0;
 }
 
-/* O ícone do topo vira um bloco de grama flutuando, como um item largado no chão. */
-.cartao-acesso .display-5 .bi {
+@keyframes mc-giro {
+    to {
+        transform: translateZ(var(--mc-meio)) rotateX(-10deg) rotateY(360deg);
+    }
+}
+
+/* Cada face tem 2 px a mais para não aparecer a emenda entre elas. */
+.mc-face {
+    backface-visibility: hidden;
+    background: center / 100% 100% no-repeat;
+    height: calc(var(--mc-meio) * 2 + 2px);
+    left: calc(var(--mc-meio) * -1 - 1px);
+    position: absolute;
+    top: calc(var(--mc-meio) * -1 - 1px);
+    width: calc(var(--mc-meio) * 2 + 2px);
+}
+
+.mc-face:nth-child(1) { background-image: url("img/panorama-0.webp"); transform: translateZ(calc(var(--mc-meio) * -1)); }
+.mc-face:nth-child(2) { background-image: url("img/panorama-1.webp"); transform: rotateY(-90deg) translateZ(calc(var(--mc-meio) * -1)); }
+.mc-face:nth-child(3) { background-image: url("img/panorama-2.webp"); transform: rotateY(180deg) translateZ(calc(var(--mc-meio) * -1)); }
+.mc-face:nth-child(4) { background-image: url("img/panorama-3.webp"); transform: rotateY(90deg) translateZ(calc(var(--mc-meio) * -1)); }
+.mc-face:nth-child(5) { background-image: url("img/panorama-4.webp"); transform: rotateX(-90deg) translateZ(calc(var(--mc-meio) * -1)); }
+.mc-face:nth-child(6) { background-image: url("img/panorama-5.webp"); transform: rotateX(90deg) translateZ(calc(var(--mc-meio) * -1)); }
+
+/* panorama_overlay.png: o degradê que o jogo estica por cima da tela inteira. */
+.mc-panorama::after {
+    background: url("img/panorama-sombra.png") 0 0 / 100% 100%;
+    content: "";
+    inset: 0;
+    position: absolute;
+}
+
+/* Com o cubo na tela, o fundo fixo some e o escurecimento dos menus também: a tela de título não tem. */
+body.mc-titulo::before,
+body.mc-titulo::after {
     display: none;
 }
 
-.cartao-acesso .display-5::before {
-    animation: mc-flutuar 2.4s ease-in-out infinite;
-    background: url("img/bloco-grama.svg") center / 100% 100% no-repeat;
-    content: "";
-    display: inline-block;
-    height: 72px;
-    width: 72px;
+.cartao-acesso {
+    max-width: 400px; /* os botões do título têm 200 pixels do jogo */
 }
 
-.cartao-acesso .display-5.text-secondary::before {
-    animation: none;
-    background-image: url("img/criatura-rosto.png");
-    height: 64px;
-    width: 64px;
+/* O logotipo (512px) é mais largo que os botões (400px), como no jogo; em tela estreita ele encolhe. */
+.cartao-acesso > .text-center.mb-4 {
+    --mc-logo: min(512px, 100vw - 2rem);
+    position: relative;
 }
 
-@keyframes mc-flutuar {
-    50% {
-        transform: translateY(-8px);
-    }
+/* O ícone do topo vira o logotipo (256x44 pixels do jogo, desenhado no y = 30). */
+.cartao-acesso > .text-center.mb-4 .display-5 {
+    aspect-ratio: 1024 / 176;
+    background: url("img/logo.png") center / 100% 100% no-repeat;
+    image-rendering: pixelated;
+    margin: -1rem calc((100% - var(--mc-logo)) / 2) 0;
+    width: var(--mc-logo);
 }
 
-/* Título com textura de pedra e borda em relevo, como o logotipo do jogo. */
+.cartao-acesso > .text-center.mb-4 .display-5 .bi {
+    display: none;
+}
+
+/* O nome do sistema ocupa o lugar do "Java Edition": estreito, para não encostar na frase amarela. */
 .cartao-acesso > .text-center.mb-4 h1 {
-    color: #c6c6c6;
-    font-size: clamp(1.6rem, 6vw, 2.3rem);
-    font-weight: 700;
-    line-height: 1.15;
-    text-transform: uppercase;
-}
-
-@supports ((background-clip: text) or (-webkit-background-clip: text)) {
-    .cartao-acesso > .text-center.mb-4 h1 {
-        /* O atalho "background" zera o background-clip, então ele vem antes. */
-        background: url("img/pedra.png") 0 0 / 24px 24px;
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        filter: brightness(1.35) drop-shadow(0 3px 0 #2e2e2e) drop-shadow(2px 0 0 #000) drop-shadow(-2px 0 0 #000) drop-shadow(0 -2px 0 #000) drop-shadow(0 2px 0 #000);
-        text-shadow: none;
-    }
+    font-size: 1rem;
+    margin-top: 0 !important;
 }
 
 .cartao-acesso > .text-center.mb-4 p {
-    color: #fff !important;
-    font-family: var(--mc-pixel);
-    font-size: 1.05rem;
+    color: var(--mc-cinza) !important;
     margin-bottom: 0;
-    text-shadow: var(--mc-contorno-texto);
+    text-shadow: var(--mc-sombra-cinza);
 }
 
-/* Frase amarela inclinada que pulsa ao lado do título (criada pelo tema.js). */
-.mc-frase {
-    animation: mc-pulsar .45s ease-in-out infinite alternate;
-    color: var(--mc-amarelo);
-    font-family: var(--mc-pixel);
-    font-size: 1rem;
-    font-weight: 600;
-    pointer-events: none;
-    position: absolute;
-    right: -5.5rem;
-    text-shadow: 2px 2px 0 #3f3f00;
-    top: 5.9rem;
-    transform: rotate(-16deg);
-    white-space: nowrap;
+/* Fora de um painel, o formulário fica solto sobre o panorama, como na tela "Adicionar servidor". */
+.cartao-acesso form.card {
+    border: 0;
+    border-image: none;
+    padding: 0 !important;
 }
 
-@keyframes mc-pulsar {
-    to {
-        transform: rotate(-16deg) scale(1.08);
-    }
+.cartao-acesso form.card .form-label {
+    color: var(--mc-cinza);
+    text-shadow: var(--mc-sombra-cinza);
 }
 
-.cartao-acesso > p.small {
-    font-family: var(--mc-pixel);
-    font-size: 1rem;
-    text-shadow: var(--mc-contorno-texto);
+.cartao-acesso form.card .form-text {
+    color: var(--mc-cinza) !important;
+    text-shadow: var(--mc-sombra-cinza);
 }
 
 .cartao-acesso > p.small a {
     color: var(--mc-amarelo);
 }
 
-/* Login errado: o formulário leva "dano" (pisca vermelho e treme). */
+/* A frase amarela do título (criada pelo tema.js). SplashRenderer: centro em (meio + 123, 69) pixels, girada -20°,
+   escala (1,8 - |sen(t * 2π)| * 0,1) * 100 / (largura do texto + 32), pulsando duas vezes por segundo. */
+.mc-frase {
+    --mc-escala: 1;
+    --mc-posicao: calc(var(--mc-logo) * 123 / 256);
+    animation: mc-pulsar .5s infinite;
+    color: var(--mc-amarelo);
+    left: calc(50% + var(--mc-posicao));
+    pointer-events: none;
+    position: absolute;
+    text-shadow: 2px 2px 0 #3f3f15;
+    top: calc(var(--mc-logo) * 39 / 256 - 1rem);
+    transform: translate(-50%, -50%) rotate(-20deg) scale(calc(var(--mc-escala) * var(--mc-reducao, 1)));
+    white-space: nowrap;
+    z-index: 1;
+}
+
+@keyframes mc-pulsar {
+    0%, 100% {
+        animation-timing-function: ease-out;
+        transform: translate(-50%, -50%) rotate(-20deg) scale(calc(var(--mc-escala) * var(--mc-reducao, 1)));
+    }
+
+    50% {
+        animation-timing-function: ease-in;
+        transform: translate(-50%, -50%) rotate(-20deg) scale(calc(var(--mc-escala) * var(--mc-reducao, 1) * 1.7 / 1.8));
+    }
+}
+
+/* Textos dos cantos da tela de título (versão à esquerda, aviso de direitos à direita). */
+.mc-rodape {
+    bottom: 2px;
+    color: var(--mc-branco);
+    left: 4px;
+    margin: 0;
+    pointer-events: none;
+    position: fixed;
+    text-shadow: var(--mc-sombra);
+    z-index: 1;
+}
+
+.mc-rodape.direita {
+    left: auto;
+    right: 4px;
+}
+
+/* Login errado: a tela treme como o personagem levando dano. */
 .cartao-acesso:has(.alert-danger) form.card {
-    animation: mc-dano .5s steps(2) 1;
+    animation: mc-dano .4s steps(2) 1;
 }
 
 @keyframes mc-dano {
     25% {
-        background-color: #e8a0a0;
         transform: translateX(-6px);
     }
 
@@ -712,151 +879,156 @@ main > p a,
     }
 
     75% {
-        background-color: #e8a0a0;
         transform: translateX(-4px);
     }
 }
 
-/* Página de erro: a tela vermelha de quando o personagem morre. */
+/* ---------- Página de erro: a tela "Você morreu!" ---------- */
+
+/* DeathScreen: degradê de 0x60500000 (em cima) a 0xA0803030 (embaixo) sobre o mundo. */
 body:has(.cartao-acesso.text-center)::after {
-    background: linear-gradient(rgba(170, 10, 0, .62), rgba(90, 0, 0, .78));
-    content: "";
-    inset: 0;
-    pointer-events: none;
-    position: fixed;
-    z-index: -1;
+    background: linear-gradient(rgba(80, 0, 0, .376), rgba(128, 48, 48, .627));
+}
+
+.cartao-acesso.text-center .display-5 {
+    display: none;
 }
 
 .cartao-acesso.text-center h1 {
-    color: #fff;
-    font-size: clamp(1.6rem, 5vw, 2.2rem);
-    text-shadow: 3px 3px 0 #3f3f3f;
+    color: var(--mc-branco);
+    font-size: 2rem;
+    margin: 3.75rem 0 1rem !important;
 }
 
 .cartao-acesso.text-center p {
-    color: #fff !important;
-    font-family: var(--mc-pixel);
-    font-size: 1.05rem;
-    text-shadow: var(--mc-sombra-texto);
+    color: var(--mc-branco) !important;
+    text-shadow: var(--mc-sombra);
+}
+
+.cartao-acesso.text-center .btn {
+    margin-top: 1.5rem;
+    width: 100%;
 }
 
 .mc-pontuacao span {
     color: var(--mc-amarelo);
+    text-shadow: 2px 2px 0 #3f3f15;
 }
 
 /* ---------- Tela "Escolha o tema" com o tema Minecraft ativo ---------- */
 
 .mundo-atual {
-    background: var(--mc-painel);
-    border: 2px solid #000;
+    background: rgba(0, 0, 0, .5);
+    border: 0;
     border-radius: 0;
-    color: #404040;
-    font-family: var(--mc-pixel);
-    font-size: .8rem;
-    font-weight: 600;
-    padding: .2rem .45rem;
+    color: var(--mc-amarelo);
+    font-family: var(--mc-fonte);
+    font-size: 1rem;
+    padding: .1rem .45rem;
+    text-shadow: 2px 2px 0 #3f3f15;
 }
 
 .mundo:focus-visible {
-    outline: 3px solid #fff;
+    outline: 2px solid #fff;
 }
 
 /* ---------- Elementos criados pelo tema.js ---------- */
 
-/* Barra de experiência (embaixo da barra de navegação e na HUD das telas de acesso). */
+/* Barra de experiência (hud/experience_bar_*, 182x5) com o nível no verde do jogo e contorno preto. */
 .mc-xp {
-    margin: 1.4rem auto 0;
-    max-width: 560px;
-    padding: 0 1rem;
+    height: 10px;
+    margin: 1.75rem auto 0;
     position: relative;
+    width: 364px;
+}
+
+.mc-xp-barra,
+.mc-xp-preenchido {
+    display: block;
+    height: 10px;
+    image-rendering: pixelated;
 }
 
 .mc-xp-barra {
-    background: #1b1b1b;
-    border: 2px solid #000;
-    display: block;
-    height: 12px;
-    position: relative;
+    background: url("img/xp-fundo.png") 0 0 / 364px 10px no-repeat;
 }
 
+/* O jogo recorta o sprite de progresso pela largura, em vez de esticar. */
 .mc-xp-preenchido {
-    background: linear-gradient(#c8ff6a 0 30%, var(--mc-xp) 30% 70%, #4cb30e 70%);
-    display: block;
-    height: 100%;
-    transition: width .4s steps(6);
+    background: url("img/xp-barra.png") 0 0 / 364px 10px no-repeat;
     width: 0;
-}
-
-/* Divisões da barra, como no jogo. */
-.mc-xp-barra::after {
-    background: repeating-linear-gradient(90deg, transparent 0 calc(100% / 18 - 2px), rgba(0, 0, 0, .55) calc(100% / 18 - 2px) calc(100% / 18));
-    content: "";
-    inset: 0;
-    position: absolute;
 }
 
 .mc-nivel {
     color: var(--mc-xp);
-    font-family: var(--mc-pixel);
-    font-size: 1.15rem;
-    font-weight: 700;
     left: 50%;
     line-height: 1;
     position: absolute;
     text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000;
-    top: -1.15rem;
+    top: -16px;
     transform: translateX(-50%);
 }
 
-/* HUD das telas de acesso: barra de XP e hotbar, apoiadas no chão. */
+/* HUD das telas de acesso: barra de XP e hotbar, no pé da tela como no jogo. */
 .mc-hud {
-    bottom: 10px;
+    bottom: 28px;
     left: 50%;
-    position: absolute;
+    position: fixed;
     transform: translateX(-50%);
-    width: 414px;
+    width: 364px;
+    z-index: 2;
 }
 
 .mc-hud .mc-xp {
-    margin: 0 0 6px;
-    padding: 0;
+    margin: 0 0 8px;
 }
 
+/* hud/hotbar.png (182x22): 9 espaços de 20 pixels, o item de 16 começa 3 pixels para dentro. */
 .mc-hotbar {
-    background: rgba(0, 0, 0, .55);
-    border: 2px solid #000;
+    background: url("img/hotbar.png") 0 0 / 100% 100% no-repeat;
     display: flex;
+    height: 44px;
+    image-rendering: pixelated;
+    padding: 6px;
+    position: relative;
 }
 
 .mc-slot {
-    background: rgba(70, 70, 70, .8) center / 30px 30px no-repeat;
-    border: 3px solid #8b8b8b;
-    border-bottom-color: #555;
-    border-right-color: #555;
+    background: center / 32px 32px no-repeat;
+    border: 0;
     cursor: pointer;
-    flex: 1 1 0;
-    height: 45px;
+    flex: 0 0 32px;
+    height: 32px;
+    image-rendering: pixelated;
+    margin-right: 8px;
     padding: 0;
 }
 
-.mc-slot.selecionado {
-    border: 3px solid #fff;
-    box-shadow: 0 0 0 2px #000;
-    position: relative;
-    z-index: 1;
+.mc-slot:last-child {
+    margin-right: 0;
+}
+
+/* hud/hotbar_selection.png (24x23), um pixel para fora do espaço. */
+.mc-selecao {
+    background: url("img/hotbar-selecao.png") 0 0 / 100% 100% no-repeat;
+    height: 46px;
+    left: -2px;
+    pointer-events: none;
+    position: absolute;
+    top: -2px;
+    transform: translateX(calc(var(--mc-indice, 0) * 40px));
+    width: 48px;
 }
 
 .mc-item-nome {
-    color: #fff;
-    font-family: var(--mc-pixel);
-    font-size: 1rem;
+    color: var(--mc-branco);
     left: 0;
     opacity: 0;
     position: absolute;
     right: 0;
     text-align: center;
-    text-shadow: var(--mc-sombra-texto);
-    top: -2.6rem;
+    text-shadow: var(--mc-sombra);
+    top: -48px;
     transition: opacity .3s;
 }
 
@@ -865,54 +1037,48 @@ body:has(.cartao-acesso.text-center)::after {
     transition: none;
 }
 
-/* Bloco de minério no chão das telas de acesso: cada clique racha mais um pouco. */
+/* Minério de diamante solto no canto da tela de título: cada clique racha mais (destroy_stage_0..9). */
 .mc-bloco-minerar {
-    background: url("img/minerio-diamante.png") center / 100% 100% no-repeat;
+    animation: mc-flutuar 3s ease-in-out infinite;
+    background: url("img/minerio-quebrando.png") calc(var(--estagio, 0) * -96px) 0 / 1056px 96px no-repeat;
     border: 0;
-    bottom: 144px;
+    bottom: 56px;
     cursor: pointer;
-    height: 48px;
-    left: 20%;
+    height: 96px;
+    image-rendering: pixelated;
+    left: 6%;
     padding: 0;
-    position: absolute;
-    width: 48px;
+    position: fixed;
+    width: 96px;
+    z-index: 2;
 }
 
-.mc-bloco-minerar::after {
-    background: url("img/rachaduras.png") calc(var(--estagio, 0) * -48px) 0 / 240px 48px no-repeat;
-    content: "";
-    inset: 0;
-    position: absolute;
+/* Itens largados no chão sobem e descem devagar (ItemEntity). */
+@keyframes mc-flutuar {
+    50% {
+        transform: translateY(-8px);
+    }
 }
 
 .mc-bloco-minerar:focus-visible {
-    outline: 3px solid #fff;
+    outline: 2px solid #fff;
     outline-offset: 2px;
-}
-
-.mc-bloco-minerar.batendo {
-    animation: mc-batida .12s steps(2);
 }
 
 .mc-bloco-minerar.quebrado {
     visibility: hidden;
 }
 
-@keyframes mc-batida {
-    50% {
-        transform: translate(2px, 1px);
-    }
-}
-
 /* Orbes de XP e pedacinhos de bloco que saltam. */
 .mc-orbe-voando {
     animation: mc-orbe .9s ease-out forwards;
     background: url("img/orbe.png") center / 100% 100% no-repeat;
-    height: 16px;
-    margin-left: -8px;
+    height: 24px;
+    image-rendering: pixelated;
+    margin-left: -12px;
     pointer-events: none;
     position: absolute;
-    width: 16px;
+    width: 24px;
     z-index: 1080;
 }
 
@@ -932,9 +1098,12 @@ body:has(.cartao-acesso.text-center)::after {
     }
 }
 
+/* Partículas de quebra: pedacinhos da própria textura do minério. */
 .mc-particula {
     animation: mc-particula .6s ease-out forwards;
+    background: url("img/bloco-diamante.png") var(--px) var(--py) / 256px 256px;
     height: 8px;
+    image-rendering: pixelated;
     pointer-events: none;
     position: absolute;
     width: 8px;
@@ -952,108 +1121,65 @@ body:has(.cartao-acesso.text-center)::after {
     }
 }
 
-/* Personagens andando sobre a grama, no fim da página. */
-.mc-personagem {
-    background-repeat: no-repeat;
-    bottom: 144px;
-    pointer-events: none;
-    position: absolute;
-}
-
-.mc-personagem.minerador {
-    animation: mc-atravessar 30s linear infinite, mc-passos .4s steps(1) infinite;
-    background-image: url("img/minerador.png");
-    background-size: 126px 96px;
-    height: 96px;
-    left: -60px;
-    width: 42px;
-}
-
-.mc-personagem.criatura {
-    animation: mc-patrulha 11s ease-in-out infinite alternate, mc-passos-criatura .5s steps(1) infinite;
-    background-image: url("img/criatura.png");
-    background-size: 48px 78px;
-    height: 78px;
-    left: 62%;
-    width: 24px;
-}
-
-@keyframes mc-atravessar {
-    to {
-        transform: translateX(calc(100vw + 120px));
-    }
-}
-
-@keyframes mc-patrulha {
-    to {
-        transform: translateX(-180px);
-    }
-}
-
-@keyframes mc-passos {
-    50% {
-        background-position: -42px 0;
-    }
-}
-
-@keyframes mc-passos-criatura {
-    50% {
-        background-position: -24px 0;
-    }
-}
-
-/* Botão de som, fixo no canto. */
+/* Botão de som, fixo no canto, no formato dos botões de opção ("Sons: Sim"). */
 .mc-som {
     align-items: center;
-    background: var(--mc-pedra);
-    border: 2px solid #000;
+    background: none;
+    border-image: url("img/botao.png") 3 fill / 6px repeat stretch;
+    border-style: solid;
+    border-width: 6px;
     bottom: 1rem;
-    box-shadow: var(--mc-relevo), 3px 3px 0 rgba(0, 0, 0, .35);
-    color: #fff;
+    color: var(--mc-branco);
     display: inline-flex;
-    font-family: var(--mc-pixel);
-    font-size: .95rem;
-    font-weight: 600;
+    font-family: var(--mc-fonte);
+    font-size: 1rem;
     gap: .4rem;
-    padding: .4rem .7rem;
+    image-rendering: pixelated;
+    min-height: 40px;
+    padding: 0 .7rem;
     position: fixed;
     right: 1rem;
-    text-shadow: var(--mc-sombra-texto);
+    text-shadow: var(--mc-sombra);
     z-index: 1070;
 }
 
-.mc-som:hover {
-    box-shadow: inset 0 0 0 2px #fff, var(--mc-relevo);
-    color: #ffffa0;
+.mc-som:hover,
+.mc-som:focus-visible {
+    border-image-source: url("img/botao-destaque.png");
+    outline: none;
 }
 
-.mc-som:focus-visible {
-    outline: 3px solid var(--mc-amarelo);
-    outline-offset: 3px;
+/* Na tela de título o botão sobe para não cobrir o aviso do canto. */
+body.mc-acesso .mc-som {
+    bottom: 1.75rem;
 }
 
 @media (max-width: 767.98px) {
     .mc-hud {
         display: none;
     }
+
+    .mc-bloco-minerar {
+        background-position: calc(var(--estagio, 0) * -64px) 0;
+        background-size: 704px 64px;
+        bottom: 3rem;
+        height: 64px;
+        left: 4%;
+        width: 64px;
+    }
+}
+
+/* A barra de XP tem largura fixa (o progresso é recortado, não esticado): em tela estreita ela encolhe inteira. */
+@media (max-width: 399.98px) {
+    .mc-xp {
+        transform: scale(.8);
+    }
 }
 
 @media (max-width: 575.98px) {
-    /* Árvores menores, para as duas copas não se juntarem atrás do conteúdo. */
-    body {
-        background-size: 48px 48px, 48px 48px, 48px 48px, 48px 48px, 160px 160px, 160px 160px,
-            48px 48px, 48px 48px, 384px 48px, 100% 100%;
-    }
-
-    .mc-frase {
-        font-size: .8rem;
-        right: -.75rem;
-        top: 6.6rem;
-    }
-
     .mc-som {
         bottom: .6rem;
-        padding: .4rem .5rem;
+        padding: 0 .5rem;
         right: .6rem;
     }
 
@@ -1061,26 +1187,44 @@ body:has(.cartao-acesso.text-center)::after {
         display: none;
     }
 
-    .mc-bloco-minerar {
-        left: 8%;
+    .mc-rodape {
+        display: none;
+    }
+
+    body.mc-acesso .mc-som {
+        bottom: .6rem;
+    }
+
+    .barra-app .nav-link {
+        padding: 0 .6rem;
+    }
+
+    /* Na posição do jogo a frase sairia da tela: aqui ela entra um pouco e encolhe. */
+    .mc-frase {
+        --mc-posicao: calc(var(--mc-logo) * .22);
+        --mc-reducao: .6;
+    }
+
+    .cartao-acesso > .text-center.mb-4 h1 {
+        margin-top: 1.25rem !important;
+    }
+
+    /* Contador estreito: o rótulo fica com a largura toda e o item desce para o canto, ao lado do número. */
+    .resumo .card .card-body {
+        background-position: right .6rem bottom .6rem;
+        background-size: 32px 32px;
+        padding-left: 1rem;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    body::before,
-    .mc-personagem,
+    .mc-cubo,
     .mc-orbe-voando,
     .mc-particula,
     .mc-frase,
-    .cartao-acesso .display-5::before,
-    .resumo .card,
     .mc-bloco-minerar,
     .cartao-acesso form.card {
         animation: none !important;
         transition: none !important;
-    }
-
-    .mc-personagem.minerador {
-        left: 8%;
     }
 }
